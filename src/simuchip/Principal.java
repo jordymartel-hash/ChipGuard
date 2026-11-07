@@ -17,9 +17,10 @@ public final class Principal {
             JFrame ventana = new JFrame("SimuChip · Funciones y líneas móviles");
             ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             ventana.setContentPane(new Aplicacion());
-            ventana.setMinimumSize(new Dimension(1280, 820));
+            ventana.setMinimumSize(new Dimension(1200, 760));
             ventana.setSize(1500, 920);
             ventana.setLocationRelativeTo(null);
+            ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
             ventana.setVisible(true);
         });
     }
@@ -41,7 +42,8 @@ public final class Principal {
             if (m.find()) {
                 int ancho = Integer.parseInt(m.group(1));
                 if (ancho > 2200) {
-                    double escala = Math.min(2.5, Math.round(ancho / 1920.0 * 4) / 4.0);
+                    // En Linux Java solo acepta escalas ENTERAS (1.5 se ignora; comprobado): 3072 px → 2.
+                    long escala = Math.max(1, Math.min(3, Math.round(ancho / 1920.0)));
                     System.setProperty("sun.java2d.uiScale", String.valueOf(escala));
                 }
             }

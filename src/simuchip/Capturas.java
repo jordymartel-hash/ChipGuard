@@ -16,8 +16,8 @@ import simuchip.ui.Aplicacion;
  */
 public final class Capturas {
 
-    private static final int ANCHO = 1600;
-    private static final int ALTO = 960;
+    private static final int ANCHO = Integer.getInteger("ancho", 1600);
+    private static final int ALTO = Integer.getInteger("alto", 960);
 
     private Capturas() {}
 

@@ -88,6 +88,7 @@ public final class PanelAprende extends JPanel {
     private final Lateral lateral = new Lateral();
     private final Animador animador;
     private final JLabel etiquetaTamanos = new JLabel();
+    private Boton botonInversa;
 
     public PanelAprende() {
         super(new BorderLayout());
@@ -102,7 +103,7 @@ public final class PanelAprende extends JPanel {
     // ─────────────────────────── barra de botones ───────────────────────────
 
     private JComponent crearBarra() {
-        JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 12));
+        JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 12));
         barra.setOpaque(false);
         barra.setBorder(BorderFactory.createEmptyBorder(4, 14, 0, 14));
         barra.add(etiqueta("Ejemplos:"));
@@ -116,19 +117,20 @@ public final class PanelAprende extends JPanel {
                 .alHacerClic(() -> cargar(3, 3, new int[][] {{1, 'a'}, {2, 'b'}, {3, 'c'}})));
         barra.add(new Boton("Ninguna", Boton.Estilo.SECUNDARIO)
                 .alHacerClic(() -> cargar(3, 3, new int[][] {{1, 'a'}, {2, 'a'}, {3, 'b'}})));
-        barra.add(new Boton("Borrar flechas", Boton.Estilo.PELIGRO).alHacerClic(() -> {
+        barra.add(new Boton("Borrar", Boton.Estilo.PELIGRO).alHacerClic(() -> {
             flechas.clear();
             seleccionado = null;
             refrescar();
         }));
-        barra.add(espacio(14));
+        barra.add(espacio(4));
         barra.add(etiquetaTamanos);
         barra.add(new Boton("A −", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(-1, 0)));
         barra.add(new Boton("A +", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(1, 0)));
         barra.add(new Boton("B −", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(0, -1)));
         barra.add(new Boton("B +", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(0, 1)));
-        barra.add(espacio(14));
+        barra.add(espacio(4));
         Boton inversa = new Boton("Ver inversa f⁻¹", Boton.Estilo.SECUNDARIO, true);
+        botonInversa = inversa;
         inversa.alHacerClic(() -> {
             verInversa = inversa.encendido();
             animador.olvidarTodo();
@@ -174,6 +176,7 @@ public final class PanelAprende extends JPanel {
 
     public void setVerInversa(boolean valor) {
         verInversa = valor;
+        botonInversa.setEncendido(valor);
         refrescar();
     }
 
@@ -468,7 +471,7 @@ public final class PanelAprende extends JPanel {
     private final class Lateral extends JComponent {
 
         private static final int ANCHO = 500;
-        private static final int ALTO_TARJETA = 96;
+        private static final int ALTO_TARJETA = 90;
         private static final int Y_TARJETAS = 62;
 
         Lateral() {
@@ -506,13 +509,13 @@ public final class PanelAprende extends JPanel {
                 Tema.insignia(g, v.cumple(), x + 34, y + ALTO_TARJETA / 2, 18);
                 g.setFont(Tema.letra(Font.BOLD, 18f));
                 g.setColor(Tema.AZUL_NOCHE);
-                g.drawString(TITULOS[i] + (v.cumple() ? ":  SÍ" : ":  NO"), x + 66, y + 28);
+                g.drawString(TITULOS[i] + (v.cumple() ? ":  SÍ" : ":  NO"), x + 66, y + 26);
                 g.setFont(Tema.letra(Font.PLAIN, 13.5f));
                 g.setColor(Tema.TEXTO_SUAVE);
-                g.drawString(PREGUNTAS[i], x + 66, y + 50);
+                g.drawString(PREGUNTAS[i], x + 66, y + 47);
                 g.setFont(Tema.letra(Font.BOLD, 14.5f));
                 g.setColor(v.cumple() ? Tema.VERDE : Tema.ROJO_OSCURO);
-                g.drawString("→ " + v.razon(), x + 66, y + 76);
+                g.drawString("→ " + v.razon(), x + 66, y + 72);
             }
             dibujarCodigo(g, x, Y_TARJETAS + 4 * (ALTO_TARJETA + 10) + 6, w);
             g.dispose();
@@ -520,7 +523,7 @@ public final class PanelAprende extends JPanel {
 
         private void dibujarCodigo(Graphics2D g, int x, int y, int w) {
             String[] lineas = CODIGO[tarjeta];
-            int altoLinea = 25;
+            int altoLinea = 23;
             int alto = 56 + lineas.length * altoLinea + 16;
             Tema.tarjeta(g, x, y, w, alto, 22, Tema.AZUL_NOCHE);
             g.setFont(Tema.letra(Font.BOLD, 14f));
