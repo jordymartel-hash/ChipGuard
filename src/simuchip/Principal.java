@@ -12,6 +12,7 @@ public final class Principal {
 
     public static void main(String[] args) {
         System.setProperty("awt.useSystemAAFontSettings", "on");
+        ajustarEscalaEnLinux();
         SwingUtilities.invokeLater(() -> {
             JFrame ventana = new JFrame("SimuChip · Funciones y líneas móviles");
             ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -21,5 +22,31 @@ public final class Principal {
             ventana.setLocationRelativeTo(null);
             ventana.setVisible(true);
         });
+    }
+
+    /**
+     * En Linux, Java no detecta solo el escalado de pantallas de alta resolución y todo se ve diminuto.
+     * Si el usuario no fijó -Dsun.java2d.uiScale, se calcula con el ancho de la pantalla (base 1920 px).
+     * Debe correr ANTES de crear cualquier ventana. En Windows y macOS Java ya escala solo.
+     */
+    private static void ajustarEscalaEnLinux() {
+        if (!System.getProperty("os.name", "").toLowerCase().contains("linux")
+                || System.getProperty("sun.java2d.uiScale") != null) {
+            return;
+        }
+        try {
+            Process p = new ProcessBuilder("xrandr", "--current").redirectErrorStream(true).start();
+            String salida = new String(p.getInputStream().readAllBytes());
+            java.util.regex.Matcher m = java.util.regex.Pattern.compile("current (\\d+) x (\\d+)").matcher(salida);
+            if (m.find()) {
+                int ancho = Integer.parseInt(m.group(1));
+                if (ancho > 2200) {
+                    double escala = Math.min(2.5, Math.round(ancho / 1920.0 * 4) / 4.0);
+                    System.setProperty("sun.java2d.uiScale", String.valueOf(escala));
+                }
+            }
+        } catch (Exception e) {
+            // sin xrandr: se queda la escala por defecto
+        }
     }
 }

@@ -9,6 +9,10 @@ import javax.swing.JComponent;
 /** Pantalla de bienvenida: la pregunta, qué se puede hacer y botones para empezar. */
 public final class PanelInicio extends JComponent {
 
+    private static final String TEXTO = "En el Perú hay cientos de miles de líneas registradas a nombre de personas "
+            + "que no las usan. Con funciones inyectivas, sobreyectivas y biyectivas vamos a entender "
+            + "el problema y a simular la solución.";
+
     private final Animador animador;
     private final Boton aprender;
     private final Boton simular;
@@ -27,10 +31,17 @@ public final class PanelInicio extends JComponent {
         }
     }
 
+    /** Altura del párrafo de presentación (la misma cuenta que usa paintComponent). */
+    private int altoParrafo() {
+        java.awt.FontMetrics fm = getFontMetrics(Tema.letra(Font.PLAIN, 21f));
+        int lineas = Tema.partir(TEXTO, fm, Math.min(760, getWidth() / 2)).size();
+        return lineas * Math.round(fm.getHeight() * 1.25f);
+    }
+
     @Override
     public void doLayout() {
         int x = 96;
-        int y = getHeight() - 250;
+        int y = 300 + altoParrafo() + 30 + 104 + 52;   // debajo del paso 3
         aprender.setBounds(x, y, aprender.getPreferredSize().width, 54);
         simular.setBounds(x + aprender.getPreferredSize().width + 18, y, simular.getPreferredSize().width, 54);
     }
@@ -56,9 +67,7 @@ public final class PanelInicio extends JComponent {
         g.setFont(Tema.letra(Font.PLAIN, 21f));
         g.setColor(Tema.TEXTO_SUAVE);
         int anchoTexto = Math.min(760, w / 2);
-        int alto = Tema.parrafo(g, "En el Perú hay cientos de miles de líneas registradas a nombre de personas "
-                + "que no las usan. Con funciones inyectivas, sobreyectivas y biyectivas vamos a entender "
-                + "el problema y a simular la solución.", x, 300, anchoTexto, 1.25f);
+        int alto = Tema.parrafo(g, TEXTO, x, 300, anchoTexto, 1.25f);
 
         int yPasos = 300 + alto + 30;
         paso(g, x, yPasos, "1", "Aprende", "Dibuja flechas y mira cómo el código decide el tipo de función.");
