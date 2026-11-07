@@ -81,18 +81,18 @@ public final class Avisos {
             int alto = 44 + lineas.size() * 19;
             int x = xDerecha - ancho + desliz;
             g.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, (float) alfa));
-            Tema.tarjeta(g, x, yy, ancho, alto, 18, Tema.AZUL_NOCHE);
-            Tema.rectRedondo(g, x, yy, 8, alto, 8, a.color());
+            Tema.tarjeta(g, x, yy, ancho, alto, 18, Tema.BLANCO);
+            Tema.borde(g, x, yy, ancho, alto, 18, Tema.conAlfa(Tema.FILETE, 160), 1f);
             g.setColor(a.color());
             g.fill(new Ellipse2D.Double(x + 20, yy + 16, 14, 14));
             g.setFont(Tema.letra(Font.BOLD, 15f));
-            g.setColor(Tema.CREMA);
-            g.drawString(a.titulo(), x + 44, yy + 28);
+            g.setColor(Tema.AZUL_NOCHE);
+            Tema.texto(g, a.titulo(), x + 44, yy + 28);
             g.setFont(Tema.letra(Font.PLAIN, 14f));
-            g.setColor(new Color(0xC9D6EA));
+            g.setColor(Tema.TEXTO_SUAVE);
             int ly = yy + 50;
             for (String l : lineas) {
-                g.drawString(l, x + 44, ly);
+                Tema.texto(g, l, x + 44, ly);
                 ly += 19;
             }
             g.setComposite(java.awt.AlphaComposite.SrcOver);

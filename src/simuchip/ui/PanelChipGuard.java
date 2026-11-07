@@ -20,9 +20,9 @@ import javax.swing.Timer;
 
 /**
  * Pestaña 3: la solución contada como historia. Ana, un celular simulado y lo que ve la operadora.
- * Primero pasa el problema (sin protección); luego se rebobina con «Yo Autorizo».
+ * Primero pasa el problema (sin protección); luego se rebobina con ChipGuard.
  */
-public final class PanelYoAutorizo extends JComponent {
+public final class PanelChipGuard extends JComponent {
 
     private enum Pantalla { BLOQUEO, LLAMADA, APP, ALERTA, BLOQUEADO, HUELLA_FALLA, MAPA, RESUMEN }
 
@@ -47,7 +47,7 @@ public final class PanelYoAutorizo extends JComponent {
                 + "Ella no sabía que tenía dos chips.",
             "Rastrear con f lleva a f(L2) = Ana: una inocente", "10:05", Pantalla.LLAMADA,
             List.of(EstadoLinea.OK, EstadoLinea.FRAUDE), true, "El sistema apunta a Ana. El culpable sigue libre."),
-        new Escena("Rebobinemos… ahora con «Yo Autorizo»",
+        new Escena("Rebobinemos… ahora con ChipGuard",
             "Ana registra su huella una sola vez en la app. Desde ese momento ningún chip nace con su DNI sin que "
                 + "ella lo apruebe desde su celular.",
             "Cada chip ↔ un contrato con su huella: g es biyectiva", "9:41", Pantalla.APP,
@@ -68,7 +68,7 @@ public final class PanelYoAutorizo extends JComponent {
             "La app le entrega a Ana la inversa: f⁻¹(Ana) en su bolsillo, con tope |f⁻¹(Ana)| ≤ 3", "9:41",
             Pantalla.MAPA, List.of(EstadoLinea.OK_HUELLA), false, "Lo que ve la operadora = lo que ve Ana."),
         new Escena("Lo que proponemos",
-            "«Yo Autorizo»: 1) alerta en tu celular por cada chip con tu DNI, 2) se activa solo con tu huella, "
+            "ChipGuard: 1) alerta en tu celular por cada chip con tu DNI, 2) se activa solo con tu huella, "
                 + "3) tu DNI bloqueado por defecto y 4) tu mapa de chips siempre visible.",
             "Problema: f ≠ u.   Solución: g biyectiva + la aprobación del dueño real", "9:41", Pantalla.RESUMEN,
             List.of(EstadoLinea.OK_HUELLA), false, "Cada chip lleva a una persona real.")
@@ -76,15 +76,15 @@ public final class PanelYoAutorizo extends JComponent {
 
     private int escena;
     private boolean eligioSi;
-    private final Boton anterior = new Boton("◀  Anterior", Boton.Estilo.SECUNDARIO);
-    private final Boton siguiente = new Boton("Siguiente  ▶", Boton.Estilo.PRIMARIO);
+    private final Boton anterior = new Boton("Anterior", Boton.Estilo.SECUNDARIO).conIcono(Iconos.Tipo.ANTERIOR);
+    private final Boton siguiente = new Boton("Siguiente", Boton.Estilo.PRIMARIO).conIcono(Iconos.Tipo.SIGUIENTE);
     private final Avisos avisos = new Avisos(this, 2);
     private long entradaEscena = System.currentTimeMillis();
     private final Timer vibracion = new Timer(16, e -> repaint());
     private Rectangle2D zonaBloquear;
     private Rectangle2D zonaSi;
 
-    public PanelYoAutorizo() {
+    public PanelChipGuard() {
         setLayout(null);
         anterior.setFont(Tema.letra(Font.BOLD, 16f));
         siguiente.setFont(Tema.letra(Font.BOLD, 16f));
@@ -127,7 +127,7 @@ public final class PanelYoAutorizo extends JComponent {
         avisos.limpiarTodo();
         entradaEscena = System.currentTimeMillis();
         if (ESCENAS.get(escena).pantalla() == Pantalla.ALERTA) {
-            avisos.mostrar("Notificación nueva", "Yo Autorizo: alguien quiere sacar un chip con tu DNI", Tema.DORADO);
+            avisos.mostrar("Notificación nueva", "ChipGuard: alguien quiere sacar un chip con tu DNI", Tema.DORADO);
             if (!Animador.instantaneo) {
                 vibracion.start();
             }
@@ -138,7 +138,8 @@ public final class PanelYoAutorizo extends JComponent {
             eligioSi = false;
         }
         anterior.setVisible(escena > 0);
-        siguiente.setTexto(escena == ESCENAS.size() - 1 ? "Volver al inicio  ↺" : "Siguiente  ▶");
+        siguiente.setTexto(escena == ESCENAS.size() - 1 ? "Ver otra vez" : "Siguiente");
+        siguiente.conIcono(escena == ESCENAS.size() - 1 ? Iconos.Tipo.REINICIAR : Iconos.Tipo.SIGUIENTE);
         if (escena == ESCENAS.size() - 1) {
             siguiente.alHacerClic(() -> irAEscena(0));
         } else {
@@ -165,9 +166,8 @@ public final class PanelYoAutorizo extends JComponent {
         Tema.suavizar(g);
         int w = getWidth();
         int h = getHeight();
-        g.setColor(Tema.CELESTE_FONDO);
+        g.setColor(Tema.BLANCO);
         g.fillRect(0, 0, w, h);
-        Tema.tarjeta(g, 16, 12, w - 32, h - 32, 32, Tema.CREMA);
 
         Escena e = ESCENAS.get(escena);
         int colAncho = Math.min(560, (int) (w * 0.37));
@@ -198,18 +198,16 @@ public final class PanelYoAutorizo extends JComponent {
 
     private void dibujarRelato(Graphics2D g, Escena e, int x, int ancho, int h) {
         // progreso
+        // progreso: rojo = escenas del problema, verde = escenas con ChipGuard
         for (int i = 0; i < ESCENAS.size(); i++) {
-            g.setColor(i == escena ? Tema.NARANJA : i < escena ? Tema.DORADO : Tema.GRIS);
-            Tema.rectRedondo(g, x + i * 30, 46, i == escena ? 24 : 18, 8, 8, g.getColor());
+            Color c = i <= 2 ? Tema.ROJO : Tema.VERDE;
+            g.setColor(i == escena ? c : i < escena ? Tema.conAlfa(c, 110) : Tema.GRIS_CLARO);
+            Tema.rectRedondo(g, x + i * 30, 48, i == escena ? 26 : 20, 6, 6, g.getColor());
         }
-        g.setFont(Tema.letra(Font.BOLD, 14f));
-        g.setColor(escena <= 2 ? Tema.ROJO_OSCURO : Tema.VERDE);
-        g.drawString((escena <= 2 ? "SIN PROTECCIÓN" : "CON «YO AUTORIZO»") + "  ·  ESCENA " + (escena + 1) + " DE "
-                + ESCENAS.size(), x, 84);
 
-        g.setFont(Tema.letra(Font.BOLD, 32f));
+        g.setFont(Tema.titulo(36f));
         g.setColor(Tema.AZUL_NOCHE);
-        int y = 100;
+        int y = 76;
         y += Tema.parrafo(g, e.titulo(), x, y, ancho, 1.05f) + 14;
         g.setFont(Tema.letra(Font.PLAIN, 18f));
         g.setColor(Tema.TEXTO_SUAVE);
@@ -220,7 +218,7 @@ public final class PanelYoAutorizo extends JComponent {
         Tema.tarjeta(g, x, y, ancho, altoMate, 18, Tema.AZUL_NOCHE);
         g.setFont(Tema.letra(Font.BOLD, 12.5f));
         g.setColor(Tema.DORADO);
-        g.drawString("LO QUE DICE LA MATEMÁTICA", x + 20, y + 24);
+        Tema.texto(g, "LO QUE DICE LA MATEMÁTICA", x + 20, y + 24);
         g.setFont(Tema.letra(Font.BOLD, 16f));
         g.setColor(Tema.CREMA);
         Tema.parrafo(g, e.mate(), x + 20, y + 34, ancho - 40, 1.2f);
@@ -228,8 +226,7 @@ public final class PanelYoAutorizo extends JComponent {
 
     private void dibujarCelular(Graphics2D g, Escena e, int x, int y, int w, int h) {
         // cuerpo
-        g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, 60));
-        g.fill(new RoundRectangle2D.Double(x + 4, y + 10, w, h, 54, 54));
+        Tema.sombra(g, x, y, w, h, 54, 40);
         g.setColor(new Color(0x10141E));
         g.fill(new RoundRectangle2D.Double(x, y, w, h, 54, 54));
         int sx = x + 12;
@@ -250,7 +247,7 @@ public final class PanelYoAutorizo extends JComponent {
         // barra de estado
         g.setFont(Tema.letra(Font.BOLD, 13f));
         g.setColor(oscuro ? Tema.CREMA : Tema.AZUL_NOCHE);
-        g.drawString(e.hora(), sx + 26, sy + 28);
+        Tema.texto(g, e.hora(), sx + 26, sy + 28);
         Tema.rectRedondo(g, sx + sw - 50, sy + 17, 26, 12, 4, oscuro ? Tema.CREMA : Tema.AZUL_NOCHE);
         g.setColor(new Color(0x10141E));
         g.fill(new RoundRectangle2D.Double(sx + sw / 2.0 - 46, sy + 10, 92, 24, 24, 24));
@@ -284,7 +281,7 @@ public final class PanelYoAutorizo extends JComponent {
         Tema.textoCentrado(g, "Sin notificaciones", sx + sw / 2.0, sy + sh * 0.62);
         if (escena == 1) {
             g.setFont(Tema.letra(Font.BOLD, 14f));
-            g.setColor(new Color(0xF28B82));
+            g.setColor(Tema.ROJO_CLARO);
             Tema.textoCentrado(g, "…mientras le sacan un chip", sx + sw / 2.0, sy + sh * 0.62 + 26);
         }
     }
@@ -306,7 +303,7 @@ public final class PanelYoAutorizo extends JComponent {
         Tema.rectRedondo(g, bx, by, bw, 118, 20, Tema.conAlfa(Tema.CREMA, 235));
         g.setColor(Tema.AZUL_NOCHE);
         g.setFont(Tema.letra(Font.BOLD, 13f));
-        g.drawString("MENSAJE · PNP", bx + 14, by + 22);
+        Tema.texto(g, "MENSAJE · PNP", bx + 14, by + 22);
         g.setFont(Tema.letra(Font.PLAIN, 13.5f));
         Tema.parrafo(g, "Su línea 987 654 102 fue usada en una extorsión. Acérquese a la comisaría.", bx + 14,
                 by + 32, bw - 28, 1.2f);
@@ -318,15 +315,15 @@ public final class PanelYoAutorizo extends JComponent {
         g.fill(new Ellipse2D.Double(cx + 30, yb, 60, 60));
         g.setColor(Tema.BLANCO);
         g.setFont(Tema.letra(Font.BOLD, 22f));
-        Tema.textoCentrado(g, "✕", cx - 60, yb + 30);
-        Tema.textoCentrado(g, "✓", cx + 60, yb + 30);
+        Iconos.dibujar(g, Iconos.Tipo.EQUIS, cx - 60, yb + 30, 26, Tema.BLANCO);
+        Iconos.dibujar(g, Iconos.Tipo.TELEFONO, cx + 60, yb + 30, 26, Tema.BLANCO);
     }
 
     private void cabeceraApp(Graphics2D g, int sx, int sy, int sw, String titulo) {
-        Tema.rectRedondo(g, sx, sy + 40, sw, 56, 0, Tema.NARANJA);
-        g.setColor(Tema.AZUL_NOCHE);
+        Tema.rectRedondo(g, sx, sy + 40, sw, 56, 0, Tema.AZUL);
+        g.setColor(Tema.BLANCO);
         g.setFont(Tema.letra(Font.BOLD, 18f));
-        g.drawString(titulo, sx + 20, sy + 75);
+        Tema.texto(g, titulo, sx + 20, sy + 75);
     }
 
     private void escudo(Graphics2D g, double cx, double cy, double r, Color color) {
@@ -340,11 +337,11 @@ public final class PanelYoAutorizo extends JComponent {
         g.fill(p);
         g.setColor(Tema.BLANCO);
         g.setFont(Tema.letra(Font.BOLD, (float) r));
-        Tema.textoCentrado(g, "✓", cx, cy);
+        Iconos.dibujar(g, Iconos.Tipo.VISTO, cx, cy, r * 0.9, Tema.BLANCO);
     }
 
     private void pantallaApp(Graphics2D g, int sx, int sy, int sw, int sh) {
-        cabeceraApp(g, sx, sy, sw, "Yo Autorizo");
+        cabeceraApp(g, sx, sy, sw, "ChipGuard");
         double cx = sx + sw / 2.0;
         escudo(g, cx, sy + 160, 46, Tema.VERDE);
         g.setColor(Tema.AZUL_NOCHE);
@@ -359,13 +356,13 @@ public final class PanelYoAutorizo extends JComponent {
         g.fill(new Ellipse2D.Double(sx + 28, y + 22, 26, 26));
         g.setColor(Tema.BLANCO);
         g.setFont(Tema.letra(Font.BOLD, 14f));
-        Tema.textoCentrado(g, "✓", sx + 41, y + 35);
+        Iconos.dibujar(g, Iconos.Tipo.VISTO, sx + 41, y + 35, 16, Tema.BLANCO);
         g.setColor(Tema.AZUL_NOCHE);
         g.setFont(Tema.letra(Font.BOLD, 14f));
-        g.drawString("L1 · 987 654 101", sx + 64, y + 30);
+        Tema.texto(g, "L1 · 987 654 101", sx + 64, y + 30);
         g.setFont(Tema.letra(Font.PLAIN, 12.5f));
         g.setColor(Tema.TEXTO_SUAVE);
-        g.drawString("Tuyo · con tu huella", sx + 64, y + 50);
+        Tema.texto(g, "Tuyo · con tu huella", sx + 64, y + 50);
         g.setFont(Tema.letra(Font.BOLD, 14f));
         g.setColor(Tema.AZUL_TEXTO);
         Tema.textoCentrado(g, "Chips a tu nombre: 1 de 3", cx, y + 104);
@@ -381,13 +378,14 @@ public final class PanelYoAutorizo extends JComponent {
         int bw = sw - 24;
         int bh = 250;
         Tema.tarjeta(g, bx, by, bw, bh, 22, Tema.BLANCO);
-        Tema.rectRedondo(g, bx + 14, by + 14, 22, 22, 6, Tema.NARANJA);
+        Tema.rectRedondo(g, bx + 14, by + 14, 22, 22, 6, Tema.AZUL);
+        Iconos.dibujar(g, Iconos.Tipo.ESCUDO, bx + 25, by + 25, 14, Tema.BLANCO);
         g.setColor(Tema.TEXTO_SUAVE);
         g.setFont(Tema.letra(Font.BOLD, 11.5f));
-        g.drawString("YO AUTORIZO · ahora", bx + 44, by + 30);
+        Tema.texto(g, "CHIPGUARD · ahora", bx + 44, by + 30);
         g.setColor(Tema.AZUL_NOCHE);
         g.setFont(Tema.letra(Font.BOLD, 17f));
-        g.drawString("¿Estás sacando un chip?", bx + 14, by + 62);
+        Tema.texto(g, "¿Estás sacando un chip?", bx + 14, by + 62);
         g.setFont(Tema.letra(Font.PLAIN, 13.5f));
         g.setColor(Tema.TEXTO_SUAVE);
         Tema.parrafo(g, "Intentan registrar una línea con tu DNI en: Puesto ambulante · Av. Abancay, 3:12 a. m.",
@@ -407,13 +405,13 @@ public final class PanelYoAutorizo extends JComponent {
     }
 
     private void pantallaBloqueado(Graphics2D g, int sx, int sy, int sw, int sh) {
-        cabeceraApp(g, sx, sy, sw, "Yo Autorizo");
+        cabeceraApp(g, sx, sy, sw, "ChipGuard");
         double cx = sx + sw / 2.0;
         g.setColor(Tema.VERDE);
         g.fill(new Ellipse2D.Double(cx - 56, sy + 130, 112, 112));
         g.setColor(Tema.BLANCO);
         g.setFont(Tema.letra(Font.BOLD, 64f));
-        Tema.textoCentrado(g, "✓", cx, sy + 186);
+        Iconos.dibujar(g, Iconos.Tipo.VISTO, cx, sy + 186, 60, Tema.BLANCO);
         g.setColor(Tema.AZUL_NOCHE);
         g.setFont(Tema.letra(Font.BOLD, 22f));
         Tema.textoCentrado(g, "Chip bloqueado", cx, sy + 284);
@@ -424,7 +422,7 @@ public final class PanelYoAutorizo extends JComponent {
     }
 
     private void pantallaHuellaFalla(Graphics2D g, int sx, int sy, int sw, int sh) {
-        cabeceraApp(g, sx, sy, sw, "Yo Autorizo");
+        cabeceraApp(g, sx, sy, sw, "ChipGuard");
         double cx = sx + sw / 2.0;
         double cy = sy + 190;
         g.setStroke(new BasicStroke(4f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
@@ -484,7 +482,7 @@ public final class PanelYoAutorizo extends JComponent {
     }
 
     private void pantallaResumen(Graphics2D g, int sx, int sy, int sw, int sh) {
-        cabeceraApp(g, sx, sy, sw, "Yo Autorizo");
+        cabeceraApp(g, sx, sy, sw, "ChipGuard");
         String[] puntos = {"Alerta por cada chip con tu DNI", "Se activa solo con tu huella",
             "DNI bloqueado por defecto", "Tu mapa de chips, siempre"};
         int y = sy + 130;
@@ -493,7 +491,7 @@ public final class PanelYoAutorizo extends JComponent {
             g.fill(new Ellipse2D.Double(sx + 22, y - 18, 28, 28));
             g.setColor(Tema.BLANCO);
             g.setFont(Tema.letra(Font.BOLD, 16f));
-            Tema.textoCentrado(g, "✓", sx + 36, y - 4);
+            Iconos.dibujar(g, Iconos.Tipo.VISTO, sx + 36, y - 4, 17, Tema.BLANCO);
             g.setColor(Tema.AZUL_NOCHE);
             g.setFont(Tema.letra(Font.BOLD, 14.5f));
             Tema.parrafo(g, p, sx + 62, y - 16, sw - 80, 1.15f);
@@ -506,13 +504,13 @@ public final class PanelYoAutorizo extends JComponent {
         Tema.tarjeta(g, x, y, w, h, 24, Tema.BLANCO);
         g.setFont(Tema.letra(Font.BOLD, 13f));
         g.setColor(Tema.TEXTO_SUAVE);
-        g.drawString("LO QUE VE LA OPERADORA", x + 22, y + 32);
+        Tema.texto(g, "LO QUE VE LA OPERADORA", x + 22, y + 32);
         g.setFont(Tema.letra(Font.BOLD, 19f));
         g.setColor(Tema.AZUL_NOCHE);
-        g.drawString("Chips con el DNI de Ana", x + 22, y + 60);
+        Tema.texto(g, "Chips con el DNI de Ana", x + 22, y + 60);
         g.setFont(Tema.letra(Font.PLAIN, 14f));
         g.setColor(Tema.AZUL_TEXTO);
-        g.drawString("f⁻¹(Ana) = la preimagen de su DNI", x + 22, y + 82);
+        Tema.texto(g, "f⁻¹(Ana) = la preimagen de su DNI", x + 22, y + 82);
 
         double xL = x + w * 0.22;
         double xP = x + w * 0.74;

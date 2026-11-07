@@ -3,44 +3,86 @@ package simuchip.ui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
 
-/** Todo el contenido de la app: cabecera con pestañas + las tres pantallas. */
+/**
+ * ChipGuard: seis capítulos en orden, como una keynote. Barra superior mínima con la marca,
+ * los capítulos en texto (un punto bajo el activo) y «Siguiente». Las flechas ← → también avanzan.
+ */
 public final class Aplicacion extends JPanel {
 
-    private static final String[] NOMBRES = {"Inicio", "1 · Aprende", "2 · Simula", "3 · Yo Autorizo", "4 · Detective"};
+    private static final String[] CAPITULOS = {"El problema", "Cómo pasa", "La matemática", "Simulación",
+        "ChipGuard", "Juego"};
+    private static final int ALTO_BARRA = 60;
+    private static final int TRANSICION_MS = 420;
 
     private final CardLayout tarjetas = new CardLayout();
-    private final JPanel centro = new JPanel(tarjetas);
-    private final Boton[] pestanas = new Boton[NOMBRES.length];
+    private final Escenario centro = new Escenario();
+    private final Boton[] pestanas = new Boton[CAPITULOS.length];
+    private final Boton siguiente = new Boton("Siguiente", Boton.Estilo.PRIMARIO).conIcono(Iconos.Tipo.SIGUIENTE);
+    private final JComponent[] paneles;
     private final PanelAprende aprende = new PanelAprende();
     private final PanelSimula simula = new PanelSimula();
-    private final PanelYoAutorizo yoAutorizo = new PanelYoAutorizo();
+    private final PanelChipGuard chipGuard = new PanelChipGuard();
     private final PanelDetective detective = new PanelDetective();
+    private int actual = -1;
 
     public Aplicacion() {
         super(new BorderLayout());
-        add(new Cabecera(), BorderLayout.NORTH);
-        centro.add(new PanelInicio(() -> irA(1), () -> irA(3)), NOMBRES[0]);
-        centro.add(aprende, NOMBRES[1]);
-        centro.add(simula, NOMBRES[2]);
-        centro.add(yoAutorizo, NOMBRES[3]);
-        centro.add(detective, NOMBRES[4]);
+        setBackground(Tema.CELESTE_FONDO);
+        paneles = new JComponent[] {new PanelProblema(() -> irA(1)), new PanelCasos(() -> irA(2)), aprende, simula,
+            chipGuard, detective};
+        add(new Barra(), BorderLayout.NORTH);
+        for (int i = 0; i < paneles.length; i++) {
+            centro.add(paneles[i], CAPITULOS[i]);
+        }
         add(centro, BorderLayout.CENTER);
+        atajo(KeyEvent.VK_RIGHT, "siguiente", () -> irA(actual + 1));
+        atajo(KeyEvent.VK_LEFT, "anterior", () -> irA(actual - 1));
         irA(0);
     }
 
+    private void atajo(int tecla, String nombre, Runnable accion) {
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(tecla, 0), nombre);
+        getActionMap().put(nombre, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                accion.run();
+            }
+        });
+    }
+
     public void irA(int indice) {
-        tarjetas.show(centro, NOMBRES[indice]);
+        if (indice < 0 || indice >= CAPITULOS.length || indice == actual) {
+            return;
+        }
+        actual = indice;
+        tarjetas.show(centro, CAPITULOS[indice]);
         for (int i = 0; i < pestanas.length; i++) {
             pestanas[i].setEncendido(i == indice);
         }
+        siguiente.setVisible(indice < CAPITULOS.length - 1);
+        if (indice < CAPITULOS.length - 1) {
+            siguiente.setTexto(CAPITULOS[indice + 1]);
+        }
+        if (paneles[indice] instanceof Capitulo c) {
+            c.alMostrar();
+        }
+        centro.entrar();
+        revalidate();
+        repaint();
+    }
+
+    public int cantidadCapitulos() {
+        return CAPITULOS.length;
     }
 
     public PanelAprende aprende() {
@@ -51,52 +93,106 @@ public final class Aplicacion extends JPanel {
         return simula;
     }
 
-    public PanelYoAutorizo yoAutorizo() {
-        return yoAutorizo;
+    public PanelChipGuard chipGuard() {
+        return chipGuard;
     }
 
     public PanelDetective detective() {
         return detective;
     }
 
-    private final class Cabecera extends JComponent {
+    /** Contenedor de capítulos con la transición: fundido desde blanco y subida de 18 px. */
+    private final class Escenario extends JPanel {
 
-        Cabecera() {
-            setLayout(new FlowLayout(FlowLayout.RIGHT, 8, 15));
-            setPreferredSize(new Dimension(1200, 74));
-            for (int i = 0; i < NOMBRES.length; i++) {
+        private long inicio;
+        private final Timer reloj = new Timer(16, e -> {
+            repaint();
+            if (avance() >= 1) {
+                ((Timer) e.getSource()).stop();
+            }
+        });
+
+        Escenario() {
+            super(tarjetas);
+            setBackground(Tema.CELESTE_FONDO);
+        }
+
+        void entrar() {
+            inicio = System.currentTimeMillis();
+            if (!Animador.instantaneo) {
+                reloj.restart();
+            }
+        }
+
+        private double avance() {
+            if (Animador.instantaneo) {
+                return 1;
+            }
+            double t = Math.min(1, (System.currentTimeMillis() - inicio) / (double) TRANSICION_MS);
+            return 1 - Math.pow(1 - t, 4);
+        }
+
+        @Override
+        public void paint(Graphics graphics) {
+            double p = avance();
+            Graphics2D g = (Graphics2D) graphics.create();
+            g.translate(0, (1 - p) * 18);
+            super.paint(g);
+            g.dispose();
+            if (p < 1) {
+                Graphics2D v = (Graphics2D) graphics.create();
+                v.setColor(Tema.conAlfa(Tema.BLANCO, (int) (255 * (1 - p))));
+                v.fillRect(0, 0, getWidth(), getHeight());
+                v.dispose();
+            }
+        }
+    }
+
+    /** Barra superior: marca a la izquierda, capítulos al centro, «Siguiente» a la derecha. */
+    private final class Barra extends JComponent {
+
+        Barra() {
+            setLayout(null);
+            setPreferredSize(new Dimension(1200, ALTO_BARRA));
+            for (int i = 0; i < CAPITULOS.length; i++) {
                 int indice = i;
-                pestanas[i] = new Boton(NOMBRES[i], Boton.Estilo.PESTANA).alHacerClic(() -> irA(indice));
-                pestanas[i].setFont(Tema.letra(Font.BOLD, 16f));
+                pestanas[i] = new Boton(CAPITULOS[i], Boton.Estilo.PESTANA).alHacerClic(() -> irA(indice));
                 add(pestanas[i]);
             }
-            JPanel margen = new JPanel();
-            margen.setOpaque(false);
-            margen.setPreferredSize(new Dimension(12, 10));
-            add(margen);
+            siguiente.setFont(Tema.medio(14f));
+            siguiente.alHacerClic(() -> irA(actual + 1));
+            add(siguiente);
+        }
+
+        @Override
+        public void doLayout() {
+            int total = 0;
+            for (Boton b : pestanas) {
+                total += b.getPreferredSize().width;
+            }
+            int x = (getWidth() - total) / 2;
+            for (Boton b : pestanas) {
+                int bw = b.getPreferredSize().width;
+                b.setBounds(x, 6, bw, ALTO_BARRA - 8);
+                x += bw;
+            }
+            Dimension d = siguiente.getPreferredSize();
+            siguiente.setBounds(getWidth() - 28 - d.width, (ALTO_BARRA - 36) / 2, d.width, 36);
         }
 
         @Override
         protected void paintComponent(Graphics graphics) {
             Graphics2D g = (Graphics2D) graphics.create();
             Tema.suavizar(g);
-            g.setColor(Tema.AZUL_NOCHE);
+            g.setColor(Tema.BLANCO);
             g.fillRect(0, 0, getWidth(), getHeight());
-            // logo: dos conjuntos unidos por una flecha
-            g.setColor(Tema.DORADO);
-            g.fill(new Ellipse2D.Double(28, 22, 22, 30));
-            g.setColor(new java.awt.Color(0x7FB0F0));
-            g.fill(new Ellipse2D.Double(66, 22, 22, 30));
-            Tema.flecha(g, 44, 37, 70, 37, Tema.CREMA, 2.5f, false, 1);
-            g.setFont(Tema.letra(Font.BOLD, 26f));
-            g.setColor(Tema.CREMA);
-            g.drawString("SimuChip", 104, 46);
-            int ancho = g.getFontMetrics().stringWidth("SimuChip");
-            g.setFont(Tema.letra(Font.PLAIN, 15f));
-            g.setColor(new java.awt.Color(0xC9D6EA));
-            if (getWidth() > 1300) {
-                g.drawString("Funciones discretas contra el fraude de chips", 104 + ancho + 18, 45);
-            }
+            g.setColor(Tema.FILETE);
+            g.fillRect(0, getHeight() - 1, getWidth(), 1);
+            Iconos.dibujar(g, Iconos.Tipo.ESCUDO, 42, ALTO_BARRA / 2.0, 26, Tema.AZUL);
+            Iconos.dibujar(g, Iconos.Tipo.VISTO, 42, ALTO_BARRA / 2.0 + 1, 12, Tema.AZUL);
+            g.setFont(Tema.titulo(20f));
+            g.setColor(Tema.AZUL_NOCHE);
+            Tema.texto(g, "ChipGuard", 64, ALTO_BARRA / 2.0 + 7);
             g.dispose();
         }
     }

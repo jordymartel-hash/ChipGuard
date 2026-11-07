@@ -72,7 +72,7 @@ public final class PanelSimula extends JPanel {
         JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 12));
         barra.setOpaque(false);
         barra.setBorder(BorderFactory.createEmptyBorder(4, 14, 0, 14));
-        barra.add(new Boton("▶  Simular 1 día", Boton.Estilo.PRIMARIO).alHacerClic(() -> {
+        barra.add(new Boton("Simular 1 día", Boton.Estilo.PRIMARIO).conIcono(Iconos.Tipo.PLAY).alHacerClic(() -> {
             sim.paso();
             refrescar();
         }));
@@ -186,10 +186,10 @@ public final class PanelSimula extends JPanel {
         for (int i = eventosVistos; i < eventos.size(); i++) {
             Evento e = eventos.get(i);
             switch (e.tipo()) {
-                case FRAUDE -> avisos.mostrar("⚠ Chip con DNI ajeno", e.texto(), Tema.ROJO);
-                case BLOQUEO -> avisos.mostrar("✓ Fraude bloqueado", e.texto(), new java.awt.Color(0x7FD3A8));
+                case FRAUDE -> avisos.mostrar("Chip con DNI ajeno", e.texto(), Tema.ROJO);
+                case BLOQUEO -> avisos.mostrar("Fraude bloqueado", e.texto(), Tema.VERDE_CLARO);
                 case TOPE -> avisos.mostrar("Tope de chips", e.texto(), Tema.DORADO);
-                case AUDITORIA -> avisos.mostrar("Auditoría terminada", e.texto(), new java.awt.Color(0x7FD3A8));
+                case AUDITORIA -> avisos.mostrar("Auditoría terminada", e.texto(), Tema.VERDE_CLARO);
                 default -> { }
             }
         }
@@ -307,15 +307,15 @@ public final class PanelSimula extends JPanel {
             g.setFont(Tema.letra(Font.PLAIN, 15f));
             Tema.flecha(g, x, y, x + 46, y, Tema.AZUL_NOCHE, 3f, false, 1);
             g.setColor(Tema.AZUL_NOCHE);
-            g.drawString("dueño en papel (f)", x + 58, y + 5);
+            Tema.texto(g, "dueño en papel (f)", x + 58, y + 5);
             x += 222;
             Tema.flecha(g, x, y, x + 46, y, Tema.ROJO, 3f, true, 1);
             g.setColor(Tema.ROJO_OSCURO);
-            g.drawString("quien lo usa (u)", x + 58, y + 5);
+            Tema.texto(g, "quien lo usa (u)", x + 58, y + 5);
             x += 205;
             g.setColor(Tema.VERDE);
             g.fill(new Ellipse2D.Double(x, y - 8, 16, 16));
-            g.drawString("contrato con huella", x + 26, y + 5);
+            Tema.texto(g, "contrato con huella", x + 26, y + 5);
             x += 190;
             g.setColor(Tema.AZUL);
             g.fill(new Ellipse2D.Double(x, y - 13, 26, 26));
@@ -324,7 +324,7 @@ public final class PanelSimula extends JPanel {
             Tema.textoCentrado(g, "n", x + 13, y);
             g.setFont(Tema.letra(Font.PLAIN, 15f));
             g.setColor(Tema.AZUL_TEXTO);
-            g.drawString("= |f⁻¹(persona)|", x + 34, y + 5);
+            Tema.texto(g, "= |f⁻¹(persona)|", x + 34, y + 5);
 
             g.setFont(Tema.letra(Font.BOLD, 16f));
             String dia = "Día " + sim.dia();
@@ -409,7 +409,7 @@ public final class PanelSimula extends JPanel {
                 Tema.rectRedondo(g, x, y, w, h, h, p.esExtorsionador() ? Tema.ROJO : Tema.AZUL);
                 g.setFont(Tema.letra(Font.BOLD, 16f));
                 g.setColor(Tema.BLANCO);
-                g.drawString(p.nombre(), (float) x + 18, (float) (c.getY() + 6));
+                Tema.texto(g, p.nombre(), (float) x + 18, (float) (c.getY() + 6));
                 if (!p.esExtorsionador()) {
                     String texto = String.valueOf(cuantas);
                     Color fondo = sobreTope ? Tema.ROJO : Tema.BLANCO;
@@ -429,7 +429,7 @@ public final class PanelSimula extends JPanel {
             Tema.rectRedondo(g, x, y, ancho, 116, 20, Tema.conAlfa(Tema.AZUL_NOCHE, 14));
             g.setFont(Tema.letra(Font.BOLD, 14f));
             g.setColor(Tema.TEXTO_SUAVE);
-            g.drawString("BITÁCORA", x + 18, y + 24);
+            Tema.texto(g, "BITÁCORA", x + 18, y + 24);
             List<Evento> eventos = sim.eventos();
             int desde = Math.max(0, eventos.size() - 3);
             g.setFont(Tema.letra(Font.PLAIN, 15f));
@@ -439,11 +439,11 @@ public final class PanelSimula extends JPanel {
                 g.setColor(colorEvento(e.tipo()));
                 g.fill(new Ellipse2D.Double(x + 20, yy - 10, 11, 11));
                 g.setColor(Tema.AZUL_NOCHE);
-                g.drawString("Día " + e.dia() + "  ·  " + e.texto(), x + 42, yy);
+                Tema.texto(g, "Día " + e.dia() + "  ·  " + e.texto(), x + 42, yy);
             }
             if (eventos.isEmpty()) {
                 g.setColor(Tema.TEXTO_SUAVE);
-                g.drawString("Aquí aparecerá lo que pasa cada día.", x + 20, y + 52);
+                Tema.texto(g, "Aquí aparecerá lo que pasa cada día.", x + 20, y + 52);
             }
         }
 
@@ -465,12 +465,12 @@ public final class PanelSimula extends JPanel {
             Tema.tarjeta(g, x, y, ancho, 128, 22, Tema.AZUL_NOCHE);
             g.setFont(Tema.letra(Font.BOLD, 17f));
             g.setColor(Tema.DORADO);
-            g.drawString("Rastreo policial de " + seleccionada.nombreCorto() + "  ·  " + seleccionada.numero(),
+            Tema.texto(g, "Rastreo policial de " + seleccionada.nombreCorto() + "  ·  " + seleccionada.numero(),
                     x + 22, y + 30);
             g.setFont(Tema.letra(Font.PLAIN, 16f));
             g.setColor(Tema.CREMA);
-            g.drawString("Registro  f(" + seleccionada + ") = " + r.titular(), x + 22, y + 60);
-            g.drawString("Uso real  u(" + seleccionada + ") = " + r.usuarioReal(), x + ancho / 2, y + 60);
+            Tema.texto(g, "Registro  f(" + seleccionada + ") = " + r.titular(), x + 22, y + 60);
+            Tema.texto(g, "Uso real  u(" + seleccionada + ") = " + r.usuarioReal(), x + ancho / 2, y + 60);
             Contrato c = r.contrato();
             String veredicto;
             if (c != null) {
@@ -482,8 +482,8 @@ public final class PanelSimula extends JPanel {
             }
             Tema.insignia(g, r.culpableEncontrado() && c != null, x + 34, y + 98, 13);
             g.setFont(Tema.letra(Font.BOLD, 16f));
-            g.setColor(r.culpableEncontrado() ? new Color(0x7FD3A8) : new Color(0xF28B82));
-            g.drawString(veredicto, x + 58, y + 104);
+            g.setColor(r.culpableEncontrado() ? Tema.VERDE_CLARO : Tema.ROJO_CLARO);
+            Tema.texto(g, veredicto, x + 58, y + 104);
         }
     }
 
@@ -515,7 +515,7 @@ public final class PanelSimula extends JPanel {
 
             g.setFont(Tema.letra(Font.BOLD, 18f));
             g.setColor(Tema.AZUL_NOCHE);
-            g.drawString("5 preguntas que responde la matemática", x + 4, 186);
+            Tema.texto(g, "5 preguntas que responde la matemática", x + 4, 186);
 
             // las tarjetas se encogen si la ventana es baja
             int y = 198;
@@ -575,10 +575,10 @@ public final class PanelSimula extends JPanel {
             Tema.tarjeta(g, x, y, w, alto, 20, Tema.BLANCO);
             g.setFont(Tema.letra(Font.PLAIN, 14f));
             g.setColor(Tema.TEXTO_SUAVE);
-            g.drawString(titulo, x + 16, y + 24);
+            Tema.texto(g, titulo, x + 16, y + 24);
             g.setFont(Tema.letra(Font.BOLD, 28f));
             g.setColor(color);
-            g.drawString(valor, x + 16, y + alto - 14);
+            Tema.texto(g, valor, x + 16, y + alto - 14);
         }
 
         /** Tarjeta: pregunta en palabras, la notación pequeñita al lado y la respuesta. */
@@ -589,15 +589,15 @@ public final class PanelSimula extends JPanel {
             Tema.insignia(g, ok, x + 30, y + alto / 2, 16);
             g.setFont(Tema.letra(Font.BOLD, 16f));
             g.setColor(Tema.AZUL_NOCHE);
-            g.drawString(pregunta, x + 58, y + 25);
+            Tema.texto(g, pregunta, x + 58, y + 25);
             if (!compacto) {
                 g.setFont(Tema.letra(Font.PLAIN, 12.5f));
                 g.setColor(Tema.TEXTO_SUAVE);
-                g.drawString(notacion, x + 58, y + 44);
+                Tema.texto(g, notacion, x + 58, y + 44);
             }
             g.setFont(Tema.letra(Font.BOLD, 14f));
             g.setColor(ok ? Tema.VERDE : Tema.ROJO_OSCURO);
-            g.drawString("→ " + razon, x + 58, y + (compacto ? 48 : 66));
+            Tema.texto(g, "→ " + razon, x + 58, y + (compacto ? 48 : 66));
             return y + alto + 8;
         }
 

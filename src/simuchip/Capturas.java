@@ -28,53 +28,48 @@ public final class Capturas {
         Aplicacion app = new Aplicacion();
 
         app.irA(0);
-        guardar(app, carpeta, "01-inicio.png");
-
+        guardar(app, carpeta, "01-problema.png");
         app.irA(1);
-        app.aprende().setTarjeta(0);
-        app.aprende().cargar(3, 3, new int[][] {{1, 'a'}, {1, 'b'}, {2, 'c'}});
-        guardar(app, carpeta, "02-aprende-no-funcion.png");
+        guardar(app, carpeta, "02-casos.png");
+
+        app.irA(2);
         app.aprende().setTarjeta(1);
         app.aprende().cargar(4, 3, new int[][] {{1, 'a'}, {2, 'a'}, {3, 'b'}, {4, 'c'}});
         guardar(app, carpeta, "03-aprende-sobreyectiva.png");
+        app.aprende().ejecutarHasta(2);
+        guardar(app, carpeta, "04-aprende-paso-a-paso.png");
         app.aprende().setTarjeta(3);
         app.aprende().cargar(3, 3, new int[][] {{1, 'a'}, {2, 'b'}, {3, 'c'}});
         app.aprende().setVerInversa(true);
-        guardar(app, carpeta, "04-aprende-biyectiva-inversa.png");
+        guardar(app, carpeta, "05-aprende-biyectiva-inversa.png");
         app.aprende().setVerInversa(false);
-        app.aprende().setTarjeta(1);
-        app.aprende().cargar(4, 3, new int[][] {{1, 'a'}, {2, 'a'}, {3, 'b'}, {4, 'c'}});
-        app.aprende().ejecutarHasta(2);
-        guardar(app, carpeta, "08-aprende-paso-a-paso.png");
-        app.aprende().ejecutarHasta(99);
-        guardar(app, carpeta, "08b-aprende-paso-final.png");
 
-        app.irA(2);
+        app.irA(3);
         app.simula().simularDias(12);
-        guardar(app, carpeta, "05-simula-problema.png");
+        guardar(app, carpeta, "06-simula-problema.png");
         app.simula().rastrearEjemplo();
-        guardar(app, carpeta, "06-simula-rastreo-falla.png");
+        guardar(app, carpeta, "07-simula-rastreo-falla.png");
         app.simula().activarTope(true);
         app.simula().activarBiometria(true);
         app.simula().simularDias(4);
         app.simula().auditar();
         app.simula().rastrearEjemplo();
-        guardar(app, carpeta, "07-simula-solucion.png");
-
-        app.irA(3);
-        app.yoAutorizo().irAEscena(1);
-        guardar(app, carpeta, "09-yo-autorizo-sin-proteccion.png");
-        app.yoAutorizo().irAEscena(2);
-        guardar(app, carpeta, "10-yo-autorizo-extorsion.png");
-        app.yoAutorizo().irAEscena(4);
-        guardar(app, carpeta, "11-yo-autorizo-alerta.png");
-        app.yoAutorizo().irAEscena(6);
-        guardar(app, carpeta, "12-yo-autorizo-mapa.png");
+        guardar(app, carpeta, "08-simula-solucion.png");
 
         app.irA(4);
-        guardar(app, carpeta, "13-detective-portada.png");
+        app.chipGuard().irAEscena(1);
+        guardar(app, carpeta, "09-chipguard-sin-proteccion.png");
+        app.chipGuard().irAEscena(2);
+        guardar(app, carpeta, "10-chipguard-extorsion.png");
+        app.chipGuard().irAEscena(4);
+        guardar(app, carpeta, "11-chipguard-alerta.png");
+        app.chipGuard().irAEscena(6);
+        guardar(app, carpeta, "12-chipguard-mapa.png");
+
+        app.irA(5);
+        guardar(app, carpeta, "13-juego-portada.png");
         app.detective().jugarDemo(4);
-        guardar(app, carpeta, "14-detective-jugando.png");
+        guardar(app, carpeta, "14-juego-jugando.png");
         System.out.println("Capturas guardadas en " + carpeta.getAbsolutePath());
         System.exit(0);
     }

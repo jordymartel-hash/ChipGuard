@@ -340,8 +340,8 @@ public final class PanelAprende extends JPanel {
         PasoTraza p = traza.get(paso);
         if (paso == traza.size() - 1) {
             boolean ok = p.tipo() == PasoTraza.Tipo.OK;
-            avisos.mostrar(ok ? "✓ " + TITULOS[tarjeta] + ": SÍ" : "✗ " + TITULOS[tarjeta] + ": NO", p.mensaje(),
-                    ok ? new Color(0x7FD3A8) : new Color(0xF28B82));
+            avisos.mostrar(TITULOS[tarjeta] + (ok ? ": SÍ" : ": NO"), p.mensaje(),
+                    ok ? Tema.VERDE_CLARO : Tema.ROJO_CLARO);
         }
     }
 
@@ -583,10 +583,10 @@ public final class PanelAprende extends JPanel {
                 Tema.rectRedondo(g, x, y, 10, 70, 10, borde);
                 g.setFont(Tema.letra(Font.BOLD, 13f));
                 g.setColor(Tema.DORADO);
-                g.drawString("PASO " + (paso + 1) + " DE " + traza.size(), x + 26, y + 24);
+                Tema.texto(g, "PASO " + (paso + 1) + " DE " + traza.size(), x + 26, y + 24);
                 g.setFont(Tema.letra(Font.BOLD, 18f));
                 g.setColor(Tema.CREMA);
-                g.drawString(p.mensaje(), x + 26, y + 52);
+                Tema.texto(g, p.mensaje(), x + 26, y + 52);
                 return;
             }
             int y = getHeight() - 52;
@@ -611,8 +611,8 @@ public final class PanelAprende extends JPanel {
 
         private static final int Y_TARJETAS = 52;
         private static final int ALTO_LINEA = 23;
-        private final Boton reproducir = new Boton("▶  Ejecutar paso a paso", Boton.Estilo.EXITO);
-        private final Boton unPaso = new Boton("Paso  ›", Boton.Estilo.SECUNDARIO);
+        private final Boton reproducir = new Boton("Ejecutar paso a paso", Boton.Estilo.PRIMARIO).conIcono(Iconos.Tipo.PLAY);
+        private final Boton unPaso = new Boton("Paso", Boton.Estilo.SECUNDARIO).conIcono(Iconos.Tipo.SIGUIENTE);
 
         Lateral() {
             setLayout(null);
@@ -660,7 +660,8 @@ public final class PanelAprende extends JPanel {
         }
 
         void actualizarBotones() {
-            reproducir.setTexto(ejecutor.isRunning() ? "❚❚  Pausa" : "▶  Ejecutar paso a paso");
+            reproducir.setTexto(ejecutor.isRunning() ? "Pausa" : "Ejecutar paso a paso");
+            reproducir.conIcono(ejecutor.isRunning() ? Iconos.Tipo.PAUSA : Iconos.Tipo.PLAY);
             doLayout();
         }
 
@@ -674,7 +675,7 @@ public final class PanelAprende extends JPanel {
             boolean compacto = alto < 84;
             g.setFont(Tema.letra(Font.BOLD, 19f));
             g.setColor(Tema.AZUL_NOCHE);
-            g.drawString("¿Qué tipo de función es?  (clic para elegir)", x + 4, 34);
+            Tema.texto(g, "¿Qué tipo de función es?  (clic para elegir)", x + 4, 34);
 
             for (int i = 0; i < 4; i++) {
                 Veredicto v = veredicto(i);
@@ -686,15 +687,15 @@ public final class PanelAprende extends JPanel {
                 Tema.insignia(g, v.cumple(), x + 32, y + alto / 2, 17);
                 g.setFont(Tema.letra(Font.BOLD, 17f));
                 g.setColor(Tema.AZUL_NOCHE);
-                g.drawString(TITULOS[i] + (v.cumple() ? ":  SÍ" : ":  NO"), x + 62, y + 25);
+                Tema.texto(g, TITULOS[i] + (v.cumple() ? ":  SÍ" : ":  NO"), x + 62, y + 25);
                 if (!compacto) {
                     g.setFont(Tema.letra(Font.PLAIN, 13.5f));
                     g.setColor(Tema.TEXTO_SUAVE);
-                    g.drawString(PREGUNTAS[i], x + 62, y + 46);
+                    Tema.texto(g, PREGUNTAS[i], x + 62, y + 46);
                 }
                 g.setFont(Tema.letra(Font.BOLD, 14f));
                 g.setColor(v.cumple() ? Tema.VERDE : Tema.ROJO_OSCURO);
-                g.drawString("→ " + v.razon(), x + 62, y + (compacto ? 50 : 70));
+                Tema.texto(g, "→ " + v.razon(), x + 62, y + (compacto ? 50 : 70));
             }
             dibujarCodigo(g, x, yCodigo(), w);
             g.dispose();
@@ -706,7 +707,7 @@ public final class PanelAprende extends JPanel {
             Tema.tarjeta(g, x, y, w, alto, 22, Tema.AZUL_NOCHE);
             g.setFont(Tema.letra(Font.BOLD, 14f));
             g.setColor(Tema.DORADO);
-            g.drawString("Funciones.java", x + 20, y + 35);
+            Tema.texto(g, "Funciones.java", x + 20, y + 35);
 
             PasoTraza p = pasoActual();
             Set<Integer> marcadas = p != null ? Set.of(p.linea()) : lineasMarcadas();
@@ -729,24 +730,24 @@ public final class PanelAprende extends JPanel {
                     Tema.rectRedondo(g, x + 10, yy - 2, w - 20, ALTO_LINEA, 10, marca);
                     if (p != null) {
                         g.setColor(Tema.AZUL_NOCHE);
-                        g.drawString("▶", x + 14, yy + 15);
+                        Iconos.dibujar(g, Iconos.Tipo.PLAY, x + 19, yy + 10, 12, Tema.AZUL_NOCHE);
                     }
                 }
                 g.setColor(marcada ? (p != null && p.tipo() == PasoTraza.Tipo.NORMAL ? Tema.AZUL_NOCHE : Tema.BLANCO)
-                        : new Color(0xC9D6EA));
-                g.drawString(lineas[i], x + 30, yy + 15);
+                        : Tema.TEXTO_OSCURO_SUAVE);
+                Tema.texto(g, lineas[i], x + 30, yy + 15);
             }
             // fila de variables
             int yv = y + alto - 40;
             Tema.rectRedondo(g, x + 10, yv, w - 20, 30, 10, Tema.AZUL_NOCHE_2);
             g.setFont(Tema.letra(Font.BOLD, 13f));
             g.setColor(Tema.DORADO);
-            g.drawString("VARIABLES", x + 22, yv + 20);
+            Tema.texto(g, "VARIABLES", x + 22, yv + 20);
             g.setFont(Tema.codigo(14f));
             g.setColor(Tema.CREMA);
-            String vars = p == null ? "pulsa ▶ para ver el código correr"
+            String vars = p == null ? "pulsa Ejecutar para ver el código correr"
                     : p.variables().isEmpty() ? "—" : p.variables();
-            g.drawString(vars, x + 112, yv + 20);
+            Tema.texto(g, vars, x + 112, yv + 20);
         }
 
         /** Sin ejecución: qué renglón "decidió" el resultado. */

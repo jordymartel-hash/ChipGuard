@@ -30,9 +30,9 @@ public final class PanelDetective extends JComponent {
     private final Detective juego = new Detective(System.nanoTime());
     private final Avisos avisos = new Avisos(this, 1);
     private final List<Jugada> historial = new ArrayList<>();
-    private final Boton aprobar = new Boton("✓  Aprobar  (A)", Boton.Estilo.EXITO);
-    private final Boton rechazar = new Boton("✗  Rechazar  (R)", Boton.Estilo.PELIGRO);
-    private final Boton empezar = new Boton("▶  Empezar  ·  60 segundos", Boton.Estilo.PRIMARIO);
+    private final Boton aprobar = new Boton("Aprobar  (A)", Boton.Estilo.EXITO).conIcono(Iconos.Tipo.VISTO);
+    private final Boton rechazar = new Boton("Rechazar  (R)", Boton.Estilo.PELIGRO).conIcono(Iconos.Tipo.EQUIS);
+    private final Boton empezar = new Boton("Empezar  ·  60 segundos", Boton.Estilo.PRIMARIO).conIcono(Iconos.Tipo.PLAY);
     private final Timer reloj;
     private int segundos = DURACION;
     private boolean jugando;
@@ -108,8 +108,8 @@ public final class PanelDetective extends JComponent {
         historial.add(0, new Jugada(s, aprobo, d));
         ultimoDestello = System.currentTimeMillis();
         ultimoAcierto = d.acierto();
-        avisos.mostrar(d.acierto() ? "✓ +" + d.puntos() + " puntos" : "✗ Pierdes una vida", d.explicacion(),
-                d.acierto() ? new Color(0x7FD3A8) : new Color(0xF28B82));
+        avisos.mostrar(d.acierto() ? "+" + d.puntos() + " puntos" : "Pierdes una vida", d.explicacion(),
+                d.acierto() ? Tema.VERDE_CLARO : Tema.ROJO_CLARO);
         if (juego.terminado()) {
             terminar();
         }
@@ -127,7 +127,8 @@ public final class PanelDetective extends JComponent {
         aprobar.setVisible(jugando);
         rechazar.setVisible(jugando);
         empezar.setVisible(!jugando);
-        empezar.setTexto(terminado ? "↺  Jugar otra vez" : "▶  Empezar  ·  60 segundos");
+        empezar.setTexto(terminado ? "Jugar otra vez" : "Empezar  ·  60 segundos");
+        empezar.conIcono(terminado ? Iconos.Tipo.REINICIAR : Iconos.Tipo.PLAY);
         doLayout();
     }
 
@@ -155,18 +156,17 @@ public final class PanelDetective extends JComponent {
         Tema.suavizar(g);
         int w = getWidth();
         int h = getHeight();
-        g.setColor(Tema.CELESTE_FONDO);
+        g.setColor(Tema.BLANCO);
         g.fillRect(0, 0, w, h);
-        Tema.tarjeta(g, 16, 12, w - 32, h - 32, 32, Tema.CREMA);
 
         int x = 48;
         int ancho = anchoTarjeta();
         g.setFont(Tema.letra(Font.BOLD, 30f));
         g.setColor(Tema.AZUL_NOCHE);
-        g.drawString("Detective de chips", x, 66);
+        Tema.texto(g, "Detective de chips", x, 66);
         g.setFont(Tema.letra(Font.PLAIN, 16f));
         g.setColor(Tema.TEXTO_SUAVE);
-        g.drawString("Atiendes la tienda. ¿Apruebas o rechazas el chip?", x, 92);
+        Tema.texto(g, "Atiendes la tienda. ¿Apruebas o rechazas el chip?", x, 92);
 
         dibujarMarcador(g, x, ancho);
         if (jugando) {
@@ -195,7 +195,7 @@ public final class PanelDetective extends JComponent {
         Tema.rectRedondo(g, x, y, Math.max(14, ancho * fraccion), 14, 14, color);
         g.setFont(Tema.letra(Font.BOLD, 15f));
         g.setColor(Tema.AZUL_NOCHE);
-        g.drawString(segundos + " s", x + ancho - 40, y - 8);
+        Tema.texto(g, segundos + " s", x + ancho - 40, y - 8);
         // puntos, racha y vidas: en la fila del título, a la derecha
         int xv = x + ancho - 3 * 34;
         for (int i = 0; i < 3; i++) {
@@ -206,7 +206,7 @@ public final class PanelDetective extends JComponent {
         g.setColor(Tema.AZUL_NOCHE);
         String pts = juego.puntaje() + " pts";
         int anchoPts = g.getFontMetrics().stringWidth(pts);
-        g.drawString(pts, xv - 24 - anchoPts, 66);
+        Tema.texto(g, pts, xv - 24 - anchoPts, 66);
         if (juego.racha() >= 2) {
             Tema.pastilla(g, "racha x" + juego.racha(), xv - 24 - anchoPts - 110, 46, Tema.DORADO, Tema.AZUL_NOCHE,
                     Tema.letra(Font.BOLD, 13f));
@@ -234,13 +234,13 @@ public final class PanelDetective extends JComponent {
         }
         g.setFont(Tema.letra(Font.BOLD, 14f));
         g.setColor(Tema.TEXTO_SUAVE);
-        g.drawString("SOLICITUD #" + s.numero() + "  ·  " + s.tienda() + "  ·  " + s.hora(), x + 30, y + 40);
+        Tema.texto(g, "SOLICITUD #" + s.numero() + "  ·  " + s.tienda() + "  ·  " + s.hora(), x + 30, y + 40);
         g.setFont(Tema.letra(Font.BOLD, 34f));
         g.setColor(Tema.AZUL_NOCHE);
-        g.drawString(s.nombre(), x + 30, y + 88);
+        Tema.texto(g, s.nombre(), x + 30, y + 88);
         g.setFont(Tema.letra(Font.PLAIN, 17f));
         g.setColor(Tema.TEXTO_SUAVE);
-        g.drawString("DNI " + s.dni() + "  quiere un chip nuevo", x + 30, y + 116);
+        Tema.texto(g, "DNI " + s.dni() + "  quiere un chip nuevo", x + 30, y + 116);
 
         int fy = y + 150;
         int alto = Math.max(58, (h - 170) / 3 - 12);
@@ -258,14 +258,14 @@ public final class PanelDetective extends JComponent {
         Tema.rectRedondo(g, x, y, w, alto, 18, bien ? new Color(0xF2F8F4) : Tema.ROJO_SUAVE);
         g.setFont(Tema.letra(Font.PLAIN, 14f));
         g.setColor(Tema.TEXTO_SUAVE);
-        g.drawString(titulo, x + 20, y + 24);
+        Tema.texto(g, titulo, x + 20, y + 24);
         g.setFont(Tema.letra(Font.BOLD, 21f));
         g.setColor(bien ? Tema.VERDE : Tema.ROJO_OSCURO);
-        g.drawString(valor, x + 20, y + 52);
+        Tema.texto(g, valor, x + 20, y + 52);
         if (alto >= 74) {
             g.setFont(Tema.letra(Font.ITALIC, 13f));
             g.setColor(Tema.TEXTO_SUAVE);
-            g.drawString(ayuda, x + 20, y + 72);
+            Tema.texto(g, ayuda, x + 20, y + 72);
         }
     }
 
@@ -273,9 +273,9 @@ public final class PanelDetective extends JComponent {
         Tema.tarjeta(g, x, y, w, h, 26, Tema.AZUL_NOCHE);
         g.setFont(Tema.letra(Font.BOLD, 30f));
         g.setColor(Tema.CREMA);
-        g.drawString("¿Puedes detener a los extorsionadores?", x + 36, y + 70);
+        Tema.texto(g, "¿Puedes detener a los extorsionadores?", x + 36, y + 70);
         g.setFont(Tema.letra(Font.PLAIN, 18f));
-        g.setColor(new Color(0xC9D6EA));
+        g.setColor(Tema.TEXTO_OSCURO_SUAVE);
         Tema.parrafo(g, "Llegan personas a pedir un chip. Algunas son extorsionadores con DNI ajeno. Tienes 60 "
                 + "segundos y 3 vidas. Aprueba solo a quien cumple las 3 reglas de la derecha. Usa las teclas A y R "
                 + "para ir más rápido.", x + 36, y + 100, w - 72, 1.35f);
@@ -285,26 +285,26 @@ public final class PanelDetective extends JComponent {
         Tema.tarjeta(g, x, y, w, h, 26, Tema.AZUL_NOCHE);
         g.setFont(Tema.letra(Font.BOLD, 16f));
         g.setColor(Tema.DORADO);
-        g.drawString(juego.vidas() <= 0 ? "SIN VIDAS" : "SE ACABÓ EL TIEMPO", x + 36, y + 52);
+        Tema.texto(g, juego.vidas() <= 0 ? "SIN VIDAS" : "SE ACABÓ EL TIEMPO", x + 36, y + 52);
         g.setFont(Tema.letra(Font.BOLD, 56f));
         g.setColor(Tema.CREMA);
-        g.drawString(juego.puntaje() + " puntos", x + 36, y + 118);
+        Tema.texto(g, juego.puntaje() + " puntos", x + 36, y + 118);
         g.setFont(Tema.letra(Font.PLAIN, 19f));
-        g.setColor(new Color(0xC9D6EA));
+        g.setColor(Tema.TEXTO_OSCURO_SUAVE);
         int total = juego.aciertos() + juego.errores();
         int precision = total == 0 ? 0 : Math.round(juego.aciertos() * 100f / total);
-        g.drawString("Aciertos: " + juego.aciertos() + " de " + total + "  (" + precision + " %)", x + 36, y + 160);
-        g.setColor(new Color(0x7FD3A8));
-        g.drawString("Fraudes detenidos: " + juego.fraudesDetenidos(), x + 36, y + 192);
-        g.setColor(new Color(0xF28B82));
-        g.drawString("Chips irregulares que se colaron: " + juego.fraudesColados(), x + 36, y + 224);
+        Tema.texto(g, "Aciertos: " + juego.aciertos() + " de " + total + "  (" + precision + " %)", x + 36, y + 160);
+        g.setColor(Tema.VERDE_CLARO);
+        Tema.texto(g, "Fraudes detenidos: " + juego.fraudesDetenidos(), x + 36, y + 192);
+        g.setColor(Tema.ROJO_CLARO);
+        Tema.texto(g, "Chips irregulares que se colaron: " + juego.fraudesColados(), x + 36, y + 224);
     }
 
     private void dibujarReglas(Graphics2D g, int x, int y, int w) {
         Tema.tarjeta(g, x, y, w, 320, 24, Tema.BLANCO);
         g.setFont(Tema.letra(Font.BOLD, 13f));
         g.setColor(Tema.TEXTO_SUAVE);
-        g.drawString("REGLAS · RECHAZA SI…", x + 22, y + 32);
+        Tema.texto(g, "REGLAS · RECHAZA SI…", x + 22, y + 32);
         String[][] reglas = {
             {"La huella no coincide", "quien lo usa ≠ dueño en papel  (u ≠ f)"},
             {"Trae fotocopia del DNI", "sin prueba de identidad no hay contrato g"},
@@ -319,15 +319,15 @@ public final class PanelDetective extends JComponent {
             Tema.textoCentrado(g, String.valueOf(i + 1), x + 37, yy - 3);
             g.setColor(Tema.AZUL_NOCHE);
             g.setFont(Tema.letra(Font.BOLD, 17f));
-            g.drawString(reglas[i][0], x + 66, yy);
+            Tema.texto(g, reglas[i][0], x + 66, yy);
             g.setFont(Tema.letra(Font.PLAIN, 13.5f));
             g.setColor(Tema.AZUL_TEXTO);
-            g.drawString(reglas[i][1], x + 66, yy + 22);
+            Tema.texto(g, reglas[i][1], x + 66, yy + 22);
             yy += 76;
         }
         g.setFont(Tema.letra(Font.BOLD, 14f));
         g.setColor(Tema.VERDE);
-        g.drawString("Si cumple las 3 → APRUEBA", x + 22, y + 296);
+        Tema.texto(g, "Si cumple las 3 → APRUEBA", x + 22, y + 296);
     }
 
     private void dibujarHistorial(Graphics2D g, int x, int y, int w, int h) {
@@ -337,10 +337,10 @@ public final class PanelDetective extends JComponent {
         Tema.tarjeta(g, x, y, w, h, 24, Tema.BLANCO);
         g.setFont(Tema.letra(Font.BOLD, 13f));
         g.setColor(Tema.TEXTO_SUAVE);
-        g.drawString("TUS ÚLTIMAS DECISIONES", x + 22, y + 32);
+        Tema.texto(g, "TUS ÚLTIMAS DECISIONES", x + 22, y + 32);
         if (historial.isEmpty()) {
             g.setFont(Tema.letra(Font.ITALIC, 15f));
-            g.drawString("Aún no decides nada.", x + 22, y + 64);
+            Tema.texto(g, "Aún no decides nada.", x + 22, y + 64);
             return;
         }
         int filas = Math.min(historial.size(), Math.max(1, (h - 50) / 34));
@@ -350,10 +350,10 @@ public final class PanelDetective extends JComponent {
             Tema.insignia(g, j.decision().acierto(), x + 34, yy - 6, 11);
             g.setFont(Tema.letra(Font.BOLD, 15f));
             g.setColor(Tema.AZUL_NOCHE);
-            g.drawString("#" + j.solicitud().numero() + " " + j.solicitud().nombre(), x + 56, yy);
+            Tema.texto(g, "#" + j.solicitud().numero() + " " + j.solicitud().nombre(), x + 56, yy);
             g.setFont(Tema.letra(Font.PLAIN, 14f));
             g.setColor(Tema.TEXTO_SUAVE);
-            g.drawString((j.aprobo() ? "aprobaste" : "rechazaste") + " · " + j.solicitud().motivo().toLowerCase(),
+            Tema.texto(g, (j.aprobo() ? "aprobaste" : "rechazaste") + " · " + j.solicitud().motivo().toLowerCase(),
                     x + 150, yy);
         }
     }

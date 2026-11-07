@@ -14,7 +14,7 @@ public final class Principal {
         System.setProperty("awt.useSystemAAFontSettings", "on");
         ajustarEscalaEnLinux();
         SwingUtilities.invokeLater(() -> {
-            JFrame ventana = new JFrame("SimuChip · Funciones y líneas móviles");
+            JFrame ventana = new JFrame("ChipGuard");
             ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             ventana.setContentPane(new Aplicacion());
             ventana.setMinimumSize(new Dimension(1200, 700));
