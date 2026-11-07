@@ -21,7 +21,7 @@ public final class PanelInicio extends JComponent {
         setLayout(null);
         animador = new Animador(this, 900);
         aprender = new Boton("1 · Aprende funciones  →", Boton.Estilo.PRIMARIO).alHacerClic(irAprender);
-        simular = new Boton("2 · Simula el caso real  →", Boton.Estilo.SECUNDARIO).alHacerClic(irSimular);
+        simular = new Boton("3 · Mira la solución  →", Boton.Estilo.SECUNDARIO).alHacerClic(irSimular);
         aprender.setFont(Tema.letra(Font.BOLD, 18f));
         simular.setFont(Tema.letra(Font.BOLD, 18f));
         add(aprender);
@@ -41,7 +41,7 @@ public final class PanelInicio extends JComponent {
     @Override
     public void doLayout() {
         int x = 96;
-        int y = 300 + altoParrafo() + 30 + 104 + 52;   // debajo del paso 3
+        int y = 270 + altoParrafo() + 30 + 138 + 40;   // debajo del paso 4
         aprender.setBounds(x, y, aprender.getPreferredSize().width, 54);
         simular.setBounds(x + aprender.getPreferredSize().width + 18, y, simular.getPreferredSize().width, 54);
     }
@@ -59,20 +59,21 @@ public final class PanelInicio extends JComponent {
         int x = 96;
         g.setFont(Tema.letra(Font.BOLD, 17f));
         g.setColor(Tema.NARANJA_TEXTO);
-        g.drawString("MATEMÁTICA DISCRETA  ·  FUNCIONES", x, 120);
+        g.drawString("MATEMÁTICA DISCRETA  ·  FUNCIONES", x, 100);
         g.setFont(Tema.letra(Font.BOLD, 58f));
         g.setColor(Tema.AZUL_NOCHE);
-        g.drawString("¿A quién le pertenece", x, 196);
-        g.drawString("tu chip?", x, 266);
+        g.drawString("¿A quién le pertenece", x, 172);
+        g.drawString("tu chip?", x, 240);
         g.setFont(Tema.letra(Font.PLAIN, 21f));
         g.setColor(Tema.TEXTO_SUAVE);
         int anchoTexto = Math.min(760, w / 2);
-        int alto = Tema.parrafo(g, TEXTO, x, 300, anchoTexto, 1.25f);
+        int alto = Tema.parrafo(g, TEXTO, x, 270, anchoTexto, 1.25f);
 
-        int yPasos = 300 + alto + 30;
-        paso(g, x, yPasos, "1", "Aprende", "Dibuja flechas y mira cómo el código decide el tipo de función.");
-        paso(g, x, yPasos + 52, "2", "Simula", "Contrataciones reales, fraude con DNI ajeno y rastreo policial.");
-        paso(g, x, yPasos + 104, "3", "Resuelve", "Activa la biometría: g: Línea ↔ Contrato se vuelve biyectiva.");
+        int yPasos = 270 + alto + 30;
+        paso(g, x, yPasos, "1", "Aprende", "Dibuja flechas y mira el código correr paso a paso.");
+        paso(g, x, yPasos + 46, "2", "Simula", "Días de contrataciones, fraude con DNI ajeno y rastreo policial.");
+        paso(g, x, yPasos + 92, "3", "Yo Autorizo", "La solución: tu celular te avisa y tú decides.");
+        paso(g, x, yPasos + 138, "4", "Detective", "Juego: ¿puedes detener a los extorsionadores?");
 
         dibujarAdorno(g, w, h);
         g.dispose();

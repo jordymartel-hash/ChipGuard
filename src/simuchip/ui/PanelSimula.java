@@ -43,6 +43,8 @@ public final class PanelSimula extends JPanel {
     private final Lienzo lienzo = new Lienzo();
     private final Lateral lateral = new Lateral();
     private final Animador animador;
+    private final Avisos avisos;
+    private int eventosVistos;
     private final Timer auto;
     private Linea seleccionada;
 
@@ -54,6 +56,7 @@ public final class PanelSimula extends JPanel {
         super(new BorderLayout());
         setBackground(Tema.CELESTE_FONDO);
         animador = new Animador(lienzo, 650);
+        avisos = new Avisos(lienzo, 1);
         auto = new Timer(900, e -> {
             if (sim.paso() == Resultado.LLENO) {
                 detenerAuto();
@@ -165,11 +168,32 @@ public final class PanelSimula extends JPanel {
         for (Linea linea : sim.lineas()) {
             animador.nacer(linea);
         }
+        anunciarEventosNuevos();
         if (seleccionada != null && !sim.lineas().contains(seleccionada)) {
             seleccionada = null;
         }
         lienzo.repaint();
         lateral.repaint();
+    }
+
+    /** Cada evento importante salta como notificación (como en un celular). */
+    private void anunciarEventosNuevos() {
+        List<Evento> eventos = sim.eventos();
+        if (eventos.size() < eventosVistos) {
+            eventosVistos = 0;
+            avisos.limpiarTodo();
+        }
+        for (int i = eventosVistos; i < eventos.size(); i++) {
+            Evento e = eventos.get(i);
+            switch (e.tipo()) {
+                case FRAUDE -> avisos.mostrar("⚠ Chip con DNI ajeno", e.texto(), Tema.ROJO);
+                case BLOQUEO -> avisos.mostrar("✓ Fraude bloqueado", e.texto(), new java.awt.Color(0x7FD3A8));
+                case TOPE -> avisos.mostrar("Tope de chips", e.texto(), Tema.DORADO);
+                case AUDITORIA -> avisos.mostrar("Auditoría terminada", e.texto(), new java.awt.Color(0x7FD3A8));
+                default -> { }
+            }
+        }
+        eventosVistos = eventos.size();
     }
 
     // ─────────────────────────── el diagrama ───────────────────────────
@@ -263,15 +287,17 @@ public final class PanelSimula extends JPanel {
             dibujarPersonas(g);
 
             if (sim.lineas().isEmpty()) {
-                g.setFont(Tema.letra(Font.BOLD, 20f));
-                g.setColor(Tema.TEXTO_SUAVE);
-                Tema.textoCentrado(g, "Pulsa «Simular 1 día» para empezar", (cxL + cxP) / 2, cy);
+                g.setFont(Tema.letra(Font.BOLD, 17f));
+                g.setColor(Tema.NARANJA_TEXTO);
+                Tema.textoCentrado(g, "Aún no hay chips.", cxL, cy - 14);
+                Tema.textoCentrado(g, "Pulsa «Simular 1 día»", cxL, cy + 14);
             }
             if (seleccionada != null) {
                 dibujarRastreo(g, w, h);
             } else {
                 dibujarBitacora(g, w, h);
             }
+            avisos.dibujar(g, w - 44, h - 146, 380);
             g.dispose();
         }
 
@@ -281,12 +307,12 @@ public final class PanelSimula extends JPanel {
             g.setFont(Tema.letra(Font.PLAIN, 15f));
             Tema.flecha(g, x, y, x + 46, y, Tema.AZUL_NOCHE, 3f, false, 1);
             g.setColor(Tema.AZUL_NOCHE);
-            g.drawString("registro f", x + 58, y + 5);
-            x += 170;
+            g.drawString("dueño en papel (f)", x + 58, y + 5);
+            x += 222;
             Tema.flecha(g, x, y, x + 46, y, Tema.ROJO, 3f, true, 1);
             g.setColor(Tema.ROJO_OSCURO);
-            g.drawString("uso real u", x + 58, y + 5);
-            x += 170;
+            g.drawString("quien lo usa (u)", x + 58, y + 5);
+            x += 205;
             g.setColor(Tema.VERDE);
             g.fill(new Ellipse2D.Double(x, y - 8, 16, 16));
             g.drawString("contrato con huella", x + 26, y + 5);
@@ -478,39 +504,47 @@ public final class PanelSimula extends JPanel {
             int mitad = (w - 12) / 2;
 
             double coincide = sim.coincidencia();
-            kpi(g, x, 8, mitad, "Líneas activas", sim.lineas().size() + " / " + Simulador.MAX_LINEAS, Tema.AZUL_NOCHE);
-            kpi(g, x + mitad + 12, 8, mitad, "Registro = realidad", Math.round(coincide) + " %",
+            int altoKpi = 70;
+            kpi(g, x, 6, mitad, altoKpi, "Chips activos", sim.lineas().size() + " / " + Simulador.MAX_LINEAS,
+                    Tema.AZUL_NOCHE);
+            kpi(g, x + mitad + 12, 6, mitad, altoKpi, "Chips usados por su dueño", Math.round(coincide) + " %",
                     coincide >= 99.9 ? Tema.VERDE : coincide >= 75 ? Tema.NARANJA_TEXTO : Tema.ROJO);
-            kpi(g, x, 98, mitad, "Fraudes bloqueados", String.valueOf(sim.bloqueados()), Tema.VERDE);
-            kpi(g, x + mitad + 12, 98, mitad, "Frenados por el tope", String.valueOf(sim.rechazosTope()),
+            kpi(g, x, 84, mitad, altoKpi, "Fraudes bloqueados", String.valueOf(sim.bloqueados()), Tema.VERDE);
+            kpi(g, x + mitad + 12, 84, mitad, altoKpi, "Frenados por el tope", String.valueOf(sim.rechazosTope()),
                     Tema.NARANJA_TEXTO);
 
-            g.setFont(Tema.letra(Font.BOLD, 19f));
+            g.setFont(Tema.letra(Font.BOLD, 18f));
             g.setColor(Tema.AZUL_NOCHE);
-            g.drawString("Análisis con funciones", x + 4, 214);
+            g.drawString("5 preguntas que responde la matemática", x + 4, 186);
+
+            // las tarjetas se encogen si la ventana es baja
+            int y = 198;
+            int alto = Math.max(58, Math.min(82, (getHeight() - y - 8) / 5 - 8));
 
             List<Linea> lineas = sim.lineas();
             List<Persona> personas = sim.personas();
-            int y = 230;
             Veredicto f1 = Diagnostico.funcion(lineas, sim.flechasRegistro());
-            y = analisis(g, x, y, w, "f: L → P es función", "Cada chip tiene un solo titular", f1.cumple(),
-                    lineas.isEmpty() ? "Aún no hay líneas" : f1.razon());
+            y = analisis(g, x, y, w, alto, "¿Cada chip tiene un dueño en papel?", "f: L → P es función",
+                    f1.cumple(), lineas.isEmpty() ? "Aún no hay chips" : "Sí: cada chip figura a nombre de 1 DNI");
 
             Veredicto f2 = Diagnostico.inyectiva(lineas, personas, sim.flechasRegistro());
-            y = analisis(g, x, y, w, "f es inyectiva", "No es delito: alguien puede tener 2 chips", f2.cumple(),
-                    f2.razon().replace("flechas", "líneas"));
+            y = analisis(g, x, y, w, alto, "¿Cada persona tiene un solo chip?", "f inyectiva · tener 2 no es delito",
+                    f2.cumple(), f2.cumple() ? "Sí, nadie tiene más de uno"
+                            : f2.razon().replace("A «", "«").replace("» le llegan", "» tiene").replace("flechas", "chips"));
 
             List<Linea> malas = sim.inconsistentes();
-            y = analisis(g, x, y, w, "f = u  (el registro dice la verdad)", "Aquí está el verdadero problema",
-                    malas.isEmpty(), malas.isEmpty() ? "Todas las líneas coinciden" : "Mienten: " + unir(malas));
+            y = analisis(g, x, y, w, alto, "¿El dueño en papel es quien usa el chip?", "f = u  ·  EL PROBLEMA",
+                    malas.isEmpty(), malas.isEmpty() ? "Sí: nadie usa un chip ajeno"
+                            : "No: " + unir(malas) + " las usa el extorsionador");
 
             List<Persona> excedidos = sim.personasSobreTope();
-            y = analisis(g, x, y, w, "|f⁻¹(p)| ≤ k  (tope de " + sim.tope() + ")", "Principio del palomar",
-                    excedidos.isEmpty(), excedidos.isEmpty() ? "Nadie supera el tope"
-                            : excedidos.get(0) + " tiene " + sim.lineasDe(excedidos.get(0)).size() + " líneas");
+            y = analisis(g, x, y, w, alto, "¿Nadie pasa el tope de " + sim.tope() + " chips?",
+                    "|f⁻¹(p)| ≤ " + sim.tope() + "  ·  palomar", excedidos.isEmpty(),
+                    excedidos.isEmpty() ? "Nadie lo supera"
+                            : excedidos.get(0) + " tiene " + sim.lineasDe(excedidos.get(0)).size() + " chips");
 
-            analisis(g, x, y, w, "g: L → C es biyectiva", "Una línea ↔ un contrato con huella", gBiyectiva(),
-                    razonG());
+            analisis(g, x, y, w, alto, "¿Cada chip tiene contrato con huella?", "g: L → C biyectiva · LA SOLUCIÓN",
+                    gBiyectiva(), razonG());
             g.dispose();
         }
 
@@ -537,31 +571,34 @@ public final class PanelSimula extends JPanel {
                     .replace("f⁻¹", "g⁻¹");
         }
 
-        private void kpi(Graphics2D g, int x, int y, int w, String titulo, String valor, Color color) {
-            Tema.tarjeta(g, x, y, w, 80, 20, Tema.BLANCO);
+        private void kpi(Graphics2D g, int x, int y, int w, int alto, String titulo, String valor, Color color) {
+            Tema.tarjeta(g, x, y, w, alto, 20, Tema.BLANCO);
             g.setFont(Tema.letra(Font.PLAIN, 14f));
             g.setColor(Tema.TEXTO_SUAVE);
-            g.drawString(titulo, x + 18, y + 26);
-            g.setFont(Tema.letra(Font.BOLD, 30f));
+            g.drawString(titulo, x + 16, y + 24);
+            g.setFont(Tema.letra(Font.BOLD, 28f));
             g.setColor(color);
-            g.drawString(valor, x + 18, y + 64);
+            g.drawString(valor, x + 16, y + alto - 14);
         }
 
-        private int analisis(Graphics2D g, int x, int y, int w, String titulo, String ayuda, boolean ok,
-                String razon) {
-            int alto = 82;
+        /** Tarjeta: pregunta en palabras, la notación pequeñita al lado y la respuesta. */
+        private int analisis(Graphics2D g, int x, int y, int w, int alto, String pregunta, String notacion,
+                boolean ok, String razon) {
+            boolean compacto = alto < 76;
             Tema.tarjeta(g, x, y, w, alto, 20, Tema.BLANCO);
             Tema.insignia(g, ok, x + 30, y + alto / 2, 16);
-            g.setFont(Tema.letra(Font.BOLD, 16.5f));
+            g.setFont(Tema.letra(Font.BOLD, 16f));
             g.setColor(Tema.AZUL_NOCHE);
-            g.drawString(titulo, x + 58, y + 26);
-            g.setFont(Tema.letra(Font.PLAIN, 13f));
-            g.setColor(Tema.TEXTO_SUAVE);
-            g.drawString(ayuda, x + 58, y + 46);
+            g.drawString(pregunta, x + 58, y + 25);
+            if (!compacto) {
+                g.setFont(Tema.letra(Font.PLAIN, 12.5f));
+                g.setColor(Tema.TEXTO_SUAVE);
+                g.drawString(notacion, x + 58, y + 44);
+            }
             g.setFont(Tema.letra(Font.BOLD, 14f));
             g.setColor(ok ? Tema.VERDE : Tema.ROJO_OSCURO);
-            g.drawString("→ " + razon, x + 58, y + 68);
-            return y + alto + 9;
+            g.drawString("→ " + razon, x + 58, y + (compacto ? 48 : 66));
+            return y + alto + 8;
         }
 
         private String unir(List<Linea> lineas) {

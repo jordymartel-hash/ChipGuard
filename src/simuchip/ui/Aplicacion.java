@@ -14,20 +14,24 @@ import javax.swing.JPanel;
 /** Todo el contenido de la app: cabecera con pestañas + las tres pantallas. */
 public final class Aplicacion extends JPanel {
 
-    private static final String[] NOMBRES = {"Inicio", "1 · Aprende", "2 · Simula"};
+    private static final String[] NOMBRES = {"Inicio", "1 · Aprende", "2 · Simula", "3 · Yo Autorizo", "4 · Detective"};
 
     private final CardLayout tarjetas = new CardLayout();
     private final JPanel centro = new JPanel(tarjetas);
     private final Boton[] pestanas = new Boton[NOMBRES.length];
     private final PanelAprende aprende = new PanelAprende();
     private final PanelSimula simula = new PanelSimula();
+    private final PanelYoAutorizo yoAutorizo = new PanelYoAutorizo();
+    private final PanelDetective detective = new PanelDetective();
 
     public Aplicacion() {
         super(new BorderLayout());
         add(new Cabecera(), BorderLayout.NORTH);
-        centro.add(new PanelInicio(() -> irA(1), () -> irA(2)), NOMBRES[0]);
+        centro.add(new PanelInicio(() -> irA(1), () -> irA(3)), NOMBRES[0]);
         centro.add(aprende, NOMBRES[1]);
         centro.add(simula, NOMBRES[2]);
+        centro.add(yoAutorizo, NOMBRES[3]);
+        centro.add(detective, NOMBRES[4]);
         add(centro, BorderLayout.CENTER);
         irA(0);
     }
@@ -45,6 +49,14 @@ public final class Aplicacion extends JPanel {
 
     public PanelSimula simula() {
         return simula;
+    }
+
+    public PanelYoAutorizo yoAutorizo() {
+        return yoAutorizo;
+    }
+
+    public PanelDetective detective() {
+        return detective;
     }
 
     private final class Cabecera extends JComponent {
@@ -82,7 +94,9 @@ public final class Aplicacion extends JPanel {
             int ancho = g.getFontMetrics().stringWidth("SimuChip");
             g.setFont(Tema.letra(Font.PLAIN, 15f));
             g.setColor(new java.awt.Color(0xC9D6EA));
-            g.drawString("Funciones discretas aplicadas a las líneas móviles", 104 + ancho + 18, 45);
+            if (getWidth() > 1300) {
+                g.drawString("Funciones discretas contra el fraude de chips", 104 + ancho + 18, 45);
+            }
             g.dispose();
         }
     }

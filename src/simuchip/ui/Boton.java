@@ -15,7 +15,7 @@ import javax.swing.JComponent;
 /** Botón en forma de pastilla, dibujado a mano. Puede ser normal o interruptor (on/off). */
 public final class Boton extends JComponent {
 
-    public enum Estilo { PRIMARIO, SECUNDARIO, PELIGRO, PESTANA }
+    public enum Estilo { PRIMARIO, SECUNDARIO, PELIGRO, EXITO, PESTANA }
 
     private String texto;
     private final Estilo estilo;
@@ -109,6 +109,10 @@ public final class Boton extends JComponent {
             case PRIMARIO -> {
                 fondo = Tema.AZUL_NOCHE;
                 letra = Tema.CREMA;
+            }
+            case EXITO -> {
+                fondo = Tema.VERDE;
+                letra = Tema.BLANCO;
             }
             case PELIGRO -> {
                 fondo = Tema.ROJO;

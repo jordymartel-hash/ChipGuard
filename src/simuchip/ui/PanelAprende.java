@@ -22,15 +22,18 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import simuchip.funciones.Diagnostico;
 import simuchip.funciones.Diagnostico.Veredicto;
 import simuchip.funciones.Flecha;
 import simuchip.funciones.Funciones;
+import simuchip.funciones.PasoTraza;
+import simuchip.funciones.Traza;
 
 /**
  * Pestaña 1: el laboratorio. Se dibujan flechas entre A = {1, 2, 3…} y B = {a, b, c…}
- * y la app dice en vivo si es función, inyectiva, sobreyectiva o biyectiva,
- * marcando la línea de código que lo decidió.
+ * y la app dice en vivo si es función, inyectiva, sobreyectiva o biyectiva.
+ * Con «Ejecutar paso a paso» el código corre línea por línea, como un depurador.
  */
 public final class PanelAprende extends JPanel {
 
@@ -81,12 +84,18 @@ public final class PanelAprende extends JPanel {
     private final List<Character> codominio = new ArrayList<>();
     private final List<Flecha<Integer, Character>> flechas = new ArrayList<>();
     private Integer seleccionado;
-    private int tarjeta = 0;
+    private int tarjeta = 1;
     private boolean verInversa;
+
+    // ejecución paso a paso
+    private List<PasoTraza> traza;
+    private int paso = -1;
+    private final Timer ejecutor;
 
     private final Lienzo lienzo = new Lienzo();
     private final Lateral lateral = new Lateral();
     private final Animador animador;
+    private final Avisos avisos;
     private final JLabel etiquetaTamanos = new JLabel();
     private Boton botonInversa;
 
@@ -94,10 +103,12 @@ public final class PanelAprende extends JPanel {
         super(new BorderLayout());
         setBackground(Tema.CELESTE_FONDO);
         animador = new Animador(lienzo, 420);
+        avisos = new Avisos(lienzo);
+        ejecutor = new Timer(1100, e -> avanzar());
         add(crearBarra(), BorderLayout.NORTH);
         add(lienzo, BorderLayout.CENTER);
         add(lateral, BorderLayout.EAST);
-        cargar(3, 3, new int[][] {{1, 'a'}, {2, 'b'}, {3, 'c'}});
+        cargar(4, 3, new int[][] {{1, 'a'}, {2, 'a'}, {3, 'b'}, {4, 'c'}});
     }
 
     // ─────────────────────────── barra de botones ───────────────────────────
@@ -120,6 +131,7 @@ public final class PanelAprende extends JPanel {
         barra.add(new Boton("Borrar", Boton.Estilo.PELIGRO).alHacerClic(() -> {
             flechas.clear();
             seleccionado = null;
+            detenerEjecucion();
             refrescar();
         }));
         barra.add(espacio(4));
@@ -129,17 +141,19 @@ public final class PanelAprende extends JPanel {
         barra.add(new Boton("B −", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(0, -1)));
         barra.add(new Boton("B +", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(0, 1)));
         barra.add(espacio(4));
-        Boton inversa = new Boton("Ver inversa f⁻¹", Boton.Estilo.SECUNDARIO, true);
-        botonInversa = inversa;
-        inversa.alHacerClic(() -> {
-            verInversa = inversa.encendido();
-            animador.olvidarTodo();
+        botonInversa = new Boton("Ver inversa f⁻¹", Boton.Estilo.SECUNDARIO, true);
+        botonInversa.alHacerClic(() -> {
+            verInversa = botonInversa.encendido();
             for (Flecha<Integer, Character> f : flechas) {
+                animador.olvidar("inv" + f);
                 animador.nacer("inv" + f);
+            }
+            if (verInversa && !Funciones.esBiyectiva(setA(), setB(), flechas)) {
+                avisos.mostrar("No hay inversa", veredicto(3).razon(), Tema.ROJO);
             }
             refrescar();
         });
-        barra.add(inversa);
+        barra.add(botonInversa);
         return barra;
     }
 
@@ -171,6 +185,7 @@ public final class PanelAprende extends JPanel {
             animador.nacer("inv" + f);
         }
         seleccionado = null;
+        detenerEjecucion();
         refrescar();
     }
 
@@ -182,6 +197,17 @@ public final class PanelAprende extends JPanel {
 
     public void setTarjeta(int indice) {
         tarjeta = indice;
+        detenerEjecucion();
+        refrescar();
+    }
+
+    /** Para las capturas: ejecuta hasta el paso indicado (o el final si es mayor). */
+    public void ejecutarHasta(int indice) {
+        traza = generarTraza();
+        paso = Math.min(indice, traza.size() - 1);
+        if (paso == traza.size() - 1) {
+            anunciarSiTermina();
+        }
         refrescar();
     }
 
@@ -204,6 +230,7 @@ public final class PanelAprende extends JPanel {
         if (seleccionado != null && !dominio.contains(seleccionado)) {
             seleccionado = null;
         }
+        detenerEjecucion();
         refrescar();
     }
 
@@ -216,6 +243,7 @@ public final class PanelAprende extends JPanel {
             animador.nacer(f);
             animador.nacer("inv" + f);
         }
+        detenerEjecucion();
         refrescar();
     }
 
@@ -223,6 +251,7 @@ public final class PanelAprende extends JPanel {
         etiquetaTamanos.setText("|A| = " + dominio.size() + "   |B| = " + codominio.size());
         etiquetaTamanos.setFont(Tema.letra(Font.BOLD, 15f));
         etiquetaTamanos.setForeground(Tema.AZUL_NOCHE);
+        lateral.actualizarBotones();
         lienzo.repaint();
         lateral.repaint();
     }
@@ -242,6 +271,84 @@ public final class PanelAprende extends JPanel {
             case 2 -> Diagnostico.sobreyectiva(dominio, codominio, flechas);
             default -> Diagnostico.biyectiva(dominio, codominio, flechas);
         };
+    }
+
+    // ─────────────────────────── ejecución paso a paso ───────────────────────────
+
+    private List<PasoTraza> generarTraza() {
+        return switch (tarjeta) {
+            case 0 -> Traza.esFuncion(dominio, flechas);
+            case 1 -> Traza.esInyectiva(dominio, codominio, flechas);
+            case 2 -> Traza.esSobreyectiva(dominio, codominio, flechas);
+            default -> Traza.esBiyectiva(dominio, codominio, flechas);
+        };
+    }
+
+    private boolean ejecutando() {
+        return traza != null && paso >= 0;
+    }
+
+    private PasoTraza pasoActual() {
+        return ejecutando() ? traza.get(paso) : null;
+    }
+
+    /** Botón ▶: arranca (o pausa) la ejecución automática. */
+    private void reproducir() {
+        if (ejecutor.isRunning()) {
+            ejecutor.stop();
+        } else {
+            if (!ejecutando() || paso >= traza.size() - 1) {
+                traza = generarTraza();
+                paso = 0;
+                avisos.limpiarTodo();
+            }
+            ejecutor.start();
+        }
+        refrescar();
+    }
+
+    /** Botón Paso: avanza un solo renglón. */
+    private void unPaso() {
+        ejecutor.stop();
+        if (!ejecutando() || paso >= traza.size() - 1) {
+            traza = generarTraza();
+            paso = 0;
+            avisos.limpiarTodo();
+        } else {
+            paso++;
+        }
+        anunciarSiTermina();
+        refrescar();
+    }
+
+    private void avanzar() {
+        if (!ejecutando()) {
+            ejecutor.stop();
+            return;
+        }
+        if (paso < traza.size() - 1) {
+            paso++;
+            anunciarSiTermina();
+        }
+        if (paso >= traza.size() - 1) {
+            ejecutor.stop();
+        }
+        refrescar();
+    }
+
+    private void anunciarSiTermina() {
+        PasoTraza p = traza.get(paso);
+        if (paso == traza.size() - 1) {
+            boolean ok = p.tipo() == PasoTraza.Tipo.OK;
+            avisos.mostrar(ok ? "✓ " + TITULOS[tarjeta] + ": SÍ" : "✗ " + TITULOS[tarjeta] + ": NO", p.mensaje(),
+                    ok ? new Color(0x7FD3A8) : new Color(0xF28B82));
+        }
+    }
+
+    private void detenerEjecucion() {
+        ejecutor.stop();
+        traza = null;
+        paso = -1;
     }
 
     // ─────────────────────────── el diagrama ───────────────────────────
@@ -274,8 +381,8 @@ public final class PanelAprende extends JPanel {
             cxA = getWidth() * 0.27;
             cxB = getWidth() * 0.73;
             int maximo = Math.max(dominio.size(), codominio.size());
-            altoOvalo = Math.min(getHeight() - 200, 96 * maximo + 110);
-            cy = 150 + altoOvalo / 2;
+            altoOvalo = Math.max(220, Math.min(getHeight() - 250, 96 * maximo + 110));
+            cy = 140 + altoOvalo / 2;
         }
 
         private Point2D posA(int i) {
@@ -287,7 +394,7 @@ public final class PanelAprende extends JPanel {
         }
 
         private Point2D pos(double cx, int i, int n) {
-            double util = altoOvalo - 90;
+            double util = altoOvalo - 80;
             double paso = util / n;
             return new Point2D.Double(cx, cy - util / 2 + paso * (i + 0.5));
         }
@@ -334,15 +441,13 @@ public final class PanelAprende extends JPanel {
             int w = getWidth();
             Tema.tarjeta(g, 16, 8, w - 24, getHeight() - 24, 32, Tema.CREMA);
 
-            // instrucción
             g.setFont(Tema.letra(Font.PLAIN, 16f));
             g.setColor(Tema.TEXTO_SUAVE);
             String ayuda = seleccionado == null
-                    ? "Haz clic en un número de A y luego en una letra de B para dibujar (o borrar) una flecha"
+                    ? "Clic en un número de A y luego en una letra de B para dibujar (o borrar) una flecha"
                     : "Ahora elige a dónde va la flecha del «" + seleccionado + "»  (clic en una letra de B)";
             Tema.textoCentrado(g, ayuda, w / 2.0, 40);
 
-            // resultado grande
             String tipo = Funciones.tipo(setA(), setB(), flechas);
             Color color = switch (tipo) {
                 case "Biyectiva" -> Tema.VERDE;
@@ -353,34 +458,39 @@ public final class PanelAprende extends JPanel {
             g.setFont(Tema.letra(Font.BOLD, 22f));
             String chip = "Resultado: " + tipo;
             int anchoChip = g.getFontMetrics().stringWidth(chip) + 44;
-            Tema.rectRedondo(g, w / 2.0 - anchoChip / 2.0, 58, anchoChip, 44, 44, color);
+            Tema.rectRedondo(g, w / 2.0 - anchoChip / 2.0, 56, anchoChip, 44, 44, color);
             g.setColor(Tema.BLANCO);
-            Tema.textoCentrado(g, chip, w / 2.0, 80);
+            Tema.textoCentrado(g, chip, w / 2.0, 78);
 
-            // óvalos y títulos
             Tema.ovalo(g, cxA, cy, 210, altoOvalo, Tema.NARANJA_SUAVE, Tema.NARANJA);
             Tema.ovalo(g, cxB, cy, 210, altoOvalo, Tema.AZUL_SUAVE, Tema.AZUL);
             g.setFont(Tema.letra(Font.BOLD, 18f));
             g.setColor(Tema.NARANJA_TEXTO);
-            Tema.textoCentrado(g, "A  ·  dominio", cxA, cy - altoOvalo / 2 - 18);
+            Tema.textoCentrado(g, "A  ·  dominio", cxA, cy - altoOvalo / 2 - 16);
             g.setColor(Tema.AZUL_TEXTO);
-            Tema.textoCentrado(g, "B  ·  codominio", cxB, cy - altoOvalo / 2 - 18);
+            Tema.textoCentrado(g, "B  ·  codominio", cxB, cy - altoOvalo / 2 - 16);
 
             dibujarFlechas(g);
             dibujarNodos(g);
             dibujarPie(g);
+            avisos.dibujar(g, w - 30, 120, 330);
             g.dispose();
         }
 
         private void dibujarFlechas(Graphics2D g) {
             boolean biyectiva = Funciones.esBiyectiva(setA(), setB(), flechas);
+            Object foco = pasoActual() != null ? pasoActual().foco() : null;
             for (Flecha<Integer, Character> f : flechas) {
                 Point2D a = posA(dominio.indexOf(f.desde()));
                 Point2D b = posB(codominio.indexOf(f.hasta()));
                 boolean malSale = Funciones.salidas(f.desde(), flechas) != 1;
+                boolean enFoco = foco != null && (foco.equals(f.desde()) || foco.equals(f.hasta()));
+                boolean apagada = foco != null && !enFoco;
                 double dy = verInversa && biyectiva ? -9 : 0;
+                Color c = malSale ? Tema.ROJO : enFoco ? Tema.NARANJA_TEXTO : Tema.AZUL_NOCHE;
                 Tema.flecha(g, a.getX() + RADIO + 4, a.getY() + dy, b.getX() - RADIO - 6, b.getY() + dy,
-                        malSale ? Tema.ROJO : Tema.AZUL_NOCHE, malSale ? 4.5f : 3.5f, false, animador.avance(f));
+                        Tema.conAlfa(c, apagada ? 70 : 255), enFoco ? 5.5f : malSale ? 4.5f : 3.5f, false,
+                        animador.avance(f));
             }
             if (verInversa && biyectiva) {
                 for (Flecha<Character, Integer> f : Funciones.inversa(flechas)) {
@@ -393,28 +503,35 @@ public final class PanelAprende extends JPanel {
         }
 
         private void dibujarNodos(Graphics2D g) {
+            Object foco = pasoActual() != null ? pasoActual().foco() : null;
             for (int i = 0; i < dominio.size(); i++) {
                 Integer a = dominio.get(i);
                 int salen = Funciones.salidas(a, flechas);
                 Point2D p = posA(i);
-                boolean elegido = a.equals(seleccionado);
-                if (elegido) {
-                    g.setColor(Tema.conAlfa(Tema.DORADO, 120));
-                    g.fill(new Ellipse2D.Double(p.getX() - RADIO - 12, p.getY() - RADIO - 12, (RADIO + 12) * 2,
-                            (RADIO + 12) * 2));
+                if (a.equals(seleccionado) || a.equals(foco)) {
+                    halo(g, p);
                 }
                 nodo(g, p, String.valueOf(a), Tema.NARANJA, Tema.AZUL_NOCHE, salen != 1 ? Tema.ROJO : null, false);
-                insigniaNumero(g, p, salen, salen != 1, "sale");
+                insigniaNumero(g, p, salen, salen != 1);
             }
             for (int i = 0; i < codominio.size(); i++) {
                 Character b = codominio.get(i);
                 int llegan = Funciones.llegadas(b, setA(), flechas);
                 Point2D p = posB(i);
+                if (b.equals(foco)) {
+                    halo(g, p);
+                }
                 Color anillo = llegan > 1 ? Tema.ROJO : null;
                 nodo(g, p, String.valueOf(b), llegan == 0 ? Tema.GRIS : Tema.AZUL,
                         llegan == 0 ? Tema.AZUL_NOCHE : Tema.BLANCO, anillo, llegan == 0);
-                insigniaNumero(g, p, llegan, llegan != 1, "llega");
+                insigniaNumero(g, p, llegan, llegan != 1);
             }
+        }
+
+        private void halo(Graphics2D g, Point2D p) {
+            g.setColor(Tema.conAlfa(Tema.DORADO, 140));
+            g.fill(new Ellipse2D.Double(p.getX() - RADIO - 14, p.getY() - RADIO - 14, (RADIO + 14) * 2,
+                    (RADIO + 14) * 2));
         }
 
         private void nodo(Graphics2D g, Point2D p, String texto, Color relleno, Color letra, Color anillo,
@@ -439,7 +556,7 @@ public final class PanelAprende extends JPanel {
             Tema.textoCentrado(g, texto, p.getX(), p.getY());
         }
 
-        private void insigniaNumero(Graphics2D g, Point2D p, int n, boolean alerta, String verbo) {
+        private void insigniaNumero(Graphics2D g, Point2D p, int n, boolean alerta) {
             double x = p.getX() + RADIO - 6;
             double y = p.getY() - RADIO - 8;
             g.setColor(alerta ? Tema.ROJO : Tema.AZUL_NOCHE);
@@ -450,18 +567,40 @@ public final class PanelAprende extends JPanel {
         }
 
         private void dibujarPie(Graphics2D g) {
+            int w = getWidth();
+            PasoTraza p = pasoActual();
+            if (p != null) {
+                // narrador: qué está haciendo el código ahora mismo
+                int ancho = Math.min(760, w - 80);
+                int x = (w - ancho) / 2;
+                int y = getHeight() - 104;
+                Color borde = switch (p.tipo()) {
+                    case OK -> Tema.VERDE;
+                    case FALLA -> Tema.ROJO;
+                    default -> Tema.DORADO;
+                };
+                Tema.tarjeta(g, x, y, ancho, 70, 20, Tema.AZUL_NOCHE);
+                Tema.rectRedondo(g, x, y, 10, 70, 10, borde);
+                g.setFont(Tema.letra(Font.BOLD, 13f));
+                g.setColor(Tema.DORADO);
+                g.drawString("PASO " + (paso + 1) + " DE " + traza.size(), x + 26, y + 24);
+                g.setFont(Tema.letra(Font.BOLD, 18f));
+                g.setColor(Tema.CREMA);
+                g.drawString(p.mensaje(), x + 26, y + 52);
+                return;
+            }
             int y = getHeight() - 52;
             g.setFont(Tema.letra(Font.PLAIN, 15f));
             g.setColor(Tema.TEXTO_SUAVE);
-            String texto = "El circulito con número = cuántas flechas SALEN (en A) o LLEGAN (en B). Rojo = problema.";
-            Tema.textoCentrado(g, texto, getWidth() / 2.0, y);
+            Tema.textoCentrado(g, "Circulito con número = cuántas flechas SALEN (en A) o LLEGAN (en B). Rojo = problema.",
+                    w / 2.0, y);
             if (verInversa && !Funciones.esBiyectiva(setA(), setB(), flechas)) {
                 g.setFont(Tema.letra(Font.BOLD, 16f));
                 String aviso = "No existe la inversa f⁻¹: " + veredicto(3).razon().toLowerCase();
                 int ancho = g.getFontMetrics().stringWidth(aviso) + 40;
-                Tema.rectRedondo(g, getWidth() / 2.0 - ancho / 2.0, y - 58, ancho, 38, 38, Tema.ROJO_SUAVE);
+                Tema.rectRedondo(g, w / 2.0 - ancho / 2.0, y - 58, ancho, 38, 38, Tema.ROJO_SUAVE);
                 g.setColor(Tema.ROJO_OSCURO);
-                Tema.textoCentrado(g, aviso, getWidth() / 2.0, y - 39);
+                Tema.textoCentrado(g, aviso, w / 2.0, y - 39);
             }
         }
     }
@@ -470,23 +609,59 @@ public final class PanelAprende extends JPanel {
 
     private final class Lateral extends JComponent {
 
-        private static final int ANCHO = 500;
-        private static final int ALTO_TARJETA = 90;
-        private static final int Y_TARJETAS = 62;
+        private static final int Y_TARJETAS = 52;
+        private static final int ALTO_LINEA = 23;
+        private final Boton reproducir = new Boton("▶  Ejecutar paso a paso", Boton.Estilo.EXITO);
+        private final Boton unPaso = new Boton("Paso  ›", Boton.Estilo.SECUNDARIO);
 
         Lateral() {
-            setPreferredSize(new Dimension(ANCHO, 600));
+            setLayout(null);
+            setPreferredSize(new Dimension(500, 600));
+            reproducir.setFont(Tema.letra(Font.BOLD, 14f));
+            unPaso.setFont(Tema.letra(Font.BOLD, 14f));
+            reproducir.alHacerClic(PanelAprende.this::reproducir);
+            unPaso.alHacerClic(PanelAprende.this::unPaso);
+            add(reproducir);
+            add(unPaso);
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    int i = (e.getY() - Y_TARJETAS) / (ALTO_TARJETA + 10);
-                    if (i >= 0 && i < 4 && e.getY() >= Y_TARJETAS) {
-                        tarjeta = i;
-                        repaint();
+                    int alto = altoTarjeta();
+                    int i = (e.getY() - Y_TARJETAS) / (alto + 8);
+                    if (i >= 0 && i < 4 && e.getY() >= Y_TARJETAS && e.getY() < yCodigo()) {
+                        setTarjeta(i);
                     }
                 }
             });
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
+
+        private int altoCodigo() {
+            return 52 + 7 * ALTO_LINEA + 52;
+        }
+
+        /** Las tarjetas se encogen si la ventana es baja, para que el código siempre se vea. */
+        private int altoTarjeta() {
+            int disponible = getHeight() - Y_TARJETAS - altoCodigo() - 20;
+            return Math.max(62, Math.min(90, disponible / 4 - 8));
+        }
+
+        private int yCodigo() {
+            return Y_TARJETAS + 4 * (altoTarjeta() + 8) + 4;
+        }
+
+        @Override
+        public void doLayout() {
+            int w = getWidth() - 24;
+            int y = yCodigo();
+            int anchoPaso = unPaso.getPreferredSize().width;
+            int anchoRep = reproducir.getPreferredSize().width;
+            unPaso.setBounds(8 + w - anchoPaso - 12, y + 10, anchoPaso, 40);
+            reproducir.setBounds(8 + w - anchoPaso - anchoRep - 20, y + 10, anchoRep, 40);
+        }
+
+        void actualizarBotones() {
+            reproducir.setTexto(ejecutor.isRunning() ? "❚❚  Pausa" : "▶  Ejecutar paso a paso");
+            doLayout();
         }
 
         @Override
@@ -495,55 +670,86 @@ public final class PanelAprende extends JPanel {
             Tema.suavizar(g);
             int x = 8;
             int w = getWidth() - 24;
-            g.setFont(Tema.letra(Font.BOLD, 20f));
+            int alto = altoTarjeta();
+            boolean compacto = alto < 84;
+            g.setFont(Tema.letra(Font.BOLD, 19f));
             g.setColor(Tema.AZUL_NOCHE);
-            g.drawString("¿Qué tipo de función es?", x + 4, 40);
+            g.drawString("¿Qué tipo de función es?  (clic para elegir)", x + 4, 34);
 
             for (int i = 0; i < 4; i++) {
                 Veredicto v = veredicto(i);
-                int y = Y_TARJETAS + i * (ALTO_TARJETA + 10);
-                Tema.tarjeta(g, x, y, w, ALTO_TARJETA, 22, Tema.BLANCO);
+                int y = Y_TARJETAS + i * (alto + 8);
+                Tema.tarjeta(g, x, y, w, alto, 20, Tema.BLANCO);
                 if (i == tarjeta) {
-                    Tema.borde(g, x, y, w, ALTO_TARJETA, 22, Tema.DORADO, 3.5f);
+                    Tema.borde(g, x, y, w, alto, 20, Tema.DORADO, 3.5f);
                 }
-                Tema.insignia(g, v.cumple(), x + 34, y + ALTO_TARJETA / 2, 18);
-                g.setFont(Tema.letra(Font.BOLD, 18f));
+                Tema.insignia(g, v.cumple(), x + 32, y + alto / 2, 17);
+                g.setFont(Tema.letra(Font.BOLD, 17f));
                 g.setColor(Tema.AZUL_NOCHE);
-                g.drawString(TITULOS[i] + (v.cumple() ? ":  SÍ" : ":  NO"), x + 66, y + 26);
-                g.setFont(Tema.letra(Font.PLAIN, 13.5f));
-                g.setColor(Tema.TEXTO_SUAVE);
-                g.drawString(PREGUNTAS[i], x + 66, y + 47);
-                g.setFont(Tema.letra(Font.BOLD, 14.5f));
+                g.drawString(TITULOS[i] + (v.cumple() ? ":  SÍ" : ":  NO"), x + 62, y + 25);
+                if (!compacto) {
+                    g.setFont(Tema.letra(Font.PLAIN, 13.5f));
+                    g.setColor(Tema.TEXTO_SUAVE);
+                    g.drawString(PREGUNTAS[i], x + 62, y + 46);
+                }
+                g.setFont(Tema.letra(Font.BOLD, 14f));
                 g.setColor(v.cumple() ? Tema.VERDE : Tema.ROJO_OSCURO);
-                g.drawString("→ " + v.razon(), x + 66, y + 72);
+                g.drawString("→ " + v.razon(), x + 62, y + (compacto ? 50 : 70));
             }
-            dibujarCodigo(g, x, Y_TARJETAS + 4 * (ALTO_TARJETA + 10) + 6, w);
+            dibujarCodigo(g, x, yCodigo(), w);
             g.dispose();
         }
 
         private void dibujarCodigo(Graphics2D g, int x, int y, int w) {
             String[] lineas = CODIGO[tarjeta];
-            int altoLinea = 23;
-            int alto = 56 + lineas.length * altoLinea + 16;
+            int alto = altoCodigo();
             Tema.tarjeta(g, x, y, w, alto, 22, Tema.AZUL_NOCHE);
             g.setFont(Tema.letra(Font.BOLD, 14f));
             g.setColor(Tema.DORADO);
-            g.drawString("Así lo decide el código  ·  Funciones.java", x + 20, y + 32);
-            Set<Integer> marcadas = lineasMarcadas();
-            boolean ok = veredicto(tarjeta).cumple();
-            g.setFont(Tema.codigo(14.5f));
-            for (int i = 0; i < lineas.length; i++) {
-                int yy = y + 56 + i * altoLinea;
-                if (marcadas.contains(i)) {
-                    Tema.rectRedondo(g, x + 10, yy - 2, w - 20, altoLinea, 10,
-                            ok ? Tema.conAlfa(Tema.VERDE, 200) : Tema.conAlfa(Tema.ROJO, 210));
-                }
-                g.setColor(marcadas.contains(i) ? Tema.BLANCO : new Color(0xC9D6EA));
-                g.drawString(lineas[i], x + 22, yy + 17);
+            g.drawString("Funciones.java", x + 20, y + 35);
+
+            PasoTraza p = pasoActual();
+            Set<Integer> marcadas = p != null ? Set.of(p.linea()) : lineasMarcadas();
+            Color marca;
+            if (p != null) {
+                marca = switch (p.tipo()) {
+                    case OK -> Tema.conAlfa(Tema.VERDE, 220);
+                    case FALLA -> Tema.conAlfa(Tema.ROJO, 220);
+                    default -> Tema.conAlfa(Tema.DORADO, 200);
+                };
+            } else {
+                marca = veredicto(tarjeta).cumple() ? Tema.conAlfa(Tema.VERDE, 200) : Tema.conAlfa(Tema.ROJO, 210);
             }
+            g.setFont(Tema.codigo(14.5f));
+            int y0 = y + 62;
+            for (int i = 0; i < lineas.length; i++) {
+                int yy = y0 + i * ALTO_LINEA;
+                boolean marcada = marcadas.contains(i);
+                if (marcada) {
+                    Tema.rectRedondo(g, x + 10, yy - 2, w - 20, ALTO_LINEA, 10, marca);
+                    if (p != null) {
+                        g.setColor(Tema.AZUL_NOCHE);
+                        g.drawString("▶", x + 14, yy + 15);
+                    }
+                }
+                g.setColor(marcada ? (p != null && p.tipo() == PasoTraza.Tipo.NORMAL ? Tema.AZUL_NOCHE : Tema.BLANCO)
+                        : new Color(0xC9D6EA));
+                g.drawString(lineas[i], x + 30, yy + 15);
+            }
+            // fila de variables
+            int yv = y + alto - 40;
+            Tema.rectRedondo(g, x + 10, yv, w - 20, 30, 10, Tema.AZUL_NOCHE_2);
+            g.setFont(Tema.letra(Font.BOLD, 13f));
+            g.setColor(Tema.DORADO);
+            g.drawString("VARIABLES", x + 22, yv + 20);
+            g.setFont(Tema.codigo(14f));
+            g.setColor(Tema.CREMA);
+            String vars = p == null ? "pulsa ▶ para ver el código correr"
+                    : p.variables().isEmpty() ? "—" : p.variables();
+            g.drawString(vars, x + 112, yv + 20);
         }
 
-        /** Qué renglón del código "decidió" el resultado de la tarjeta elegida. */
+        /** Sin ejecución: qué renglón "decidió" el resultado. */
         private Set<Integer> lineasMarcadas() {
             Set<Integer> r = new HashSet<>();
             boolean esFuncion = Funciones.esFuncion(setA(), flechas);

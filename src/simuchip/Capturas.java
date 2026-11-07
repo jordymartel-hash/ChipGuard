@@ -17,7 +17,7 @@ import simuchip.ui.Aplicacion;
 public final class Capturas {
 
     private static final int ANCHO = Integer.getInteger("ancho", 1600);
-    private static final int ALTO = Integer.getInteger("alto", 960);
+    private static final int ALTO = Integer.getInteger("alto", 900);
 
     private Capturas() {}
 
@@ -41,6 +41,13 @@ public final class Capturas {
         app.aprende().cargar(3, 3, new int[][] {{1, 'a'}, {2, 'b'}, {3, 'c'}});
         app.aprende().setVerInversa(true);
         guardar(app, carpeta, "04-aprende-biyectiva-inversa.png");
+        app.aprende().setVerInversa(false);
+        app.aprende().setTarjeta(1);
+        app.aprende().cargar(4, 3, new int[][] {{1, 'a'}, {2, 'a'}, {3, 'b'}, {4, 'c'}});
+        app.aprende().ejecutarHasta(2);
+        guardar(app, carpeta, "08-aprende-paso-a-paso.png");
+        app.aprende().ejecutarHasta(99);
+        guardar(app, carpeta, "08b-aprende-paso-final.png");
 
         app.irA(2);
         app.simula().simularDias(12);
@@ -53,6 +60,21 @@ public final class Capturas {
         app.simula().auditar();
         app.simula().rastrearEjemplo();
         guardar(app, carpeta, "07-simula-solucion.png");
+
+        app.irA(3);
+        app.yoAutorizo().irAEscena(1);
+        guardar(app, carpeta, "09-yo-autorizo-sin-proteccion.png");
+        app.yoAutorizo().irAEscena(2);
+        guardar(app, carpeta, "10-yo-autorizo-extorsion.png");
+        app.yoAutorizo().irAEscena(4);
+        guardar(app, carpeta, "11-yo-autorizo-alerta.png");
+        app.yoAutorizo().irAEscena(6);
+        guardar(app, carpeta, "12-yo-autorizo-mapa.png");
+
+        app.irA(4);
+        guardar(app, carpeta, "13-detective-portada.png");
+        app.detective().jugarDemo(4);
+        guardar(app, carpeta, "14-detective-jugando.png");
         System.out.println("Capturas guardadas en " + carpeta.getAbsolutePath());
         System.exit(0);
     }

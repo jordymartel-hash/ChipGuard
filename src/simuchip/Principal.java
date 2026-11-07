@@ -17,10 +17,14 @@ public final class Principal {
             JFrame ventana = new JFrame("SimuChip · Funciones y líneas móviles");
             ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             ventana.setContentPane(new Aplicacion());
-            ventana.setMinimumSize(new Dimension(1200, 760));
-            ventana.setSize(1500, 920);
-            ventana.setLocationRelativeTo(null);
-            ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            ventana.setMinimumSize(new Dimension(1200, 700));
+            // Casi toda la pantalla, pero dejando libre abajo el espacio del dock (en Linux flota encima).
+            java.awt.Rectangle util = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment()
+                    .getMaximumWindowBounds();
+            boolean linux = System.getProperty("os.name", "").toLowerCase().contains("linux");
+            int ancho = Math.min(util.width - 20, 1600);
+            int alto = Math.min(util.height - (linux ? 120 : 20), 980);
+            ventana.setBounds(util.x + (util.width - ancho) / 2, util.y + (linux ? 36 : 10), ancho, alto);
             ventana.setVisible(true);
         });
     }
