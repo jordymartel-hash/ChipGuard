@@ -6,3 +6,4 @@ rm -rf out
 javac -encoding UTF-8 -d out $(find src test -name '*.java')
 java -cp out simuchip.PruebasFunciones
 java -cp out simuchip.PruebasSimulador
+java -cp out simuchip.PruebasDiagnostico
