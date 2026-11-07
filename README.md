@@ -13,7 +13,7 @@ Se necesita Java 17 o superior.
 Otros comandos:
 
 ```bash
-./probar.sh            # compila y corre las 74 pruebas
+./probar.sh            # compila y corre las 119 pruebas
 ./empaquetar.sh        # vuelve a crear SimuChip.jar
 java -Djava.awt.headless=true -cp out simuchip.Capturas capturas   # capturas PNG (antes correr ./probar.sh)
 ```
@@ -23,8 +23,10 @@ java -Djava.awt.headless=true -cp out simuchip.Capturas capturas   # capturas PN
 | Pestaña | Para qué sirve |
 |---|---|
 | Inicio | Presenta la pregunta: ¿a quién le pertenece tu chip? |
-| 1 · Aprende | Dibujas flechas entre A = {1, 2, 3…} y B = {a, b, c…}. La app dice si es función, inyectiva, sobreyectiva o biyectiva, explica por qué y resalta la línea de código que lo decidió. |
+| 1 · Aprende | Dibujas flechas entre A = {1, 2, 3…} y B = {a, b, c…}. La app dice si es función, inyectiva, sobreyectiva o biyectiva y explica por qué. Con «Ejecutar paso a paso» el código corre renglón por renglón, con variables y notificación final. |
 | 2 · Simula | El caso real. Cada día alguien contrata una línea; a veces es un extorsionador con un DNI robado. Se ven el registro f, el uso real u, el tope de líneas y la solución con biometría (g: Línea ↔ Contrato biyectiva). Clic en una línea = rastreo policial. |
+| 3 · Yo Autorizo | La propuesta contada como historia: Ana, un celular simulado (vibra, se pueden tocar sus botones) y lo que ve la operadora. 8 escenas: el problema y luego la solución. |
+| 4 · Detective | Juego de 60 s y 3 vidas: aprueba o rechaza solicitudes de chips (teclas A y R). Las 3 reglas son las funciones del caso. |
 
 ## Modelo matemático
 
@@ -53,5 +55,5 @@ src/simuchip/
   ui/                          ← interfaz Swing dibujada a mano (sin librerías)
   Principal.java               ← abre la ventana
   Capturas.java                ← genera PNG sin abrir ventana
-test/simuchip/                 ← 74 pruebas sin librerías externas
+test/simuchip/                 ← 119 pruebas sin librerías externas
 ```

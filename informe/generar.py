@@ -202,9 +202,9 @@ bloquear nuevas contrataciones a nombre propio (El Peruano, 2025).</p>
 Se organiza en tres paquetes:</p>
 <table>
   <tr><th>Paquete</th><th>Clases</th><th>Responsabilidad</th></tr>
-  <tr><td>funciones</td><td>Flecha, Funciones, Diagnostico</td><td>Las definiciones matemáticas y su explicación en palabras</td></tr>
-  <tr><td>caso</td><td>Simulador, Persona, Linea, Contrato, Rastreo, Evento, Resultado</td><td>El caso real: f, u, g, fraude, biometría, tope, auditoría y rastreo</td></tr>
-  <tr><td>ui</td><td>Aplicacion, PanelInicio, PanelAprende, PanelSimula, Boton, Tema, Animador</td><td>La interfaz y las animaciones</td></tr>
+  <tr><td>funciones</td><td>Flecha, Funciones, Diagnostico, Traza, PasoTraza</td><td>Las definiciones matemáticas, su explicación en palabras y su ejecución paso a paso</td></tr>
+  <tr><td>caso</td><td>Simulador, Persona, Linea, Contrato, Rastreo, Evento, Resultado, Detective, Solicitud</td><td>El caso real (f, u, g, fraude, biometría, tope, auditoría, rastreo) y el juego</td></tr>
+  <tr><td>ui</td><td>Aplicacion, PanelInicio, PanelAprende, PanelSimula, PanelYoAutorizo, PanelDetective, Avisos, Boton, Tema, Animador</td><td>La interfaz de cinco pestañas, las notificaciones y las animaciones</td></tr>
 </table>
 <h3>8.1 El núcleo: contar flechas</h3>
 <p>Toda la teoría se reduce a dos cuentas: cuántas flechas salen de cada elemento de A y cuántas llegan a cada
@@ -227,16 +227,23 @@ public static <A, B> boolean esInyectiva(Set<A> dominio, Set<B> codominio, List<
 esBiyectiva es la conjunción de las dos anteriores. El simulador del caso real reutiliza estas mismas funciones: por
 ejemplo, las líneas a nombre de una persona se calculan como la preimagen f⁻¹(persona).</p>
 <h3>8.2 Pruebas automáticas</h3>
-<p>El proyecto incluye 74 pruebas sin dependencias externas, agrupadas en tres archivos: PruebasFunciones (los
+<p>El proyecto incluye 119 pruebas sin dependencias externas, agrupadas en tres archivos: PruebasFunciones (los
 dibujos de la teoría y casos que parecen pero no son, como una flecha que sale de un elemento fuera del dominio),
-PruebasSimulador (contratación legal, fraude, biometría, tope, auditoría, reproducibilidad) y PruebasDiagnostico (las
-explicaciones que ve el público). Todas pasan con <code>./probar.sh</code>.</p>
+PruebasSimulador (contratación legal, fraude, biometría, tope, auditoría, reproducibilidad), PruebasDiagnostico (las
+explicaciones que ve el público), PruebasTraza (cada paso de la ejecución en cámara lenta, incluido el cortocircuito de
+esBiyectiva) y PruebasDetective (reglas del juego, puntaje, rachas y vidas). Todas pasan con <code>./probar.sh</code>.</p>
 <h3>8.3 Modo Aprende</h3>
 <p>El usuario dibuja flechas con clics entre A y B. Cada nodo muestra cuántas flechas salen o llegan, el problema se
 marca en rojo y el panel derecho indica, para cada propiedad, si se cumple, por qué y qué línea del código lo decidió.</p>
 {imagen("03-aprende-sobreyectiva.png", "Figura 1. Modo Aprende: la función es sobreyectiva pero no inyectiva, porque a «a» le llegan dos flechas. Se resalta el return false de esInyectiva.")}
 {imagen("04-aprende-biyectiva-inversa.png", "Figura 2. Una biyección con su inversa f⁻¹ dibujada en líneas punteadas.")}
-<h3>8.4 Modo Simula</h3>
+<h3>8.4 Ejecución paso a paso</h3>
+<p>La clase Traza ejecuta los métodos de Funciones «en cámara lenta»: devuelve la lista de pasos que da el código, cada
+uno con el renglón que se ejecuta, el elemento que se está revisando, el valor de las variables y una frase para el
+público. La interfaz recorre esa lista con un temporizador: resalta el renglón en el código, ilumina el nodo en el
+diagrama, muestra las variables y, en el último paso, lanza una notificación con el veredicto.</p>
+{imagen("08-aprende-paso-a-paso.png", "Figura 3. esInyectiva corriendo paso a paso: revisa la «a», muestra llegadas(b) = 2 y resalta el renglón del if.")}
+<h3>8.5 Modo Simula</h3>
 <p>Cada día alguien intenta contratar una línea; con probabilidad 0,4 se trata del extorsionador usando el DNI de una
 víctima. Los botones permiten activar la validación biométrica, el tope de tres líneas y la auditoría, y al hacer clic en
 una línea se muestra el rastreo policial. La simulación usa una semilla fija, por lo que es reproducible.</p>
@@ -244,8 +251,8 @@ una línea se muestra el rastreo policial. La simulación usa una semilla fija, 
 <h2>9. Simulación y resultados</h2>
 <p>Ejecutamos dos escenarios con la semilla 19. En el primero se simulan 12 días sin controles. En el segundo, a
 continuación, se activan la biometría y el tope, se simulan 4 días más y se realiza la auditoría.</p>
-{imagen("06-simula-rastreo-falla.png", "Figura 3. Día 12 sin controles: 3 de 12 líneas son del extorsionador (flechas rojas), Elena supera el tope y el rastreo de L1 señala a Fabio, que es inocente.")}
-{imagen("07-simula-solucion.png", "Figura 4. Día 16 con biometría, tope y auditoría: todas las líneas tienen contrato, el registro coincide al 100 % y g es biyectiva.")}
+{imagen("06-simula-rastreo-falla.png", "Figura 4. Día 12 sin controles: 3 de 12 líneas son del extorsionador (flechas rojas), Elena supera el tope y el rastreo de L1 señala a Fabio, que es inocente.")}
+{imagen("07-simula-solucion.png", "Figura 5. Día 16 con biometría, tope y auditoría: todas las líneas tienen contrato, el registro coincide al 100 % y g es biyectiva.")}
 <table>
   <tr><th>Indicador</th><th>Sin control (día 12)</th><th>Con la solución (día 16)</th></tr>
   <tr><td>Registro = realidad (f = u)</td><td>75 %</td><td>100 %</td></tr>
@@ -259,11 +266,34 @@ continuación, se activan la biometría y el tope, se simulan 4 días más y se 
 contrataciones; las líneas antiguas que lo superan deben revisarse por separado, como hace OSIPTEL con los usuarios que
 tienen más de diez.</p>
 
+<h3>9.1 La propuesta «Yo Autorizo» en el simulador</h3>
+<p>La pestaña «Yo Autorizo» cuenta la solución como una historia de ocho escenas con un celular simulado e interactivo.
+Primero ocurre el problema: con una fotocopia del DNI de Ana se registra un chip, su celular no avisa nada y la policía
+termina buscándola a ella. Luego se rebobina con la propuesta: el celular de Ana recibe una alerta, ella toca
+«Bloquear» y el chip nunca se activa. Al lado se ve lo que registra la operadora, es decir, la preimagen f⁻¹(Ana).</p>
+<table>
+  <tr><th>Pieza de la propuesta</th><th>Qué hace</th><th>Idea matemática</th></tr>
+  <tr><td>Alerta por cada chip</td><td>El celular avisa cada intento con tu DNI</td><td>El ciudadano ve f⁻¹(DNI) en tiempo real</td></tr>
+  <tr><td>Activación con huella</td><td>El chip solo se activa con la huella del titular</td><td>g biyectiva y f(ℓ) = u(ℓ)</td></tr>
+  <tr><td>DNI bloqueado por defecto</td><td>Se desbloquea solo para contratar</td><td>Nadie agrega elementos a L sin permiso</td></tr>
+  <tr><td>Mapa de chips</td><td>Muestra todos tus chips y permite dar de baja</td><td>Tope visible: |f⁻¹(p)| ≤ k</td></tr>
+</table>
+{imagen("11-yo-autorizo-alerta.png", "Figura 6. Escena 5 de «Yo Autorizo»: la alerta llega al celular de Ana y la línea queda pendiente en la operadora.")}
+{imagen("12-yo-autorizo-mapa.png", "Figura 7. «Mi mapa de chips»: Ana ve su preimagen, el chip bloqueado y cuántos le quedan antes del tope.")}
+<h3>9.2 Juego Detective</h3>
+<p>Para involucrar al público, el juego Detective pone al jugador a atender una tienda durante 60 segundos con tres
+vidas. Cada solicitud muestra si la huella coincide, si el DNI es original y cuántos chips tiene ya la persona. Las tres
+reglas de rechazo son las tres funciones del caso: huella distinta (u ≠ f), fotocopia (no hay contrato g) y tope
+alcanzado (|f⁻¹(p)| ≥ 3). Los aciertos seguidos dan bono de racha y cada error quita una vida.</p>
+{imagen("14-detective-jugando.png", "Figura 8. Juego Detective con el marcador, la solicitud, las reglas y el historial de decisiones.")}
+
 <h2>10. Limitaciones</h2>
 <ul>
   <li>La simulación es un modelo simplificado: seis personas, un extorsionador y como máximo 16 líneas.</li>
   <li>La probabilidad de fraude (0,4) es un supuesto para hacer visible el problema, no una cifra oficial.</li>
   <li>Se asume que la biometría no falla; en la realidad existen errores de lectura y suplantación de huellas.</li>
+  <li>«Yo Autorizo» es un prototipo de propuesta: requeriría que las operadoras y OSIPTEL integren las alertas y la
+  identidad digital del Estado; no se evaluaron costos ni la privacidad de los datos biométricos.</li>
   <li>Las cifras de OSIPTEL provienen de notas de prensa de 2025 y deben contrastarse con datos oficiales actualizados.</li>
 </ul>
 
@@ -303,15 +333,16 @@ contrataciones no autorizadas</i>. https://elperuano.pe/noticia/288845-puedes-bl
 <h2 class="salto">Anexo A: guion de la exposición (10 a 12 minutos, 4 integrantes)</h2>
 <table>
   <tr><th>Integrante</th><th>Diapositivas</th><th>Tiempo</th><th>Idea que debe quedar</th></tr>
-  <tr><td>1</td><td>1 Portada · 2 Gancho · 3 Máquina · 4 Diagrama sagital · 5 No es función</td><td>2:30</td>
-      <td>Una función es una máquina: cada entrada da exactamente una salida.</td></tr>
-  <tr><td>2</td><td>6 Inyectiva · 7 Sobreyectiva · 8 Biyectiva · 9 Ninguna · 10 Resumen · 11 Otros casos · 12 Palomar</td><td>3:00</td>
-      <td>Contar flechas: nadie comparte, nadie queda solo, parejas perfectas.</td></tr>
-  <tr><td>3</td><td>13 Cifras · 14 El engaño · 15 Modelo · 16 Solución · 17 SimuChip · 18 Modo Aprende</td><td>3:00</td>
-      <td>El problema no es tener varias líneas: es que f ≠ u. La solución es g biyectiva.</td></tr>
-  <tr><td>4</td><td>19 Sin control · 20 Con solución · 21 Código · 22 Resultados · 23 Demo · 24 Conclusiones · 25 Fuentes</td><td>3:00</td>
+  <tr><td>1</td><td>1 Portada · 2 Gancho · 3 Máquina · 4 Diagrama sagital · 5 No es función · 6 Inyectiva · 7 Sobreyectiva</td><td>2:45</td>
+      <td>Una función es una máquina; contar flechas que salen y que llegan.</td></tr>
+  <tr><td>2</td><td>8 Biyectiva · 9 Ninguna · 10 Resumen · 11 Otros casos · 12 Palomar · 13 Cifras · 14 El engaño · 15 Modelo</td><td>3:00</td>
+      <td>El problema no es tener varios chips: es que el dueño en papel no es quien lo usa (f ≠ u).</td></tr>
+  <tr><td>3</td><td>16 Solución · 17 SimuChip · 18 Paso a paso · 19 Sin control · 20 Yo Autorizo · 21 Cuatro piezas</td><td>3:00</td>
+      <td>Nuestra propuesta: el celular avisa y tú decides; la inversa en tu bolsillo.</td></tr>
+  <tr><td>4</td><td>22 Con solución · 23 Detective (voluntario) · 24 Código · 25 Resultados · 27 Conclusiones · 28 Fuentes</td><td>3:00</td>
       <td>La simulación lo demuestra: de 75 % a 100 %, y el rastreo llega a la persona real.</td></tr>
 </table>
+<p>La diapositiva 26 (demo de «Checa tus líneas») es opcional: si el tiempo pasa de 12 minutos, se salta.</p>
 <h3>Antes de la exposición</h3>
 <ul>
   <li>Completar la portada de la PPT y del informe con curso, docente, grupo e integrantes.</li>
@@ -330,7 +361,7 @@ contrataciones no autorizadas</i>. https://elperuano.pe/noticia/288845-puedes-bl
 # Abrir la aplicación (Java 17 o superior)
 java -jar SimuChip.jar          # o ./ejecutar.sh
 
-# Compilar y correr las 74 pruebas
+# Compilar y correr las 119 pruebas
 ./probar.sh
 
 # Regenerar las capturas del informe sin abrir ventanas
