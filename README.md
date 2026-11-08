@@ -80,6 +80,6 @@ python3 informe/generar.py                                               # regen
 
 ## Informe
 
-El informe completo (25 páginas, referencias en formato APA) explica el modelo matemático, la propuesta y los resultados de la simulación:
+El informe completo (20 páginas, formato UPCH, referencias en formato APA) explica el modelo matemático, la propuesta y los resultados de la simulación:
 
 **[📄 Informe-ChipGuard.pdf](docs/Informe-ChipGuard.pdf)** (también está en la [release](https://github.com/jordymartel-hash/ChipGuard/releases/latest)).
