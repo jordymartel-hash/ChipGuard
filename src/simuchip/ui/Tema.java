@@ -65,9 +65,12 @@ public final class Tema {
     public static final String UNIVERSIDAD = "Universidad Peruana Cayetano Heredia";
     public static final String DOCENTE = "Dr. Ing. CIP. Illesca Cangalaya, Omar Felix";
     public static final String ORCID_DOCENTE = "0000-0002-0144-6878";
-    /** Apellido y nombre de cada integrante. */
-    public static final String[][] INTEGRANTES = {{"Martel", "Jordy"}, {"Sanga", "Angeles"}, {"Tangoa", "Richard"},
-        {"Vidalon", "Eduardo"}};
+    /** Apellidos, nombres y ORCID de cada integrante. */
+    public static final String[][] INTEGRANTES = {
+        {"Martel Vasquez", "Jordy Joel", "0009-0008-6410-8615"},
+        {"Sanga Limache", "Angeles Jemina", "0009-0003-7669-4168"},
+        {"Tangoa Alva", "Richard José Hernan", "0009-0006-4441-0185"},
+        {"Vidalon Ampudia", "Eduardo Josias", "0009-0008-2704-013X"}};
     public static final java.awt.image.BufferedImage LOGO = imagen("logo-upch.png");
     public static final java.awt.image.BufferedImage ESCUDO = imagen("escudo-upch.png");
 
@@ -100,7 +103,7 @@ public final class Tema {
         g.setComposite(java.awt.AlphaComposite.SrcOver.derive((float) Math.max(0, Math.min(1, alfa))));
         int pad = 36;
         int w = Math.min(a.width, 640);
-        int h = 446;
+        int h = 494;
         int x = (int) a.getCenterX() - w / 2;
         int y = (int) Math.max(a.y, a.getCenterY() - h / 2.0 - 10);
         tarjeta(g, x, y, w, h, 28, BLANCO);
@@ -133,7 +136,7 @@ public final class Tema {
         int col = (w - 2 * pad) / 2;
         for (int k = 0; k < INTEGRANTES.length; k++) {
             int ix = x + pad + (k % 2) * col;
-            int iy = cy + (k / 2) * 66;
+            int iy = cy + (k / 2) * 90;
             String ap = INTEGRANTES[k][0];
             String no = INTEGRANTES[k][1];
             g.setColor(AZUL);
@@ -147,6 +150,10 @@ public final class Tema {
             g.setFont(letra(Font.PLAIN, 16f));
             g.setColor(TEXTO_SUAVE);
             texto(g, no, ix + 62, iy + 42);
+            insigniaOrcid(g, ix + 62, iy + 52, 14);
+            g.setFont(codigo(12f));
+            g.setColor(TEXTO_SUAVE);
+            texto(g, INTEGRANTES[k][2], ix + 82, iy + 64);
         }
         g.setComposite(antes);
     }

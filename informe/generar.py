@@ -23,10 +23,10 @@ LOGO = base64.b64encode((Path(__file__).resolve().parent.parent / "recursos/imag
 
 # Llenar el ORCID de cada integrante cuando lo tengan (formato 0000-0000-0000-0000).
 INTEGRANTES = [
-    ("Martel, Jordy", ""),
-    ("Sanga, Angeles", ""),
-    ("Tangoa, Richard", ""),
-    ("Vidalon, Eduardo", ""),
+    ("Martel Vasquez, Jordy Joel", "0009-0008-6410-8615"),
+    ("Sanga Limache, Angeles Jemina", "0009-0003-7669-4168"),
+    ("Tangoa Alva, Richard José Hernan", "0009-0006-4441-0185"),
+    ("Vidalon Ampudia, Eduardo Josias", "0009-0008-2704-013X"),
 ]
 
 
@@ -418,10 +418,10 @@ simulación es didáctica: usa una fila fija de seis clientes y no estima tasas 
 <h2 class="salto">Anexo A: guion de la exposición (15 minutos, 4 integrantes)</h2>
 <table>
   <tr><th>Integrante</th><th>Capítulos</th><th>Tiempo</th><th>Idea que debe quedar</th></tr>
-  <tr><td>Martel, Jordy</td><td>La historia</td><td>3:00</td><td>A Ana le sacaron un chip con su segunda huella, y la policía llegó a ella.</td></tr>
-  <tr><td>Sanga, Angeles</td><td>La matemática</td><td>4:00</td><td>El registro es una función; el problema es que registro ≠ uso real.</td></tr>
-  <tr><td>Tangoa, Richard</td><td>Qué es ChipGuard · En acción · Por dentro</td><td>4:30</td><td>Ningún chip se activa sin el permiso del dueño del DNI.</td></tr>
-  <tr><td>Vidalon, Eduardo</td><td>La tienda (con el público) · Cierre</td><td>3:30</td><td>Sin ChipGuard terminan 3 chips en manos criminales; con ChipGuard, 0.</td></tr>
+  <tr><td>Martel Vasquez, Jordy Joel</td><td>La historia</td><td>3:00</td><td>A Ana le sacaron un chip con su segunda huella, y la policía llegó a ella.</td></tr>
+  <tr><td>Sanga Limache, Angeles Jemina</td><td>La matemática</td><td>4:00</td><td>El registro es una función; el problema es que registro ≠ uso real.</td></tr>
+  <tr><td>Tangoa Alva, Richard José Hernan</td><td>Qué es ChipGuard · En acción · Por dentro</td><td>4:30</td><td>Ningún chip se activa sin el permiso del dueño del DNI.</td></tr>
+  <tr><td>Vidalon Ampudia, Eduardo Josias</td><td>La tienda (con el público) · Cierre</td><td>3:30</td><td>Sin ChipGuard terminan 3 chips en manos criminales; con ChipGuard, 0.</td></tr>
 </table>
 <p>Si el tiempo supera los 15 minutos, se recorta primero el capítulo «Por dentro» (mostrar solo el flujo de siete
 pasos).</p>
