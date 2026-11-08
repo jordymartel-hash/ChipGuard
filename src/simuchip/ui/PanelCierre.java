@@ -14,7 +14,7 @@ public final class PanelCierre extends PanelEscenas {
             new Escena("¿Ya revisaste tus líneas?",
                 "Saca tu celular ahora: busca «Checa tus líneas» de OSIPTEL y pon tu DNI. Si aparece un chip que no es "
                     + "tuyo, repórtalo ahí mismo. Hoy lo haces a mano; con ChipGuard te avisaría solo."),
-            new Escena("Fuentes.", "Datos y normas citados en la presentación.", true)
+            new Escena("Referencias.", "En formato APA (7.ª ed.). Los enlaces llevan a la fuente original.", true)
         ));
     }
 
@@ -67,22 +67,23 @@ public final class PanelCierre extends PanelEscenas {
 
     private void fuentes(Graphics2D g, Rectangle a, double t) {
         String[] lista = {
-            "Congreso de la República (2025). OSIPTEL bloquea más de 650 mil celulares y alerta crecimiento del uso delictivo de líneas móviles.",
-            "DPL News (2025). Osiptel dispuso la baja de más de 102 mil líneas con registros inconsistentes.",
-            "Canal N (2025). Osiptel detecta 200 mil usuarios con más de 10 líneas móviles.",
-            "LP Derecho / La República (2025). Resolución 000116-2025-CD/OSIPTEL: medidas de seguridad en la contratación móvil.",
-            "OSIPTEL. Cómo contratar un servicio móvil de manera segura; norma contra contrataciones no solicitadas.",
-            "Infobae (2024). Intervienen galería en el Centro de Lima donde se vendían chips suplantados.",
-            "Infobae (2025). Venta ilegal de chips bajo la mira: Osiptel explica plan para rastrear cada línea móvil.",
-            "El Imparcial (2026). Perú y la validación con huellas dactilares (moldes de silicona).",
-            "Rosen, K. H. (2019). Discrete Mathematics and Its Applications (8.ª ed.). McGraw-Hill."
+            "América TV. (s. f.). Así operaba banda criminal que vendía chips activados a nombre de terceras personas. https://www.americatv.com.pe/noticias/amp/actualidad/asi-operaba-banda-criminal-que-vendia-chips-activados-nombres-terceras-personas-n492832",
+            "Bloomberg Línea. (s. f.). ¿Pueden clonar su huella digital y robar su dinero? Así operaban «Los Huelleros del Norte» en Perú. https://www.bloomberglinea.com/latinoamerica/peru/pueden-clonar-su-huella-digital-y-robar-su-dinero-asi-operaban-los-huelleros-del-norte-en-peru/",
+            "Canal N. (2025). Osiptel detecta 200 mil usuarios con más de 10 líneas móviles. https://canaln.pe/actualidad/osiptel-detecta-200-mil-usuarios-mas-10-lineas-moviles-n488632",
+            "Congreso de la República del Perú. (2025). OSIPTEL bloquea más de 650 mil celulares y alerta crecimiento del uso delictivo de líneas móviles. https://comunicaciones.congreso.gob.pe/damos-cuenta/osiptel-bloquea-mas-de-650-mil-celulares-y-alerta-crecimiento-del-uso-delictivo-de-lineas-moviles/",
+            "DPL News. (2025). Perú: Osiptel dispuso la baja de más de 102 mil líneas con registros inconsistentes durante el estado de emergencia. https://dplnews.com/peru-osiptel-dispuso-baja-102-mil-lineas-registros-inconsistentes-estado-de-emergencia/",
+            "DPL News. (s. f.). Perú: Osiptel refuerza acciones contra la venta ambulatoria de chips con operativo preventivo en Lima Norte. https://dplnews.com/peru-osiptel-refuerza-acciones-contra-venta-ambulatoria-chips-operativo-preventivo-lima-norte/",
+            "El Peruano. (2025). ¿Puedes bloquear nuevas líneas a tu nombre? Osiptel habilita restricción contra contrataciones no autorizadas. https://elperuano.pe/noticia/288845-puedes-bloquear-nuevas-lineas-a-tu-nombre-osiptel-habilita-restriccion-contra-contrataciones-no-autorizadas",
+            "El Peruano. (s. f.). Osiptel refuerza tu seguridad: detecta y reporta líneas móviles no contratadas en Checa tus líneas. https://elperuano.pe/noticia/288143-osiptel-refuerza-tu-seguridad-detecta-y-reporta-lineas-moviles-no-contratadas-en-checa-tus-lineas",
+            "Organismo Supervisor de Inversión Privada en Telecomunicaciones. (2025). Resolución de Consejo Directivo N.° 000116-2025-CD/OSIPTEL. https://www.osiptel.gob.pe/media/xpxl0map/resol116-2025-cd.pdf",
+            "Rosen, K. H. (2019). Discrete mathematics and its applications (8.ª ed.). McGraw-Hill Education."
         };
         int y = a.y;
-        g.setFont(Tema.letra(Font.PLAIN, 16f));
+        g.setFont(Tema.letra(Font.PLAIN, 15f));
         for (int k = 0; k < lista.length; k++) {
             double p = tramo(t, 0.1 + k * 0.08, 0.4);
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * p)));
-            y += Tema.parrafo(g, lista[k], a.x, y, a.width, 1.3f) + 8;
+            y += Tema.parrafo(g, lista[k], a.x + 28, y, a.width - 28, 1.22f) + 6;
         }
     }
 }

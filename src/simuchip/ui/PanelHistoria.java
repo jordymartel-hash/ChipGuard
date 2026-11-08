@@ -19,18 +19,18 @@ public final class PanelHistoria extends PanelEscenas {
 
     public PanelHistoria() {
         super(List.of(
-            new Escena("Ella es Ana.", "Tiene una bodega en Comas y un solo chip. Hoy va a sacar uno nuevo.", true),
+            new Escena("Ella es Ana.", "Tiene 34 años, una bodega en Comas y un solo chip. Hoy va a una tienda de su barrio a sacar uno nuevo para su negocio. Lo que pasa en los próximos minutos le va a cambiar la semana.", true),
             new Escena("«Uy, no salió. Ponga su huella otra vez.»",
-                "Ana pone su huella dos veces. Con la segunda, el vendedor registra un chip extra a su nombre.", true),
+                "Para sacar un chip piden tu DNI y tu huella. El vendedor dice que la primera «no salió» y Ana la pone otra vez. Con esa segunda huella, válida para RENIEC, él registra un segundo chip a nombre de Ana. OSIPTEL advierte justamente sobre esta trampa.", true),
             new Escena("El chip extra se vende por la espalda.",
-                "Ana se va feliz con su chip. El otro, a nombre de Ana, termina en manos de un extorsionador.", true),
+                "Ana se va feliz con su chip. El otro chip, a nombre de Ana, se vende por la espalda a un extorsionador. Para el sistema, ese chip es de Ana; para la ley, la responsable es Ana.", true),
             new Escena("«Paga o te va a ir mal.»",
-                "Desde ese chip amenazan a Don Julio, un comerciante. El número que le aparece está a nombre de Ana.",
+                "Desde ese chip llaman a Don Julio, un comerciante, y le exigen dinero. Don Julio denuncia y entrega el número. Ese número, en el registro, está a nombre de Ana.",
                 true),
             new Escena("La policía rastrea el número… y llega a Ana.",
-                "El registro dice que el chip es de Ana. El verdadero culpable sigue libre.", true),
+                "La policía hace lo correcto: rastrea el número en el registro de la operadora. Pero el registro dice que el chip es de Ana. Ella es citada, investigada y asustada, mientras el verdadero culpable sigue libre.", true),
             new Escena("Y no es solo Ana.",
-                "En 2025, OSIPTEL encontró cientos de miles de líneas con datos que no cuadran.", true)
+                "En 2025, OSIPTEL encontró cientos de miles de líneas cuyos datos no cuadran con quien las usa, y unas 200 mil personas con más de 10 líneas a su nombre. Muchas de ellas, como Ana, no lo saben.", true)
         ));
     }
 

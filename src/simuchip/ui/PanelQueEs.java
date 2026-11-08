@@ -22,8 +22,8 @@ public final class PanelQueEs extends PanelEscenas {
     public PanelQueEs() {
         super(List.of(
             new Escena("¿Qué es ChipGuard?",
-                "Un servicio gratuito que protege tu DNI: nadie puede activar un chip a tu nombre sin tu permiso. "
-                    + "Tiene tres partes.", true),
+                "Es nuestra propuesta: un servicio gratuito que protege tu DNI. La regla es simple: nadie puede activar "
+                    + "un chip a tu nombre sin tu permiso. Para lograrlo tiene tres partes, una para cada tipo de usuario.", true),
             new Escena("¿Para qué sirve?", "Cuatro cosas, todas desde tu celular.", true),
             new Escena("¿Quién lo usa?", "Tres actores, cada uno con su propia pantalla.", true),
             new Escena("La app, pantalla por pantalla.",
@@ -31,8 +31,9 @@ public final class PanelQueEs extends PanelEscenas {
             new Escena("La web: para quien no tiene app.",
                 "Desde cualquier navegador: pones tu DNI, recibes un código por SMS y ves tus chips.", true),
             new Escena("¿Qué cambia frente a lo que existe hoy?",
-                "Hoy OSIPTEL ya tiene «Checa tus líneas», pero tienes que acordarte de revisar. ChipGuard te avisa "
-                    + "antes de que el chip funcione.", true)
+                "OSIPTEL ya tiene «Checa tus líneas» y permite restringir nuevas líneas a tu nombre. Es un gran paso, "
+                    + "pero tú tienes que ir a revisar. ChipGuard une todo en tu celular y te pregunta ANTES de que el chip "
+                    + "funcione.", true)
         ));
     }
 
@@ -437,11 +438,11 @@ public final class PanelQueEs extends PanelEscenas {
 
     private void comparacion(Graphics2D g, Rectangle a, double t) {
         String[][] filas = {
-            {"¿Cuándo te enteras?", "Cuando tú entras a revisar", "Al instante, con una alerta"},
-            {"¿El chip ya funciona?", "Sí, ya puede extorsionar", "No: espera tu permiso"},
-            {"¿Cómo lo bloqueas?", "Trámite con la operadora", "Un toque: «No fui yo»"},
-            {"¿Y la tienda?", "Nadie la reporta", "Reporte automático a OSIPTEL"},
-            {"¿Cuánto te cuesta?", "Gratis", "Gratis"}
+            {"¿Cómo ves tus chips?", "Entras a la web cuando te acuerdas", "Siempre en tu celular"},
+            {"¿Cuándo te enteras?", "Cuando revisas, o por un SMS si llega", "Al instante, antes de activar"},
+            {"¿El chip ya funciona?", "Sí: se activa y luego reclamas", "No: espera tu permiso"},
+            {"¿Bloquear nuevas líneas?", "Sí, una restricción general", "Sí, y además chip por chip"},
+            {"¿Y la tienda?", "Reclamo aparte", "Reporte automático a OSIPTEL"}
         };
         int alto = Math.min(78, (a.height - 70) / filas.length);
         int c1 = a.x;
@@ -465,10 +466,8 @@ public final class PanelQueEs extends PanelEscenas {
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, al));
             Tema.texto(g, filas[f][0], c1, y + alto / 2.0 + 8);
             g.setFont(Tema.letra(Font.PLAIN, 19f));
-            g.setColor(Tema.conAlfa(Tema.ROJO_OSCURO, f == 4 ? 0 : al));
-            if (f == 4) {
-                g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, al));
-            }
+            g.setColor(Tema.conAlfa(Tema.ROJO_OSCURO, al));
+            
             Tema.texto(g, filas[f][1], c2, y + alto / 2.0 + 7);
             g.setFont(Tema.letra(Font.BOLD, 19f));
             g.setColor(Tema.conAlfa(Tema.VERDE, al));

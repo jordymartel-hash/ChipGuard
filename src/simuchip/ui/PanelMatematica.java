@@ -32,34 +32,51 @@ public final class PanelMatematica extends PanelEscenas {
     public PanelMatematica() {
         super(List.of(
             new Escena("El registro es una función.",
-                "Cada chip apunta a un solo dueño: nunca a cero, nunca a dos. Eso es una función: f(chip) = su dueño."),
+                "Una función es una regla que a cada elemento del primer conjunto le asigna exactamente un "
+                    + "elemento del segundo. Aquí el primer conjunto son los chips y el segundo, las personas. El "
+                    + "registro de la operadora le asigna a cada chip un solo dueño: nunca a cero, nunca a dos. "
+                    + "Por eso decimos que f(chip) = su dueño. Fíjate: a Ana le llegan dos flechas, y eso está permitido."),
             new Escena("Esto NO sería una función.",
-                "Un chip con dos dueños: ¿a quién busca la policía? Un chip sin dueño: nadie responde por él."),
+                "Para ser función, de cada chip tiene que salir una flecha, y solo una. Si un chip apuntara a "
+                    + "dos dueños, ¿a quién busca la policía? Y si un chip no tuviera dueño, nadie respondería por "
+                    + "él: sería un chip anónimo, justo lo que buscan los extorsionadores."),
             new Escena("Inyectiva: nadie comparte.",
-                "A cada persona le llega como mucho un chip. Que Pedro no tenga ninguno no importa."),
+                "Una función es inyectiva cuando a dos chips distintos les tocan dueños distintos: a cada persona "
+                    + "le llega como mucho una flecha. Que Pedro no tenga ninguna no importa. En símbolos: "
+                    + "si c₁ ≠ c₂, entonces f(c₁) ≠ f(c₂)."),
             new Escena("Caso real: los asientos de un bus.",
-                "Cada pasajero tiene su propio asiento: inyectiva. Sobran asientos vacíos y no pasa nada. "
-                    + "Pero si venden el mismo asiento dos veces (sobreventa), deja de ser inyectiva."),
+                "Pasajeros → asientos. Cada pasajero tiene su propio asiento, así que es inyectiva. Sobran "
+                    + "asientos vacíos y no pasa nada. Pero si la empresa vende el mismo asiento dos veces "
+                    + "(sobreventa), a ese asiento le llegan dos flechas y deja de ser inyectiva: dos personas "
+                    + "pelean por el mismo lugar."),
             new Escena("Sobreyectiva: nadie se queda fuera.",
-                "Todas las personas tienen al menos un chip. Ana tiene dos, y eso se vale."),
+                "Una función es sobreyectiva cuando todos los elementos del segundo conjunto reciben al menos "
+                    + "una flecha: no sobra nadie. Aquí cada persona tiene al menos un chip. Ana tiene dos, y eso se "
+                    + "vale. En símbolos: para toda persona p existe un chip c tal que f(c) = p."),
             new Escena("Caso real: los grupos de esta expo.",
-                "Alumnos → grupos. Ningún grupo puede quedar vacío: todos reciben a alguien. Eso es sobreyectiva "
-                    + "(y como hay más alumnos que grupos, no puede ser inyectiva)."),
+                "Alumnos → grupos. El profesor reparte a todos y ningún grupo puede quedar vacío: todos reciben "
+                    + "a alguien, así que es sobreyectiva. Y como hay más alumnos que grupos, a algún grupo le "
+                    + "tocan varios: no puede ser inyectiva."),
             new Escena("Biyectiva: parejas perfectas.",
-                "Un chip, una persona, y de vuelta. Con la inversa vas del chip a la persona sin perderte. "
-                    + "Eso es lo que necesita la policía."),
+                "Si una función es inyectiva y sobreyectiva a la vez, es biyectiva: cada chip con una persona y "
+                    + "cada persona con un chip. Solo entonces existe la inversa f⁻¹, que va de vuelta de la persona "
+                    + "al chip sin perderse. Eso es lo que necesita la policía para llegar a la persona correcta."),
             new Escena("Caso real: tú y tu DNI.",
-                "Cada persona tiene un DNI y cada DNI es de una sola persona: biyectiva. Con el DNI encuentras a la "
-                    + "persona y con la persona, su DNI. Por eso a la policía le sirve tanto."),
+                "Personas → DNI. Cada persona tiene un DNI y cada DNI es de una sola persona: es biyectiva. Por "
+                    + "eso funciona en las dos direcciones. Con tu DNI te encuentran a ti, y contigo encuentran tu "
+                    + "DNI. Si alguien usa tu DNI para sacar un chip, rompe esa pareja perfecta."),
             new Escena("El problema: dos flechas que no coinciden.",
-                "Cada chip tiene dos flechas: a nombre de quién está (el registro) y quién lo usa de verdad. "
-                    + "En el …935 apuntan a personas distintas."),
+                "Cada chip tiene en realidad dos flechas. La del registro dice a nombre de quién está y la del uso "
+                    + "real dice quién lo usa de verdad. En el chip …935, la del registro apunta a Ana y la del uso "
+                    + "real, al extorsionador. La policía sigue la primera y llega a una inocente."),
             new Escena("3 cajones por DNI: el palomar.",
-                "Si cada DNI tuviera solo 3 cajones para chips y llegan 5, 2 no caben. Más cosas que cajones: "
-                    + "algo se queda fuera. Ese es el principio del palomar."),
+                "Principio del palomar: si metes más objetos que cajones, algún cajón tiene que quedarse con más de "
+                    + "uno o algo queda fuera. Si cada DNI tuviera solo 3 cajones para chips y llegan 5, dos no "
+                    + "caben. Así funciona un tope de líneas por persona: nadie puede acumular chips sin límite."),
             new Escena("La solución: que las dos flechas lleguen a la misma persona.",
-                "Que ningún chip se active sin que su dueño lo confirme desde su celular. Así, quien figura en el "
-                    + "registro es quien lo usa: chip ↔ persona real.")
+                "Si ningún chip se activa sin que su dueño lo confirme desde su celular, la flecha del registro y "
+                    + "la del uso real terminan en la misma persona. Entonces cada chip lleva a alguien real que "
+                    + "dijo «sí, soy yo»: chip ↔ persona, como una biyección. Esa es la idea de ChipGuard.")
         ));
     }
 
@@ -262,7 +279,7 @@ public final class PanelMatematica extends PanelEscenas {
         Personitas.persona(g, ANA, xIzq, yGente + alto / 2, alto, solucion ? Cara.FELIZ : Cara.ASUSTADA, 1);
         etiquetaBajo(g, "Ana", xIzq, yGente + alto / 2 + 26);
         if (solucion) {
-            Personitas.celular(g, xIzq + alto * 0.42, yGente, alto * 0.42, "✓ Fui yo", Tema.VERDE,
+            Personitas.celular(g, xIzq + alto * 0.62, yGente, alto * 0.42, "✓ Fui yo", Tema.VERDE,
                     tramo(t, 0.3, 0.4));
         } else {
             Personitas.persona(g, EXTORSIONADOR, xDer, yGente + alto / 2, alto, Cara.MALA, 1);
