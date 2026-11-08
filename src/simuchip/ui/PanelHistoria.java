@@ -56,10 +56,15 @@ public final class PanelHistoria extends PanelEscenas {
         }
     }
 
+    /** La tienda mide de alto ~1,09 × su ancho + el letrero: se achica si el área es baja, para no tapar el texto. */
+    static double anchoTienda(Rectangle a, double deseado) {
+        return Math.min(deseado, (a.height - 70) / 1.1);
+    }
+
     // ── 0: Ana camina hacia la tienda ──
     private void anaLlega(Graphics2D g, Rectangle a, double piso, double alto, double t) {
         double xt = a.x + a.width * 0.62;
-        double wt = Math.min(380, a.width * 0.3);
+        double wt = anchoTienda(a, Math.min(380, a.width * 0.3));
         Personitas.persona(g, VENDEDOR, xt + wt / 2, piso - alto * 0.25, alto, Cara.FELIZ, 1);
         Personitas.tienda(g, xt, piso, wt, "Chips al toque");
         double p = tramo(t, 0, 1.4);
@@ -75,7 +80,8 @@ public final class PanelHistoria extends PanelEscenas {
 
     // ── 1: la huella dos veces y el chip extra ──
     private void dobleHuella(Graphics2D g, Rectangle a, double piso, double alto, double t) {
-        double wt = Math.min(420, a.width * 0.36);
+        double wt = anchoTienda(a, Math.min(420, a.width * 0.36));
+        alto = Math.min(alto, wt * 0.56); // personas a escala de la tienda: el vendedor queda bajo el toldo
         double xt = a.getCenterX() - wt / 2 + 60;
         double yMostrador = piso - wt * 0.42;
         Personitas.persona(g, VENDEDOR, xt + wt * 0.6, piso - alto * 0.25, alto,
@@ -87,11 +93,13 @@ public final class PanelHistoria extends PanelEscenas {
             double inicio = k == 0 ? 0.4 : 2.4;
             double p = tramo(t, inicio, 0.5);
             double lat = 1 + 0.15 * Math.sin(Math.max(0, t - inicio) * 8) * (1 - tramo(t, inicio + 0.6, 0.4));
-            Personitas.huella(g, xt + wt * (0.25 + k * 0.17), yMostrador - 26, 40 * lat, k == 0 ? Tema.VERDE : Tema.ROJO,
+            double xh = xt + wt * (0.25 + k * 0.17);
+            Personitas.huella(g, xh, yMostrador - 26, 40 * lat, k == 0 ? Tema.VERDE : Tema.ROJO,
                     p);
             g.setFont(Tema.letra(Font.BOLD, 14f));
             g.setColor(Tema.conAlfa(k == 0 ? Tema.VERDE : Tema.ROJO_OSCURO, (int) (255 * p)));
-            Tema.textoCentrado(g, k == 0 ? "huella 1" : "huella 2", xt + wt * (0.25 + k * 0.17), yMostrador - 54);
+            String nombre = wt * 0.17 >= 66 ? "huella " + (k + 1) : (k + 1) + "ª"; // en tiendas estrechas no caben largas
+            Tema.textoCentrado(g, nombre, xh, yMostrador - 54);
         }
         Personitas.burbuja(g, "Uy, no salió. Póngala otra vez.", xt + wt * 0.6, piso - alto * 1.25 - 10, 360,
                 Tema.AZUL_SUAVE, Tema.AZUL_NOCHE, tramo(t, 1.2, 0.4) * (1 - tramo(t, 4.3, 0.2)));

@@ -10,3 +10,4 @@ java -cp out simuchip.PruebasDiagnostico
 java -cp out simuchip.PruebasTraza
 java -cp out simuchip.PruebasDetective
 java -cp out simuchip.PruebasTienda
+java -cp out simuchip.ui.PruebasDisenio
