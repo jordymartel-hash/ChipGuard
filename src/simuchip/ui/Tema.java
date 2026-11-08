@@ -39,6 +39,7 @@ public final class Tema {
     public static final Color GRIS_CLARO = new Color(0xE8E8ED);     // botones grises, rellenos
     public static final Color FILETE = new Color(0xD2D2D7);
     public static final Color BLANCO = new Color(0xFFFFFF);
+    public static final Color FONDO_PAGINA = new Color(0xFBFBFD);   // fondo de los capítulos
 
     // ── Colores de sistema (con significado) ──
     public static final Color NARANJA = new Color(0xFF9F0A);        // conjunto A

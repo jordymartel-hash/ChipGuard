@@ -90,9 +90,9 @@ public final class Detective {
             vidas--;
             if (aprobar) {
                 fraudesColados++;
-                decision = new Decision(false, "Se coló un chip irregular: " + s.motivo().toLowerCase(), 0);
+                decision = new Decision(false, "Se coló un chip irregular: " + s.motivoEnFrase(), 0);
             } else {
-                decision = new Decision(false, "Rechazaste a alguien legítimo: " + s.motivo().toLowerCase(), 0);
+                decision = new Decision(false, "Rechazaste a alguien legítimo: " + s.motivoEnFrase(), 0);
             }
         }
         actual = generar();

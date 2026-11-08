@@ -25,6 +25,10 @@ public final class PruebasDetective {
         verificar(!new Solicitud(5, "E", "4", "T", "9:00", 2, true, true).debeRechazarse(),
                 "2 líneas todavía está bajo el tope (parece pero no es)");
 
+        titulo("Motivo dentro de una frase");
+        igual("la huella no coincide con el DNI", huella.motivoEnFrase(), "solo la inicial va en minúscula, «DNI» se queda");
+        igual("presentó una fotocopia del DNI", copia.motivoEnFrase(), "no escribe «dni» en minúsculas");
+
         titulo("Puntaje y vidas");
         Detective d = new Detective(7);
         Solicitud s = d.actual();

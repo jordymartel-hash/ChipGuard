@@ -166,7 +166,7 @@ public final class PanelChipGuard extends JComponent {
         Tema.suavizar(g);
         int w = getWidth();
         int h = getHeight();
-        g.setColor(Tema.BLANCO);
+        g.setColor(Tema.FONDO_PAGINA);
         g.fillRect(0, 0, w, h);
 
         Escena e = ESCENAS.get(escena);
@@ -192,7 +192,7 @@ public final class PanelChipGuard extends JComponent {
         if (anchoOp >= 300) {
             dibujarOperadora(g, e, xOp, 60, anchoOp, h - 140);
         }
-        avisos.dibujar(g, 48 + colAncho, h - 300, Math.min(380, colAncho));
+        avisos.dibujar(g, w - 34, 20, 340);
         g.dispose();
     }
 
@@ -214,14 +214,16 @@ public final class PanelChipGuard extends JComponent {
         y += Tema.parrafo(g, e.texto(), x, y, ancho, 1.3f) + 20;
 
         g.setFont(Tema.letra(Font.BOLD, 16f));
-        int altoMate = 34 + Tema.partir(e.mate(), g.getFontMetrics(), ancho - 40).size() * 24 + 14;
+        int altoMate = 36 + Tema.partir(e.mate(), g.getFontMetrics(), ancho - 40).size() * 24;
         Tema.tarjeta(g, x, y, ancho, altoMate, 18, Tema.AZUL_NOCHE);
-        g.setFont(Tema.letra(Font.BOLD, 12.5f));
-        g.setColor(Tema.DORADO);
-        Tema.texto(g, "LO QUE DICE LA MATEMÁTICA", x + 20, y + 24);
-        g.setFont(Tema.letra(Font.BOLD, 16f));
-        g.setColor(Tema.CREMA);
-        Tema.parrafo(g, e.mate(), x + 20, y + 34, ancho - 40, 1.2f);
+        g.setColor(Tema.BLANCO);
+        Tema.parrafo(g, e.mate(), x + 20, y + 16, ancho - 40, 1.2f);
+        // los botones van justo debajo: sin vacío en la columna
+        int yBotones = y + altoMate + 28;
+        if (anterior.getY() != yBotones) {
+            anterior.setLocation(anterior.getX(), yBotones);
+            siguiente.setLocation(siguiente.getX(), yBotones);
+        }
     }
 
     private void dibujarCelular(Graphics2D g, Escena e, int x, int y, int w, int h) {
@@ -401,7 +403,7 @@ public final class PanelChipGuard extends JComponent {
         Tema.textoCentrado(g, "Sí, fui yo (poner huella)", zonaSi.getCenterX(), zonaSi.getCenterY());
         g.setColor(Tema.conAlfa(Tema.CREMA, 180));
         g.setFont(Tema.letra(Font.ITALIC, 13f));
-        Tema.textoCentrado(g, "Toca una opción ↑", cx, by + bh + 34);
+        Tema.textoCentrado(g, "Toca una opción", cx, by + bh + 34);
     }
 
     private void pantallaBloqueado(Graphics2D g, int sx, int sy, int sw, int sh) {
@@ -502,15 +504,12 @@ public final class PanelChipGuard extends JComponent {
 
     private void dibujarOperadora(Graphics2D g, Escena e, int x, int y, int w, int h) {
         Tema.tarjeta(g, x, y, w, h, 24, Tema.BLANCO);
-        g.setFont(Tema.letra(Font.BOLD, 13f));
-        g.setColor(Tema.TEXTO_SUAVE);
-        Tema.texto(g, "LO QUE VE LA OPERADORA", x + 22, y + 32);
-        g.setFont(Tema.letra(Font.BOLD, 19f));
+        g.setFont(Tema.titulo(21f));
         g.setColor(Tema.AZUL_NOCHE);
-        Tema.texto(g, "Chips con el DNI de Ana", x + 22, y + 60);
+        Tema.texto(g, "Lo que ve la operadora", x + 22, y + 44);
         g.setFont(Tema.letra(Font.PLAIN, 14f));
         g.setColor(Tema.AZUL_TEXTO);
-        Tema.texto(g, "f⁻¹(Ana) = la preimagen de su DNI", x + 22, y + 82);
+        Tema.texto(g, "f⁻¹(Ana): los chips con su DNI", x + 22, y + 70);
 
         double xL = x + w * 0.22;
         double xP = x + w * 0.74;

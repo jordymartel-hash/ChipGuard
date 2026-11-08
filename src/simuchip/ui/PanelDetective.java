@@ -156,7 +156,7 @@ public final class PanelDetective extends JComponent {
         Tema.suavizar(g);
         int w = getWidth();
         int h = getHeight();
-        g.setColor(Tema.BLANCO);
+        g.setColor(Tema.FONDO_PAGINA);
         g.fillRect(0, 0, w, h);
 
         int x = 48;
@@ -182,7 +182,7 @@ public final class PanelDetective extends JComponent {
             dibujarReglas(g, xDer, 40, anchoDer);
             dibujarHistorial(g, xDer, 380, anchoDer, h - 420);
         }
-        avisos.dibujar(g, w - 40, h - 150, Math.min(420, w - x - ancho - 76));
+        avisos.dibujar(g, w - 40, h - 140, Math.min(400, w - x - ancho - 76));
         g.dispose();
     }
 
@@ -228,19 +228,18 @@ public final class PanelDetective extends JComponent {
         Solicitud s = juego.actual();
         Tema.tarjeta(g, x, y, w, h, 26, Tema.BLANCO);
         long t = System.currentTimeMillis() - ultimoDestello;
-        if (t < 500 && !historial.isEmpty()) {
-            Tema.borde(g, x, y, w, h, 26, ultimoAcierto ? Tema.VERDE : Tema.ROJO, (float) (8 * (1 - t / 500.0)));
+        if (t < 500 && !historial.isEmpty() && !Animador.instantaneo) {
+            Tema.rectRedondo(g, x, y, w, h, 26, Tema.conAlfa(ultimoAcierto ? Tema.VERDE_SUAVE : Tema.ROJO_SUAVE,
+                    (int) (255 * (1 - t / 500.0))));
             repaint();
         }
-        g.setFont(Tema.letra(Font.BOLD, 14f));
-        g.setColor(Tema.TEXTO_SUAVE);
-        Tema.texto(g, "SOLICITUD #" + s.numero() + "  ·  " + s.tienda() + "  ·  " + s.hora(), x + 30, y + 40);
-        g.setFont(Tema.letra(Font.BOLD, 34f));
+        g.setFont(Tema.titulo(34f));
         g.setColor(Tema.AZUL_NOCHE);
-        Tema.texto(g, s.nombre(), x + 30, y + 88);
-        g.setFont(Tema.letra(Font.PLAIN, 17f));
+        Tema.texto(g, s.nombre() + " quiere un chip", x + 30, y + 62);
+        g.setFont(Tema.letra(Font.PLAIN, 16f));
         g.setColor(Tema.TEXTO_SUAVE);
-        Tema.texto(g, "DNI " + s.dni() + "  quiere un chip nuevo", x + 30, y + 116);
+        Tema.texto(g, "DNI " + s.dni() + "  ·  " + s.tienda() + "  ·  " + s.hora() + "  ·  solicitud " + s.numero(),
+                x + 30, y + 96);
 
         int fy = y + 150;
         int alto = Math.max(58, (h - 170) / 3 - 12);
@@ -302,9 +301,9 @@ public final class PanelDetective extends JComponent {
 
     private void dibujarReglas(Graphics2D g, int x, int y, int w) {
         Tema.tarjeta(g, x, y, w, 320, 24, Tema.BLANCO);
-        g.setFont(Tema.letra(Font.BOLD, 13f));
-        g.setColor(Tema.TEXTO_SUAVE);
-        Tema.texto(g, "REGLAS · RECHAZA SI…", x + 22, y + 32);
+        g.setFont(Tema.titulo(21f));
+        g.setColor(Tema.AZUL_NOCHE);
+        Tema.texto(g, "Rechaza si…", x + 22, y + 38);
         String[][] reglas = {
             {"La huella no coincide", "quien lo usa ≠ dueño en papel  (u ≠ f)"},
             {"Trae fotocopia del DNI", "sin prueba de identidad no hay contrato g"},
@@ -327,7 +326,7 @@ public final class PanelDetective extends JComponent {
         }
         g.setFont(Tema.letra(Font.BOLD, 14f));
         g.setColor(Tema.VERDE);
-        Tema.texto(g, "Si cumple las 3 → APRUEBA", x + 22, y + 296);
+        Tema.texto(g, "Si cumple las 3, apruébalo.", x + 22, y + 296);
     }
 
     private void dibujarHistorial(Graphics2D g, int x, int y, int w, int h) {
@@ -335,9 +334,9 @@ public final class PanelDetective extends JComponent {
             return;
         }
         Tema.tarjeta(g, x, y, w, h, 24, Tema.BLANCO);
-        g.setFont(Tema.letra(Font.BOLD, 13f));
-        g.setColor(Tema.TEXTO_SUAVE);
-        Tema.texto(g, "TUS ÚLTIMAS DECISIONES", x + 22, y + 32);
+        g.setFont(Tema.titulo(21f));
+        g.setColor(Tema.AZUL_NOCHE);
+        Tema.texto(g, "Tus decisiones", x + 22, y + 38);
         if (historial.isEmpty()) {
             g.setFont(Tema.letra(Font.ITALIC, 15f));
             Tema.texto(g, "Aún no decides nada.", x + 22, y + 64);
@@ -353,7 +352,7 @@ public final class PanelDetective extends JComponent {
             Tema.texto(g, "#" + j.solicitud().numero() + " " + j.solicitud().nombre(), x + 56, yy);
             g.setFont(Tema.letra(Font.PLAIN, 14f));
             g.setColor(Tema.TEXTO_SUAVE);
-            Tema.texto(g, (j.aprobo() ? "aprobaste" : "rechazaste") + " · " + j.solicitud().motivo().toLowerCase(),
+            Tema.texto(g, (j.aprobo() ? "aprobaste" : "rechazaste") + " · " + j.solicitud().motivoEnFrase(),
                     x + 150, yy);
         }
     }

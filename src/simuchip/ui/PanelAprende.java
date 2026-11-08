@@ -96,7 +96,6 @@ public final class PanelAprende extends JPanel {
     private final Lateral lateral = new Lateral();
     private final Animador animador;
     private final Avisos avisos;
-    private final JLabel etiquetaTamanos = new JLabel();
     private Boton botonInversa;
 
     public PanelAprende() {
@@ -113,35 +112,61 @@ public final class PanelAprende extends JPanel {
 
     // ─────────────────────────── barra de botones ───────────────────────────
 
+    private static final int[][][] EJEMPLOS = {
+        {{3, 3}, {1, 'a'}, {1, 'b'}, {2, 'c'}},
+        {{3, 4}, {1, 'a'}, {2, 'b'}, {3, 'c'}},
+        {{4, 3}, {1, 'a'}, {2, 'a'}, {3, 'b'}, {4, 'c'}},
+        {{3, 3}, {1, 'a'}, {2, 'b'}, {3, 'c'}},
+        {{3, 3}, {1, 'a'}, {2, 'a'}, {3, 'b'}}
+    };
+
+    private final Segmentado ejemplos = new Segmentado("No es función", "Inyectiva", "Sobreyectiva", "Biyectiva",
+            "Ninguna");
+    private final Contador contadorA = new Contador("|A|", 3);
+    private final Contador contadorB = new Contador("|B|", 3);
+    private final Boton borrar = new Boton("Borrar", Boton.Estilo.PELIGRO);
+
+    /** Cabecera del capítulo: titular a la izquierda y un solo control segmentado con los ejemplos. */
     private JComponent crearBarra() {
-        JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 12));
-        barra.setOpaque(false);
-        barra.setBorder(BorderFactory.createEmptyBorder(4, 14, 0, 14));
-        barra.add(etiqueta("Ejemplos:"));
-        barra.add(new Boton("No es función", Boton.Estilo.SECUNDARIO)
-                .alHacerClic(() -> cargar(3, 3, new int[][] {{1, 'a'}, {1, 'b'}, {2, 'c'}})));
-        barra.add(new Boton("Inyectiva", Boton.Estilo.SECUNDARIO)
-                .alHacerClic(() -> cargar(3, 4, new int[][] {{1, 'a'}, {2, 'b'}, {3, 'c'}})));
-        barra.add(new Boton("Sobreyectiva", Boton.Estilo.SECUNDARIO)
-                .alHacerClic(() -> cargar(4, 3, new int[][] {{1, 'a'}, {2, 'a'}, {3, 'b'}, {4, 'c'}})));
-        barra.add(new Boton("Biyectiva", Boton.Estilo.SECUNDARIO)
-                .alHacerClic(() -> cargar(3, 3, new int[][] {{1, 'a'}, {2, 'b'}, {3, 'c'}})));
-        barra.add(new Boton("Ninguna", Boton.Estilo.SECUNDARIO)
-                .alHacerClic(() -> cargar(3, 3, new int[][] {{1, 'a'}, {2, 'a'}, {3, 'b'}})));
-        barra.add(new Boton("Borrar", Boton.Estilo.PELIGRO).alHacerClic(() -> {
+        ejemplos.alElegir(i -> {
+            int[][] e = EJEMPLOS[i];
+            int[][] pares = new int[e.length - 1][];
+            System.arraycopy(e, 1, pares, 0, pares.length);
+            cargar(e[0][0], e[0][1], pares);
+            ejemplos.setElegido(i);
+        });
+        ejemplos.setElegido(2);
+        JComponent cabecera = new JComponent() {
+            @Override
+            public void doLayout() {
+                Dimension d = ejemplos.getPreferredSize();
+                ejemplos.setBounds(getWidth() - 24 - d.width, 26, d.width, d.height);
+            }
+
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                Graphics2D g = (Graphics2D) graphics.create();
+                Tema.suavizar(g);
+                g.setFont(Tema.titulo(40f));
+                g.setColor(Tema.AZUL_NOCHE);
+                Tema.texto(g, "Cuenta las flechas.", 24, 58);
+                g.dispose();
+            }
+        };
+        cabecera.setLayout(null);
+        cabecera.setPreferredSize(new Dimension(1200, 86));
+        cabecera.add(ejemplos);
+
+        contadorA.alCambiar(d -> cambiarTamano(d, 0));
+        contadorB.alCambiar(d -> cambiarTamano(0, d));
+        borrar.conIcono(Iconos.Tipo.EQUIS).alHacerClic(() -> {
             flechas.clear();
             seleccionado = null;
+            ejemplos.setElegido(-1);
             detenerEjecucion();
             refrescar();
-        }));
-        barra.add(espacio(4));
-        barra.add(etiquetaTamanos);
-        barra.add(new Boton("A −", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(-1, 0)));
-        barra.add(new Boton("A +", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(1, 0)));
-        barra.add(new Boton("B −", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(0, -1)));
-        barra.add(new Boton("B +", Boton.Estilo.SECUNDARIO).alHacerClic(() -> cambiarTamano(0, 1)));
-        barra.add(espacio(4));
-        botonInversa = new Boton("Ver inversa f⁻¹", Boton.Estilo.SECUNDARIO, true);
+        });
+        botonInversa = new Boton("Inversa f⁻¹", Boton.Estilo.SECUNDARIO, true);
         botonInversa.alHacerClic(() -> {
             verInversa = botonInversa.encendido();
             for (Flecha<Integer, Character> f : flechas) {
@@ -153,8 +178,11 @@ public final class PanelAprende extends JPanel {
             }
             refrescar();
         });
-        barra.add(botonInversa);
-        return barra;
+        lienzo.setLayout(null);
+        for (JComponent c : new JComponent[] {contadorA, contadorB, botonInversa, borrar}) {
+            lienzo.add(c);
+        }
+        return cabecera;
     }
 
     private static JLabel etiqueta(String texto) {
@@ -226,6 +254,7 @@ public final class PanelAprende extends JPanel {
         int nA = Math.max(1, Math.min(5, dominio.size() + dA));
         int nB = Math.max(1, Math.min(5, codominio.size() + dB));
         ajustarConjuntos(nA, nB);
+        ejemplos.setElegido(-1);
         flechas.removeIf(f -> !dominio.contains(f.desde()) || !codominio.contains(f.hasta()));
         if (seleccionado != null && !dominio.contains(seleccionado)) {
             seleccionado = null;
@@ -235,6 +264,7 @@ public final class PanelAprende extends JPanel {
     }
 
     private void alternarFlecha(Integer a, Character b) {
+        ejemplos.setElegido(-1);
         Flecha<Integer, Character> f = new Flecha<>(a, b);
         if (flechas.remove(f)) {
             animador.olvidar(f);
@@ -248,9 +278,8 @@ public final class PanelAprende extends JPanel {
     }
 
     private void refrescar() {
-        etiquetaTamanos.setText("|A| = " + dominio.size() + "   |B| = " + codominio.size());
-        etiquetaTamanos.setFont(Tema.letra(Font.BOLD, 15f));
-        etiquetaTamanos.setForeground(Tema.AZUL_NOCHE);
+        contadorA.setValor(dominio.size());
+        contadorB.setValor(codominio.size());
         lateral.actualizarBotones();
         lienzo.repaint();
         lateral.repaint();
@@ -377,12 +406,22 @@ public final class PanelAprende extends JPanel {
             addMouseMotionListener(raton);
         }
 
+        @Override
+        public void doLayout() {
+            int x = 40;
+            for (JComponent c : new JComponent[] {contadorA, contadorB, botonInversa, borrar}) {
+                Dimension d = c.getPreferredSize();
+                c.setBounds(x, 28, d.width, 36);
+                x += d.width + 10;
+            }
+        }
+
         private void medir() {
             cxA = getWidth() * 0.27;
             cxB = getWidth() * 0.73;
             int maximo = Math.max(dominio.size(), codominio.size());
-            altoOvalo = Math.max(220, Math.min(getHeight() - 250, 96 * maximo + 110));
-            cy = 140 + altoOvalo / 2;
+            altoOvalo = Math.max(220, Math.min(getHeight() - 270, 96 * maximo + 110));
+            cy = 160 + altoOvalo / 2;
         }
 
         private Point2D posA(int i) {
@@ -446,7 +485,7 @@ public final class PanelAprende extends JPanel {
             String ayuda = seleccionado == null
                     ? "Clic en un número de A y luego en una letra de B para dibujar (o borrar) una flecha"
                     : "Ahora elige a dónde va la flecha del «" + seleccionado + "»  (clic en una letra de B)";
-            Tema.textoCentrado(g, ayuda, w / 2.0, 40);
+            Tema.textoCentrado(g, ayuda, w / 2.0, 104);
 
             String tipo = Funciones.tipo(setA(), setB(), flechas);
             Color color = switch (tipo) {
@@ -455,12 +494,12 @@ public final class PanelAprende extends JPanel {
                 case "Función (ninguna de las tres)" -> Tema.TEXTO_SUAVE;
                 default -> Tema.AZUL_TEXTO;
             };
-            g.setFont(Tema.letra(Font.BOLD, 22f));
-            String chip = "Resultado: " + tipo;
-            int anchoChip = g.getFontMetrics().stringWidth(chip) + 44;
-            Tema.rectRedondo(g, w / 2.0 - anchoChip / 2.0, 56, anchoChip, 44, 44, color);
+            g.setFont(Tema.letra(Font.BOLD, 18f));
+            String chip = tipo;
+            int anchoChip = g.getFontMetrics().stringWidth(chip) + 40;
+            Tema.rectRedondo(g, w - 40 - anchoChip, 28, anchoChip, 36, 36, color);
             g.setColor(Tema.BLANCO);
-            Tema.textoCentrado(g, chip, w / 2.0, 78);
+            Tema.textoCentrado(g, chip, w - 40 - anchoChip / 2.0, 46);
 
             Tema.ovalo(g, cxA, cy, 210, altoOvalo, Tema.NARANJA_SUAVE, Tema.NARANJA);
             Tema.ovalo(g, cxB, cy, 210, altoOvalo, Tema.AZUL_SUAVE, Tema.AZUL);
@@ -573,20 +612,20 @@ public final class PanelAprende extends JPanel {
                 // narrador: qué está haciendo el código ahora mismo
                 int ancho = Math.min(760, w - 80);
                 int x = (w - ancho) / 2;
-                int y = getHeight() - 104;
-                Color borde = switch (p.tipo()) {
-                    case OK -> Tema.VERDE;
-                    case FALLA -> Tema.ROJO;
-                    default -> Tema.DORADO;
+                int y = getHeight() - 92;
+                Color tono = switch (p.tipo()) {
+                    case OK -> Tema.VERDE_CLARO;
+                    case FALLA -> Tema.ROJO_CLARO;
+                    default -> Tema.BLANCO;
                 };
-                Tema.tarjeta(g, x, y, ancho, 70, 20, Tema.AZUL_NOCHE);
-                Tema.rectRedondo(g, x, y, 10, 70, 10, borde);
-                g.setFont(Tema.letra(Font.BOLD, 13f));
-                g.setColor(Tema.DORADO);
-                Tema.texto(g, "PASO " + (paso + 1) + " DE " + traza.size(), x + 26, y + 24);
+                Tema.tarjeta(g, x, y, ancho, 56, 28, Tema.AZUL_NOCHE);
                 g.setFont(Tema.letra(Font.BOLD, 18f));
-                g.setColor(Tema.CREMA);
-                Tema.texto(g, p.mensaje(), x + 26, y + 52);
+                g.setColor(tono);
+                Tema.texto(g, p.mensaje(), x + 28, y + 35);
+                g.setFont(Tema.codigo(14f));
+                g.setColor(Tema.TEXTO_OSCURO_SUAVE);
+                String cuenta = (paso + 1) + " / " + traza.size();
+                Tema.texto(g, cuenta, x + ancho - 28 - g.getFontMetrics().stringWidth(cuenta), y + 34);
                 return;
             }
             int y = getHeight() - 52;
@@ -673,29 +712,32 @@ public final class PanelAprende extends JPanel {
             int w = getWidth() - 24;
             int alto = altoTarjeta();
             boolean compacto = alto < 84;
-            g.setFont(Tema.letra(Font.BOLD, 19f));
+            g.setFont(Tema.titulo(21f));
             g.setColor(Tema.AZUL_NOCHE);
-            Tema.texto(g, "¿Qué tipo de función es?  (clic para elegir)", x + 4, 34);
+            Tema.texto(g, "¿Qué tipo de función es?", x + 4, 34);
 
+            // lista sin tarjetas: filas separadas por filetes; la elegida, con fondo azul suave
             for (int i = 0; i < 4; i++) {
                 Veredicto v = veredicto(i);
                 int y = Y_TARJETAS + i * (alto + 8);
-                Tema.tarjeta(g, x, y, w, alto, 20, Tema.BLANCO);
                 if (i == tarjeta) {
-                    Tema.borde(g, x, y, w, alto, 20, Tema.DORADO, 3.5f);
+                    Tema.rectRedondo(g, x - 4, y - 2, w + 8, alto + 4, 16, Tema.AZUL_SUAVE);
+                } else if (i > 0 && i != tarjeta + 1) {
+                    g.setColor(Tema.FILETE);
+                    g.fillRect(x + 56, y - 4, w - 56, 1);
                 }
-                Tema.insignia(g, v.cumple(), x + 32, y + alto / 2, 17);
+                Tema.insignia(g, v.cumple(), x + 24, y + alto / 2, 14);
                 g.setFont(Tema.letra(Font.BOLD, 17f));
                 g.setColor(Tema.AZUL_NOCHE);
-                Tema.texto(g, TITULOS[i] + (v.cumple() ? ":  SÍ" : ":  NO"), x + 62, y + 25);
+                Tema.texto(g, TITULOS[i] + (v.cumple() ? ": sí" : ": no"), x + 52, y + 25);
                 if (!compacto) {
                     g.setFont(Tema.letra(Font.PLAIN, 13.5f));
                     g.setColor(Tema.TEXTO_SUAVE);
-                    Tema.texto(g, PREGUNTAS[i], x + 62, y + 46);
+                    Tema.texto(g, PREGUNTAS[i], x + 52, y + 46);
                 }
-                g.setFont(Tema.letra(Font.BOLD, 14f));
+                g.setFont(Tema.medio(14.5f));
                 g.setColor(v.cumple() ? Tema.VERDE : Tema.ROJO_OSCURO);
-                Tema.texto(g, "→ " + v.razon(), x + 62, y + (compacto ? 50 : 70));
+                Tema.texto(g, v.razon(), x + 52, y + (compacto ? 50 : 70));
             }
             dibujarCodigo(g, x, yCodigo(), w);
             g.dispose();
@@ -705,8 +747,8 @@ public final class PanelAprende extends JPanel {
             String[] lineas = CODIGO[tarjeta];
             int alto = altoCodigo();
             Tema.tarjeta(g, x, y, w, alto, 22, Tema.AZUL_NOCHE);
-            g.setFont(Tema.letra(Font.BOLD, 14f));
-            g.setColor(Tema.DORADO);
+            g.setFont(Tema.codigo(14f));
+            g.setColor(Tema.TEXTO_OSCURO_SUAVE);
             Tema.texto(g, "Funciones.java", x + 20, y + 35);
 
             PasoTraza p = pasoActual();
@@ -740,9 +782,9 @@ public final class PanelAprende extends JPanel {
             // fila de variables
             int yv = y + alto - 40;
             Tema.rectRedondo(g, x + 10, yv, w - 20, 30, 10, Tema.AZUL_NOCHE_2);
-            g.setFont(Tema.letra(Font.BOLD, 13f));
-            g.setColor(Tema.DORADO);
-            Tema.texto(g, "VARIABLES", x + 22, yv + 20);
+            g.setFont(Tema.codigo(13f));
+            g.setColor(Tema.TEXTO_OSCURO_SUAVE);
+            Tema.texto(g, "vars", x + 22, yv + 20);
             g.setFont(Tema.codigo(14f));
             g.setColor(Tema.CREMA);
             String vars = p == null ? "pulsa Ejecutar para ver el código correr"

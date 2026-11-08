@@ -172,12 +172,16 @@ public final class Boton extends JComponent {
             x = (w - anchoContenido) / 2;
         }
         int cy = h / 2;
-        if (icono != null) {
+        boolean alFinal = icono == Iconos.Tipo.SIGUIENTE && !texto.isEmpty();
+        if (icono != null && !alFinal) {
             Iconos.dibujar(g, icono, x + tamIcono() / 2.0, cy, tamIcono(), letra);
             x += tamIcono() + 8;
         }
         g.setColor(letra);
         Tema.texto(g, texto, x, (h + fm.getAscent() - fm.getDescent()) / 2.0);
+        if (alFinal) {
+            Iconos.dibujar(g, icono, x + fm.stringWidth(texto) + 8 + tamIcono() / 2.0, cy, tamIcono(), letra);
+        }
         if (interruptor) {
             dibujarInterruptor(g, w - 54, cy - 13);
         }

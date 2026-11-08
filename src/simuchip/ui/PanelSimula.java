@@ -44,6 +44,7 @@ public final class PanelSimula extends JPanel {
     private final Lateral lateral = new Lateral();
     private final Animador animador;
     private final Avisos avisos;
+    private JComponent cabecera;
     private int eventosVistos;
     private final Timer auto;
     private Linea seleccionada;
@@ -68,14 +69,12 @@ public final class PanelSimula extends JPanel {
         add(lateral, BorderLayout.EAST);
     }
 
+    /** Cabecera: el titular cambia con el estado y los controles van agrupados a la derecha. */
     private JComponent crearBarra() {
-        JPanel barra = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 12));
-        barra.setOpaque(false);
-        barra.setBorder(BorderFactory.createEmptyBorder(4, 14, 0, 14));
-        barra.add(new Boton("Simular 1 día", Boton.Estilo.PRIMARIO).conIcono(Iconos.Tipo.PLAY).alHacerClic(() -> {
+        Boton simular = new Boton("Simular 1 día", Boton.Estilo.PRIMARIO).conIcono(Iconos.Tipo.PLAY).alHacerClic(() -> {
             sim.paso();
             refrescar();
-        }));
+        });
         botonAuto = new Boton("Automático", Boton.Estilo.SECUNDARIO, true);
         botonAuto.alHacerClic(() -> {
             if (botonAuto.encendido()) {
@@ -84,27 +83,54 @@ public final class PanelSimula extends JPanel {
                 auto.stop();
             }
         });
-        barra.add(botonAuto);
-        barra.add(espacio(18));
-        botonBiometria = new Boton("Validación biométrica", Boton.Estilo.SECUNDARIO, true);
+        botonBiometria = new Boton("Biometría", Boton.Estilo.SECUNDARIO, true);
         botonBiometria.alHacerClic(() -> {
             sim.setBiometria(botonBiometria.encendido());
             refrescar();
         });
-        barra.add(botonBiometria);
-        botonTope = new Boton("Tope k = 3", Boton.Estilo.SECUNDARIO, true);
+        botonTope = new Boton("Tope de 3", Boton.Estilo.SECUNDARIO, true);
         botonTope.alHacerClic(() -> {
             sim.setTopeActivo(botonTope.encendido());
             refrescar();
         });
-        barra.add(botonTope);
-        barra.add(new Boton("Auditoría biométrica", Boton.Estilo.SECUNDARIO).alHacerClic(() -> {
+        Boton auditoria = new Boton("Auditoría", Boton.Estilo.SECUNDARIO).alHacerClic(() -> {
             sim.auditoria();
             refrescar();
-        }));
-        barra.add(espacio(18));
-        barra.add(new Boton("Reiniciar", Boton.Estilo.PELIGRO).alHacerClic(this::reiniciar));
-        return barra;
+        });
+        Boton reiniciar = new Boton("", Boton.Estilo.SECUNDARIO).conIcono(Iconos.Tipo.REINICIAR)
+                .alHacerClic(this::reiniciar);
+        JComponent[] controles = {simular, botonAuto, botonBiometria, botonTope, auditoria, reiniciar};
+        int[] separacion = {10, 28, 10, 10, 28, 0};
+        JComponent cabecera = new JComponent() {
+            @Override
+            public void doLayout() {
+                int x = getWidth() - 24;
+                for (int k = controles.length - 1; k >= 0; k--) {
+                    Dimension d = controles[k].getPreferredSize();
+                    int ancho = controles[k] == reiniciar ? 40 : d.width;
+                    x -= ancho;
+                    controles[k].setBounds(x, 26, ancho, 38);
+                    x -= k > 0 ? separacion[k - 1] : 0;
+                }
+            }
+
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                Graphics2D g = (Graphics2D) graphics.create();
+                Tema.suavizar(g);
+                g.setFont(Tema.titulo(40f));
+                g.setColor(Tema.AZUL_NOCHE);
+                Tema.texto(g, sim.biometria() ? "Ahora, cómo se arregla." : "Mira cómo falla.", 24, 58);
+                g.dispose();
+            }
+        };
+        cabecera.setLayout(null);
+        cabecera.setPreferredSize(new Dimension(1200, 86));
+        for (JComponent c : controles) {
+            cabecera.add(c);
+        }
+        this.cabecera = cabecera;
+        return cabecera;
     }
 
     private static JComponent espacio(int ancho) {
@@ -174,6 +200,9 @@ public final class PanelSimula extends JPanel {
         }
         lienzo.repaint();
         lateral.repaint();
+        if (cabecera != null) {
+            cabecera.repaint();
+        }
     }
 
     /** Cada evento importante salta como notificación (como en un celular). */
@@ -297,7 +326,9 @@ public final class PanelSimula extends JPanel {
             } else {
                 dibujarBitacora(g, w, h);
             }
-            avisos.dibujar(g, w - 44, h - 146, 380);
+            if (seleccionada == null) {
+                avisos.dibujar(g, w - 28, 72, 340);
+            }
             g.dispose();
         }
 
@@ -374,9 +405,7 @@ public final class PanelSimula extends JPanel {
                 }
                 Tema.rectRedondo(g, x, y + 3, w, h, h, Tema.conAlfa(Tema.AZUL_NOCHE, 35));
                 Tema.rectRedondo(g, x, y, w, h, h, malas.contains(l) ? Tema.ROJO_SUAVE : Tema.NARANJA);
-                if (malas.contains(l)) {
-                    Tema.borde(g, x, y, w, h, h, Tema.ROJO, 3f);
-                }
+
                 g.setFont(Tema.letra(Font.BOLD, altoPastilla() >= 26 ? 15f : 13f));
                 g.setColor(malas.contains(l) ? Tema.ROJO_OSCURO : Tema.AZUL_NOCHE);
                 Tema.textoCentrado(g, l.nombreCorto(), p.getX() + (sim.contrato(l) != null ? 8 : 0), p.getY());
@@ -427,9 +456,7 @@ public final class PanelSimula extends JPanel {
             int y = h - 150;
             int ancho = w - 96;
             Tema.rectRedondo(g, x, y, ancho, 116, 20, Tema.conAlfa(Tema.AZUL_NOCHE, 14));
-            g.setFont(Tema.letra(Font.BOLD, 14f));
-            g.setColor(Tema.TEXTO_SUAVE);
-            Tema.texto(g, "BITÁCORA", x + 18, y + 24);
+
             List<Evento> eventos = sim.eventos();
             int desde = Math.max(0, eventos.size() - 3);
             g.setFont(Tema.letra(Font.PLAIN, 15f));
@@ -504,47 +531,49 @@ public final class PanelSimula extends JPanel {
             int mitad = (w - 12) / 2;
 
             double coincide = sim.coincidencia();
-            int altoKpi = 70;
-            kpi(g, x, 6, mitad, altoKpi, "Chips activos", sim.lineas().size() + " / " + Simulador.MAX_LINEAS,
-                    Tema.AZUL_NOCHE);
-            kpi(g, x + mitad + 12, 6, mitad, altoKpi, "Chips usados por su dueño", Math.round(coincide) + " %",
-                    coincide >= 99.9 ? Tema.VERDE : coincide >= 75 ? Tema.NARANJA_TEXTO : Tema.ROJO);
-            kpi(g, x, 84, mitad, altoKpi, "Fraudes bloqueados", String.valueOf(sim.bloqueados()), Tema.VERDE);
-            kpi(g, x + mitad + 12, 84, mitad, altoKpi, "Frenados por el tope", String.valueOf(sim.rechazosTope()),
-                    Tema.NARANJA_TEXTO);
-
-            g.setFont(Tema.letra(Font.BOLD, 18f));
+            Color tono = coincide >= 99.9 ? Tema.VERDE : coincide >= 75 ? Tema.NARANJA_TEXTO : Tema.ROJO;
+            g.setFont(Tema.titulo(64f));
+            g.setColor(tono);
+            Tema.texto(g, Math.round(coincide) + " %", x + 4, 64);
+            g.setFont(Tema.letra(Font.PLAIN, 16f));
             g.setColor(Tema.AZUL_NOCHE);
-            Tema.texto(g, "5 preguntas que responde la matemática", x + 4, 186);
+            Tema.texto(g, "de los chips los usa su dueño en papel", x + 6, 92);
+            g.setFont(Tema.letra(Font.PLAIN, 14f));
+            g.setColor(Tema.TEXTO_SUAVE);
+            Tema.texto(g, sim.lineas().size() + " chips  ·  " + sim.bloqueados() + " fraudes bloqueados  ·  "
+                    + sim.rechazosTope() + " frenados por el tope", x + 6, 116);
 
-            // las tarjetas se encogen si la ventana es baja
-            int y = 198;
-            int alto = Math.max(58, Math.min(82, (getHeight() - y - 8) / 5 - 8));
+            g.setFont(Tema.titulo(20f));
+            g.setColor(Tema.AZUL_NOCHE);
+            Tema.texto(g, "Lo que dice la matemática", x + 4, 164);
+
+            int y = 182;
+            int alto = Math.max(56, Math.min(80, (getHeight() - y - 8) / 5 - 6));
 
             List<Linea> lineas = sim.lineas();
             List<Persona> personas = sim.personas();
             Veredicto f1 = Diagnostico.funcion(lineas, sim.flechasRegistro());
-            y = analisis(g, x, y, w, alto, "¿Cada chip tiene un dueño en papel?", "f: L → P es función",
+            y = analisis(g, x, y, w, alto, true, "¿Cada chip tiene un dueño en papel?", "f: L → P es función",
                     f1.cumple(), lineas.isEmpty() ? "Aún no hay chips" : "Sí: cada chip figura a nombre de 1 DNI");
 
             Veredicto f2 = Diagnostico.inyectiva(lineas, personas, sim.flechasRegistro());
-            y = analisis(g, x, y, w, alto, "¿Cada persona tiene un solo chip?", "f inyectiva · tener 2 no es delito",
-                    f2.cumple(), f2.cumple() ? "Sí, nadie tiene más de uno"
+            y = analisis(g, x, y, w, alto, false, "¿Cada persona tiene un solo chip?",
+                    "f inyectiva · tener 2 no es delito", f2.cumple(), f2.cumple() ? "Sí, nadie tiene más de uno"
                             : f2.razon().replace("A «", "«").replace("» le llegan", "» tiene").replace("flechas", "chips"));
 
             List<Linea> malas = sim.inconsistentes();
-            y = analisis(g, x, y, w, alto, "¿El dueño en papel es quien usa el chip?", "f = u  ·  EL PROBLEMA",
+            y = analisis(g, x, y, w, alto, false, "¿El dueño en papel es quien usa el chip?", "f = u · el problema",
                     malas.isEmpty(), malas.isEmpty() ? "Sí: nadie usa un chip ajeno"
                             : "No: " + unir(malas) + " las usa el extorsionador");
 
             List<Persona> excedidos = sim.personasSobreTope();
-            y = analisis(g, x, y, w, alto, "¿Nadie pasa el tope de " + sim.tope() + " chips?",
-                    "|f⁻¹(p)| ≤ " + sim.tope() + "  ·  palomar", excedidos.isEmpty(),
+            y = analisis(g, x, y, w, alto, false, "¿Nadie pasa el tope de " + sim.tope() + " chips?",
+                    "|f⁻¹(p)| ≤ " + sim.tope() + " · palomar", excedidos.isEmpty(),
                     excedidos.isEmpty() ? "Nadie lo supera"
                             : excedidos.get(0) + " tiene " + sim.lineasDe(excedidos.get(0)).size() + " chips");
 
-            analisis(g, x, y, w, alto, "¿Cada chip tiene contrato con huella?", "g: L → C biyectiva · LA SOLUCIÓN",
-                    gBiyectiva(), razonG());
+            analisis(g, x, y, w, alto, false, "¿Cada chip tiene contrato con huella?",
+                    "g: L → C biyectiva · la solución", gBiyectiva(), razonG());
             g.dispose();
         }
 
@@ -582,23 +611,27 @@ public final class PanelSimula extends JPanel {
         }
 
         /** Tarjeta: pregunta en palabras, la notación pequeñita al lado y la respuesta. */
-        private int analisis(Graphics2D g, int x, int y, int w, int alto, String pregunta, String notacion,
-                boolean ok, String razon) {
-            boolean compacto = alto < 76;
-            Tema.tarjeta(g, x, y, w, alto, 20, Tema.BLANCO);
-            Tema.insignia(g, ok, x + 30, y + alto / 2, 16);
+        /** Fila de la lista: insignia, pregunta en palabras, notación pequeña y la respuesta. */
+        private int analisis(Graphics2D g, int x, int y, int w, int alto, boolean primera, String pregunta,
+                String notacion, boolean ok, String razon) {
+            boolean compacto = alto < 72;
+            if (!primera) {
+                g.setColor(Tema.FILETE);
+                g.fillRect(x + 50, y - 3, w - 50, 1);
+            }
+            Tema.insignia(g, ok, x + 20, y + alto / 2 - 2, 13);
             g.setFont(Tema.letra(Font.BOLD, 16f));
             g.setColor(Tema.AZUL_NOCHE);
-            Tema.texto(g, pregunta, x + 58, y + 25);
+            Tema.texto(g, pregunta, x + 46, y + 22);
             if (!compacto) {
-                g.setFont(Tema.letra(Font.PLAIN, 12.5f));
+                g.setFont(Tema.letra(Font.PLAIN, 13f));
                 g.setColor(Tema.TEXTO_SUAVE);
-                Tema.texto(g, notacion, x + 58, y + 44);
+                Tema.texto(g, notacion, x + 46, y + 41);
             }
-            g.setFont(Tema.letra(Font.BOLD, 14f));
+            g.setFont(Tema.medio(14.5f));
             g.setColor(ok ? Tema.VERDE : Tema.ROJO_OSCURO);
-            Tema.texto(g, "→ " + razon, x + 58, y + (compacto ? 48 : 66));
-            return y + alto + 8;
+            Tema.texto(g, razon, x + 46, y + (compacto ? 44 : 62));
+            return y + alto + 6;
         }
 
         private String unir(List<Linea> lineas) {

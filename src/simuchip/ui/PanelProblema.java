@@ -73,7 +73,7 @@ public final class PanelProblema extends JComponent implements Capitulo {
         Tema.suavizar(g);
         int w = getWidth();
         int h = getHeight();
-        g.setColor(Tema.BLANCO);
+        g.setColor(Tema.FONDO_PAGINA);
         g.fillRect(0, 0, w, h);
 
         int x = 88;
@@ -93,39 +93,41 @@ public final class PanelProblema extends JComponent implements Capitulo {
         g.setColor(Tema.AZUL_NOCHE);
         y += Tema.parrafo(g, "En el Perú se registran líneas con el DNI de otras personas para extorsionar. Cuando la "
                 + "policía rastrea el número, llega al dueño en papel: alguien que nunca se enteró.", x, y, ancho,
-                1.35f) + 18;
+                1.35f) + 22;
 
-        // cifras como una ficha técnica: número que cuenta + descripción
+        // botones justo después del texto
+        if (siguiente.getY() != y) {
+            siguiente.setLocation(x, y);
+            otraVez.setLocation(x + siguiente.getWidth() + 12, y);
+        }
+
+        // las cuatro cifras de OSIPTEL, en fila a todo el ancho, contando hacia arriba
         String[][] cifras = {
-            {"309454", "líneas con datos inconsistentes, de mayo a octubre de 2025"},
-            {"102000", "líneas dadas de baja por registros inconsistentes"},
-            {"200000", "personas con más de 10 líneas a su nombre"}
+            {"309454", "", "líneas con datos inconsistentes (mayo–octubre 2025)"},
+            {"102000", "+", "líneas dadas de baja por registros inconsistentes"},
+            {"650000", "+", "celulares bloqueados durante el estado de emergencia"},
+            {"200000", "~", "personas con más de 10 líneas a su nombre"}
         };
+        int y0 = h - 132;
+        int col = (w - 2 * x) / 4;
+        g.setColor(Tema.FILETE);
+        g.fillRect(x, y0, w - 2 * x, 1);
         for (int i = 0; i < cifras.length; i++) {
-            double p = tramo(0.5 + i * 0.25, 1.6);
+            double p = tramo(0.5 + i * 0.2, 1.6);
             int valor = (int) Math.round(Integer.parseInt(cifras[i][0]) * p);
-            String numero = formatear(valor) + (i == 1 ? "+" : i == 2 && p >= 1 ? "" : "");
-            if (i == 2) {
-                numero = "~" + formatear(valor);
-            }
-            g.setColor(Tema.FILETE);
-            g.fillRect(x, y, ancho, 1);
-            g.setFont(Tema.titulo(30f));
+            String numero = cifras[i][1].equals("~") ? "~" + formatear(valor) : formatear(valor) + cifras[i][1];
+            int cx = x + i * col;
+            g.setFont(Tema.titulo(34f));
             g.setColor(Tema.AZUL_NOCHE);
-            Tema.texto(g, numero, x, y + 42);
-            g.setFont(Tema.letra(Font.PLAIN, 16f));
+            Tema.texto(g, numero, cx, y0 + 50);
+            g.setFont(Tema.letra(Font.PLAIN, 15f));
             g.setColor(Tema.TEXTO_SUAVE);
-            Tema.parrafo(g, cifras[i][1], x + 170, y + 18, ancho - 170, 1.25f);
-            y += 54;
+            Tema.parrafo(g, cifras[i][2], cx, y0 + 60, col - 28, 1.25f);
         }
-        g.setFont(Tema.letra(Font.PLAIN, 13f));
+        g.setFont(Tema.letra(Font.PLAIN, 12.5f));
         g.setColor(Tema.TEXTO_SUAVE);
-        Tema.texto(g, "Fuente: OSIPTEL, notas de prensa de 2025.", x, y + 20);
-        int yBotones = y + 40;
-        if (siguiente.getY() != yBotones) {
-            siguiente.setLocation(x, yBotones);
-            otraVez.setLocation(x + siguiente.getWidth() + 12, yBotones);
-        }
+        String fuente = "Fuente: OSIPTEL, notas de prensa de 2025.";
+        Tema.texto(g, fuente, w - x - g.getFontMetrics().stringWidth(fuente), y0 - 12);
 
         dibujarDni(g, w, h);
         g.dispose();
@@ -139,7 +141,7 @@ public final class PanelProblema extends JComponent implements Capitulo {
 
     private void dibujarDni(Graphics2D g, int w, int h) {
         double cx = w * 0.725;
-        double cy = h * 0.40;
+        double cy = h * 0.35;
         double dw = Math.min(380, w * 0.24);
         double dh = dw * 0.63;
         double x = cx - dw / 2;
@@ -148,7 +150,7 @@ public final class PanelProblema extends JComponent implements Capitulo {
         // ranuras de los chips alrededor del DNI
         double[][] ranura = {
             {cx - dw * 0.86, cy - dh * 0.55}, {cx + dw * 0.86, cy - dh * 0.62},
-            {cx + dw * 0.8, cy + dh * 0.72}, {cx - dw * 0.78, cy + dh * 0.74}
+            {cx + dw * 0.8, cy + dh * 0.6}, {cx - dw * 0.78, cy + dh * 0.62}
         };
         double[][] origen = {
             {cx - dw * 1.6, cy - dh * 1.4}, {cx + dw * 1.5, cy - dh * 1.5},
@@ -221,18 +223,18 @@ public final class PanelProblema extends JComponent implements Capitulo {
                 llegados++;
             }
         }
-        double base = cy + dh * 0.5 + 130;
+        double base = cy + dh * 0.5 + 112;
         g.setFont(Tema.letra(Font.PLAIN, 16f));
         g.setColor(Tema.TEXTO_SUAVE);
         Tema.textoCentrado(g, "Chips a nombre de Ana", cx, base);
-        g.setFont(Tema.titulo(56f));
+        g.setFont(Tema.titulo(48f));
         g.setColor(llegados > 1 ? Tema.ROJO : Tema.AZUL_NOCHE);
-        Tema.textoCentrado(g, String.valueOf(llegados), cx, base + 52);
+        Tema.textoCentrado(g, String.valueOf(llegados), cx, base + 42);
         double fin = tramo(3.6, 0.6);
         if (fin > 0) {
             g.setFont(Tema.letra(Font.BOLD, 17f));
             g.setColor(Tema.conAlfa(Tema.ROJO_OSCURO, (int) (255 * fin)));
-            Tema.textoCentrado(g, "3 de ellos los sacó otra persona", cx, base + 104);
+            Tema.textoCentrado(g, "3 de ellos los sacó otra persona", cx, base + 82);
         }
     }
 

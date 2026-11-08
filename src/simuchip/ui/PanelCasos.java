@@ -88,7 +88,7 @@ public final class PanelCasos extends JComponent implements Capitulo {
         Tema.suavizar(g);
         int w = getWidth();
         int h = getHeight();
-        g.setColor(Tema.BLANCO);
+        g.setColor(Tema.FONDO_PAGINA);
         g.fillRect(0, 0, w, h);
 
         int x = 88;
@@ -149,7 +149,8 @@ public final class PanelCasos extends JComponent implements Capitulo {
         double p = tramo(1.9, 0.6);
         int alfa = (int) (255 * p);
         int dy = (int) ((1 - p) * 16);
-        Tema.rectRedondo(g, x - 32, y + dy, ancho + 64, alto, 28, Tema.conAlfa(Tema.CELESTE_FONDO, alfa));
+        g.setColor(Tema.conAlfa(Tema.CELESTE_FONDO, alfa));
+        g.fillRect(0, y - 8 + dy, getWidth(), alto + 40);
         g.setFont(Tema.titulo(30f));
         g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, alfa));
         Tema.texto(g, "¿Y la biometría?", x, y + 52 + dy);

@@ -48,6 +48,9 @@ La propuesta ChipGuard no reemplaza la biometría que OSIPTEL ya exige en la tie
 - Cifras de OSIPTEL de 2025 (notas de prensa): 309 454 líneas inconsistentes, más de 102 mil dadas de baja, más de 650 mil celulares bloqueados y unos 200 mil usuarios con más de 10 líneas.
 - Hoy ya existe la biometría con huella contra RENIEC en la tienda. En la compra web o por app, el chip llega por delivery y se activa con huella en la app.
 - Las extorsiones concretas de la historia de Ana son ilustrativas, no casos reales.
+- Normas de 2025, verificadas en prensa jurídica el 2026-11-07:
+  - La Resolución 000116-2025-CD/OSIPTEL exige validar la identidad a quien tiene más de 10 líneas y permite pedir que se restrinjan los canales de contratación (fuentes: LP Derecho, «Osiptel: medidas para fortalecer la seguridad en la contratación del servicio móvil»; La República, 28/11/2025).
+  - Los más de 650 mil celulares bloqueados vienen de una nota del Congreso de la República de 2025.
 - No hay testimonios ni clientes. No hay que inventarlos.
 
 ## Product Principles

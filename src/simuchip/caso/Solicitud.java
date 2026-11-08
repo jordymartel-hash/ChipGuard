@@ -13,6 +13,12 @@ public record Solicitud(int numero, String nombre, String dni, String tienda, St
         return !huellaCoincide || !dniOriginal || lineasActuales >= TOPE;
     }
 
+    /** El motivo para usar a mitad de una frase: solo la primera letra en minúscula («DNI» se queda igual). */
+    public String motivoEnFrase() {
+        String m = motivo();
+        return Character.toLowerCase(m.charAt(0)) + m.substring(1);
+    }
+
     public String motivo() {
         if (!huellaCoincide) {
             return "La huella no coincide con el DNI";
