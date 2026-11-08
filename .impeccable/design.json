@@ -1,0 +1,658 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-07T19:30:00-05:00",
+  "title": "Design System: ChipGuard",
+  "extensions": {
+    "colorMeta": {
+      "action-blue": {
+        "role": "primary",
+        "displayName": "Azul de acción",
+        "canonical": "oklch(56.3% 0.193 256)",
+        "tonalRamp": [
+          "oklch(15% 0.066 256)",
+          "oklch(26% 0.108 256)",
+          "oklch(38% 0.150 256)",
+          "oklch(49% 0.192 256)",
+          "oklch(61% 0.155 256)",
+          "oklch(72% 0.113 256)",
+          "oklch(84% 0.071 256)",
+          "oklch(95% 0.028 256)"
+        ]
+      },
+      "action-blue-text": {
+        "role": "primary",
+        "displayName": "Azul enlace",
+        "canonical": "oklch(52.2% 0.177 256)",
+        "tonalRamp": [
+          "oklch(15% 0.066 256)",
+          "oklch(26% 0.108 256)",
+          "oklch(38% 0.150 256)",
+          "oklch(49% 0.177 256)",
+          "oklch(61% 0.155 256)",
+          "oklch(72% 0.113 256)",
+          "oklch(84% 0.071 256)",
+          "oklch(95% 0.028 256)"
+        ]
+      },
+      "action-blue-tint": {
+        "role": "primary",
+        "displayName": "Tinte azul",
+        "canonical": "oklch(95.7% 0.018 251)",
+        "tonalRamp": [
+          "oklch(15% 0.018 251)",
+          "oklch(26% 0.018 251)",
+          "oklch(38% 0.018 251)",
+          "oklch(49% 0.018 251)",
+          "oklch(61% 0.018 251)",
+          "oklch(72% 0.018 251)",
+          "oklch(84% 0.018 251)",
+          "oklch(95% 0.018 251)"
+        ]
+      },
+      "action-blue-on-dark": {
+        "role": "primary",
+        "displayName": "Azul nocturno",
+        "canonical": "oklch(68.5% 0.170 253)",
+        "tonalRamp": [
+          "oklch(15% 0.066 253)",
+          "oklch(26% 0.108 253)",
+          "oklch(38% 0.150 253)",
+          "oklch(49% 0.170 253)",
+          "oklch(61% 0.155 253)",
+          "oklch(72% 0.113 253)",
+          "oklch(84% 0.071 253)",
+          "oklch(95% 0.028 253)"
+        ]
+      },
+      "fraud-red": {
+        "role": "secondary",
+        "displayName": "Rojo fraude",
+        "canonical": "oklch(60.6% 0.212 29)",
+        "tonalRamp": [
+          "oklch(15% 0.066 29)",
+          "oklch(26% 0.108 29)",
+          "oklch(38% 0.150 29)",
+          "oklch(49% 0.192 29)",
+          "oklch(61% 0.155 29)",
+          "oklch(72% 0.113 29)",
+          "oklch(84% 0.071 29)",
+          "oklch(95% 0.028 29)"
+        ]
+      },
+      "fraud-red-deep": {
+        "role": "secondary",
+        "displayName": "Rojo fraude profundo",
+        "canonical": "oklch(53.0% 0.197 29)",
+        "tonalRamp": [
+          "oklch(15% 0.066 29)",
+          "oklch(26% 0.108 29)",
+          "oklch(38% 0.150 29)",
+          "oklch(49% 0.192 29)",
+          "oklch(61% 0.155 29)",
+          "oklch(72% 0.113 29)",
+          "oklch(84% 0.071 29)",
+          "oklch(95% 0.028 29)"
+        ]
+      },
+      "fraud-red-tint": {
+        "role": "secondary",
+        "displayName": "Tinte fraude",
+        "canonical": "oklch(95.6% 0.019 22)",
+        "tonalRamp": [
+          "oklch(15% 0.019 22)",
+          "oklch(26% 0.019 22)",
+          "oklch(38% 0.019 22)",
+          "oklch(49% 0.019 22)",
+          "oklch(61% 0.019 22)",
+          "oklch(72% 0.019 22)",
+          "oklch(84% 0.019 22)",
+          "oklch(95% 0.019 22)"
+        ]
+      },
+      "fraud-red-on-dark": {
+        "role": "secondary",
+        "displayName": "Rojo coral",
+        "canonical": "oklch(70.7% 0.185 26)",
+        "tonalRamp": [
+          "oklch(15% 0.066 26)",
+          "oklch(26% 0.108 26)",
+          "oklch(38% 0.150 26)",
+          "oklch(49% 0.185 26)",
+          "oklch(61% 0.155 26)",
+          "oklch(72% 0.113 26)",
+          "oklch(84% 0.071 26)",
+          "oklch(95% 0.028 26)"
+        ]
+      },
+      "safe-green": {
+        "role": "secondary",
+        "displayName": "Verde seguro",
+        "canonical": "oklch(55.8% 0.146 148)",
+        "tonalRamp": [
+          "oklch(15% 0.066 148)",
+          "oklch(26% 0.108 148)",
+          "oklch(38% 0.146 148)",
+          "oklch(49% 0.146 148)",
+          "oklch(61% 0.146 148)",
+          "oklch(72% 0.113 148)",
+          "oklch(84% 0.071 148)",
+          "oklch(95% 0.028 148)"
+        ]
+      },
+      "safe-green-tint": {
+        "role": "secondary",
+        "displayName": "Tinte seguro",
+        "canonical": "oklch(95.6% 0.027 152)",
+        "tonalRamp": [
+          "oklch(15% 0.027 152)",
+          "oklch(26% 0.027 152)",
+          "oklch(38% 0.027 152)",
+          "oklch(49% 0.027 152)",
+          "oklch(61% 0.027 152)",
+          "oklch(72% 0.027 152)",
+          "oklch(84% 0.027 152)",
+          "oklch(95% 0.027 152)"
+        ]
+      },
+      "safe-green-on-dark": {
+        "role": "secondary",
+        "displayName": "Verde nocturno",
+        "canonical": "oklch(75.6% 0.208 147)",
+        "tonalRamp": [
+          "oklch(15% 0.066 147)",
+          "oklch(26% 0.108 147)",
+          "oklch(38% 0.150 147)",
+          "oklch(49% 0.192 147)",
+          "oklch(61% 0.155 147)",
+          "oklch(72% 0.113 147)",
+          "oklch(84% 0.071 147)",
+          "oklch(95% 0.028 147)"
+        ]
+      },
+      "switch-green": {
+        "role": "secondary",
+        "displayName": "Verde interruptor",
+        "canonical": "oklch(73.0% 0.194 147)",
+        "tonalRamp": [
+          "oklch(15% 0.066 147)",
+          "oklch(26% 0.108 147)",
+          "oklch(38% 0.150 147)",
+          "oklch(49% 0.192 147)",
+          "oklch(61% 0.155 147)",
+          "oklch(72% 0.113 147)",
+          "oklch(84% 0.071 147)",
+          "oklch(95% 0.028 147)"
+        ]
+      },
+      "set-a-orange": {
+        "role": "tertiary",
+        "displayName": "Naranja conjunto A",
+        "canonical": "oklch(78.2% 0.171 67)",
+        "tonalRamp": [
+          "oklch(15% 0.066 67)",
+          "oklch(26% 0.108 67)",
+          "oklch(38% 0.150 67)",
+          "oklch(49% 0.171 67)",
+          "oklch(61% 0.155 67)",
+          "oklch(72% 0.113 67)",
+          "oklch(84% 0.071 67)",
+          "oklch(95% 0.028 67)"
+        ]
+      },
+      "set-a-orange-text": {
+        "role": "tertiary",
+        "displayName": "Naranja tostado",
+        "canonical": "oklch(54.7% 0.147 49)",
+        "tonalRamp": [
+          "oklch(15% 0.066 49)",
+          "oklch(26% 0.108 49)",
+          "oklch(38% 0.147 49)",
+          "oklch(49% 0.147 49)",
+          "oklch(61% 0.147 49)",
+          "oklch(72% 0.113 49)",
+          "oklch(84% 0.071 49)",
+          "oklch(95% 0.028 49)"
+        ]
+      },
+      "set-a-orange-tint": {
+        "role": "tertiary",
+        "displayName": "Tinte naranja",
+        "canonical": "oklch(96.6% 0.029 78)",
+        "tonalRamp": [
+          "oklch(15% 0.029 78)",
+          "oklch(26% 0.029 78)",
+          "oklch(38% 0.029 78)",
+          "oklch(49% 0.029 78)",
+          "oklch(61% 0.029 78)",
+          "oklch(72% 0.029 78)",
+          "oklch(84% 0.029 78)",
+          "oklch(95% 0.028 78)"
+        ]
+      },
+      "focus-yellow": {
+        "role": "tertiary",
+        "displayName": "Amarillo resaltador",
+        "canonical": "oklch(88.5% 0.181 95)",
+        "tonalRamp": [
+          "oklch(15% 0.066 95)",
+          "oklch(26% 0.108 95)",
+          "oklch(38% 0.150 95)",
+          "oklch(49% 0.181 95)",
+          "oklch(61% 0.155 95)",
+          "oklch(72% 0.113 95)",
+          "oklch(84% 0.071 95)",
+          "oklch(95% 0.028 95)"
+        ]
+      },
+      "page-white": {
+        "role": "neutral",
+        "displayName": "Blanco página",
+        "canonical": "oklch(98.9% 0.003 286)",
+        "tonalRamp": [
+          "oklch(15% 0.003 286)",
+          "oklch(26% 0.003 286)",
+          "oklch(38% 0.003 286)",
+          "oklch(49% 0.003 286)",
+          "oklch(61% 0.003 286)",
+          "oklch(72% 0.003 286)",
+          "oklch(84% 0.003 286)",
+          "oklch(95% 0.003 286)"
+        ]
+      },
+      "band-gray": {
+        "role": "neutral",
+        "displayName": "Gris banda",
+        "canonical": "oklch(97.1% 0.003 286)",
+        "tonalRamp": [
+          "oklch(15% 0.003 286)",
+          "oklch(26% 0.003 286)",
+          "oklch(38% 0.003 286)",
+          "oklch(49% 0.003 286)",
+          "oklch(61% 0.003 286)",
+          "oklch(72% 0.003 286)",
+          "oklch(84% 0.003 286)",
+          "oklch(95% 0.003 286)"
+        ]
+      },
+      "surface-white": {
+        "role": "neutral",
+        "displayName": "Blanco superficie",
+        "canonical": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "control-gray": {
+        "role": "neutral",
+        "displayName": "Gris control",
+        "canonical": "oklch(93.2% 0.007 286)",
+        "tonalRamp": [
+          "oklch(15% 0.007 286)",
+          "oklch(26% 0.007 286)",
+          "oklch(38% 0.007 286)",
+          "oklch(49% 0.007 286)",
+          "oklch(61% 0.007 286)",
+          "oklch(72% 0.007 286)",
+          "oklch(84% 0.007 286)",
+          "oklch(95% 0.007 286)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Filete",
+        "canonical": "oklch(86.5% 0.007 286)",
+        "tonalRamp": [
+          "oklch(15% 0.007 286)",
+          "oklch(26% 0.007 286)",
+          "oklch(38% 0.007 286)",
+          "oklch(49% 0.007 286)",
+          "oklch(61% 0.007 286)",
+          "oklch(72% 0.007 286)",
+          "oklch(84% 0.007 286)",
+          "oklch(95% 0.007 286)"
+        ]
+      },
+      "quiet-gray": {
+        "role": "neutral",
+        "displayName": "Gris quieto",
+        "canonical": "oklch(83.1% 0.007 286)",
+        "tonalRamp": [
+          "oklch(15% 0.007 286)",
+          "oklch(26% 0.007 286)",
+          "oklch(38% 0.007 286)",
+          "oklch(49% 0.007 286)",
+          "oklch(61% 0.007 286)",
+          "oklch(72% 0.007 286)",
+          "oklch(84% 0.007 286)",
+          "oklch(95% 0.007 286)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Tinta",
+        "canonical": "oklch(23.2% 0.004 286)",
+        "tonalRamp": [
+          "oklch(15% 0.004 286)",
+          "oklch(26% 0.004 286)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0.004 286)",
+          "oklch(95% 0.004 286)"
+        ]
+      },
+      "ink-raised": {
+        "role": "neutral",
+        "displayName": "Tinta elevada",
+        "canonical": "oklch(29.4% 0.004 286)",
+        "tonalRamp": [
+          "oklch(15% 0.004 286)",
+          "oklch(26% 0.004 286)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0.004 286)",
+          "oklch(95% 0.004 286)"
+        ]
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Tinta secundaria",
+        "canonical": "oklch(54.0% 0.008 286)",
+        "tonalRamp": [
+          "oklch(15% 0.008 286)",
+          "oklch(26% 0.008 286)",
+          "oklch(38% 0.008 286)",
+          "oklch(49% 0.008 286)",
+          "oklch(61% 0.008 286)",
+          "oklch(72% 0.008 286)",
+          "oklch(84% 0.008 286)",
+          "oklch(95% 0.008 286)"
+        ]
+      },
+      "ink-secondary-on-dark": {
+        "role": "neutral",
+        "displayName": "Gris niebla",
+        "canonical": "oklch(71.1% 0.007 286)",
+        "tonalRamp": [
+          "oklch(15% 0.007 286)",
+          "oklch(26% 0.007 286)",
+          "oklch(38% 0.007 286)",
+          "oklch(49% 0.007 286)",
+          "oklch(61% 0.007 286)",
+          "oklch(72% 0.007 286)",
+          "oklch(84% 0.007 286)",
+          "oklch(95% 0.007 286)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Titular del capítulo narrativo; tope 58 px, escala con ancho/25."
+      },
+      "stat": {
+        "displayName": "Stat",
+        "purpose": "Cifras de OSIPTEL y contadores grandes."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Titular de capítulo de trabajo, en fila con sus controles."
+      },
+      "title-lg": {
+        "displayName": "Title Lg",
+        "purpose": "Títulos de escena (ChipGuard, juego) y de bandas."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Títulos de panel y marca en la barra."
+      },
+      "body-lg": {
+        "displayName": "Body Lg",
+        "purpose": "Bajadas bajo el titular narrativo."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto corrido y filas de análisis."
+      },
+      "body-strong": {
+        "displayName": "Body Strong",
+        "purpose": "Nombre de cada fila; 'negrita' = SemiBold."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Texto de píldoras."
+      },
+      "nav": {
+        "displayName": "Nav",
+        "purpose": "Capítulos de la barra superior."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Leyendas, segundas líneas, avisos."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Panel de código y línea de variables."
+      }
+    },
+    "shadows": [
+      {
+        "name": "surface-lift",
+        "value": "0 5px 14px rgba(0,0,0,0.08)",
+        "purpose": "Aproximación CSS de Tema.sombra(fuerza 18): seis capas negras de opacidad decreciente desplazadas ~4 px abajo. Tarjetas, escenario, avisos, paneles oscuros, celular."
+      },
+      {
+        "name": "segment-lift",
+        "value": "0 4px 10px rgba(0,0,0,0.06)",
+        "purpose": "Aproximación de Tema.sombra(fuerza 14): solo el segmento elegido del control segmentado."
+      },
+      {
+        "name": "knob",
+        "value": "0 1px 0 rgba(0,0,0,0.12)",
+        "purpose": "Perilla blanca del interruptor iOS."
+      }
+    ],
+    "motion": [
+      {
+        "name": "chapter-enter",
+        "value": "420ms cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "Entrada de capítulo: fundido desde blanco + subida de 18 px; curva 1-(1-t)^4."
+      },
+      {
+        "name": "element-birth",
+        "value": "cubic-bezier(0.33, 1, 0.68, 1)",
+        "purpose": "Flechas, chips y nodos que nacen y crecen (Animador, 1-(1-t)^3); duración por escena."
+      },
+      {
+        "name": "element-pulse",
+        "value": "sin(πt) sobre el avance",
+        "purpose": "Lo recién nacido late una vez."
+      },
+      {
+        "name": "toast-in",
+        "value": "260ms ease-out, 40px desde la derecha",
+        "purpose": "Entrada del aviso."
+      },
+      {
+        "name": "toast-out",
+        "value": "400ms fade tras 3600ms de vida",
+        "purpose": "Salida del aviso."
+      },
+      {
+        "name": "frame",
+        "value": "16ms",
+        "purpose": "Repintado a ~60 cps solo mientras algo se anima."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "reference",
+        "value": "1500px × 800px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Píldora primaria",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción que avanza o ejecuta; flecha después del texto.",
+      "html": "<button class=\"ds-btn-primary\">Cómo pasa <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg></button>",
+      "css": ".ds-btn-primary { font-family: Geist, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 18px; border: none; border-radius: 9999px; background: #0071E3; color: #FFFFFF; font-size: 14.5px; font-weight: 500; cursor: pointer; } .ds-btn-primary:hover { background: #006AD5; } .ds-btn-primary:active { background: #0061C3; } .ds-btn-primary:focus-visible { outline: 2px solid #0071E3; outline-offset: 2px; }"
+    },
+    {
+      "name": "Píldora secundaria",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Acción de apoyo en gris control; el ícono va antes.",
+      "html": "<button class=\"ds-btn-secondary\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5\"/></svg> Ver de nuevo</button>",
+      "css": ".ds-btn-secondary { font-family: Geist, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 18px; border: none; border-radius: 9999px; background: #E8E8ED; color: #1D1D1F; font-size: 14.5px; font-weight: 500; cursor: pointer; } .ds-btn-secondary:hover { background: #DADADE; } .ds-btn-secondary:active { background: #C7C7CC; } .ds-btn-secondary:focus-visible { outline: 2px solid #0071E3; outline-offset: 2px; }"
+    },
+    {
+      "name": "Píldora destructiva",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Rechazar o borrar: gris control con texto rojo profundo, nunca relleno rojo.",
+      "html": "<button class=\"ds-btn-danger\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\"><path d=\"M6 6l12 12M18 6L6 18\"/></svg> Rechazar</button>",
+      "css": ".ds-btn-danger { font-family: Geist, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 18px; border: none; border-radius: 9999px; background: #E8E8ED; color: #C4231A; font-size: 14.5px; font-weight: 500; cursor: pointer; } .ds-btn-danger:hover { background: #DADADE; } .ds-btn-danger:focus-visible { outline: 2px solid #0071E3; outline-offset: 2px; }"
+    },
+    {
+      "name": "Fila con interruptor iOS",
+      "kind": "input",
+      "refersTo": "switch-row",
+      "description": "Activa una regla de la simulación; verde encendido.",
+      "html": "<label class=\"ds-switch-row\">Biometría <input type=\"checkbox\" checked><span class=\"ds-switch-track\"></span></label>",
+      "css": ".ds-switch-row { font-family: Geist, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 22px; height: 38px; padding: 0 6px 0 18px; border-radius: 9999px; background: #E8E8ED; color: #1D1D1F; font-size: 14.5px; font-weight: 500; cursor: pointer; } .ds-switch-row input { position: absolute; opacity: 0; } .ds-switch-track { position: relative; width: 44px; height: 26px; border-radius: 9999px; background: #C7C7CC; transition: background 0.2s; } .ds-switch-track::after { content: ''; position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 0 rgba(0,0,0,0.12); transition: transform 0.2s; } .ds-switch-row input:checked + .ds-switch-track { background: #34C759; } .ds-switch-row input:checked + .ds-switch-track::after { transform: translateX(18px); } .ds-switch-row input:focus-visible + .ds-switch-track { outline: 2px solid #0071E3; outline-offset: 2px; }"
+    },
+    {
+      "name": "Control segmentado",
+      "kind": "nav",
+      "refersTo": "segmented-rail",
+      "description": "Elige un ejemplo; el segmento elegido es una píldora blanca con sombra.",
+      "html": "<div class=\"ds-seg\"><button>Inyectiva</button><button class=\"is-on\">Sobreyectiva</button><button>Biyectiva</button></div>",
+      "css": ".ds-seg { font-family: Geist, system-ui, sans-serif; display: inline-flex; height: 36px; padding: 3px; border-radius: 9999px; background: #E8E8ED; } .ds-seg button { border: none; background: transparent; padding: 0 15px; border-radius: 9999px; color: #6E6E73; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; } .ds-seg button:hover { color: #1D1D1F; } .ds-seg button.is-on { background: #FFFFFF; color: #1D1D1F; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.06); } .ds-seg button:focus-visible { outline: 2px solid #0071E3; outline-offset: 1px; }"
+    },
+    {
+      "name": "Stepper",
+      "kind": "input",
+      "refersTo": "stepper",
+      "description": "Cambia el tamaño de un conjunto: etiqueta, −, valor, +.",
+      "html": "<div class=\"ds-stepper\"><span>|A|</span><button aria-label=\"menos\">−</button><b>4</b><button aria-label=\"más\">+</button></div>",
+      "css": ".ds-stepper { font-family: Geist, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 10px; height: 36px; padding: 0 4px 0 16px; border-radius: 9999px; background: #E8E8ED; color: #6E6E73; font-size: 14px; } .ds-stepper b { color: #1D1D1F; font-size: 15px; font-weight: 600; min-width: 22px; text-align: center; } .ds-stepper button { width: 32px; height: 28px; border: none; border-radius: 9999px; background: #FFFFFF; color: #1D1D1F; font-size: 18px; cursor: pointer; } .ds-stepper button:hover { background: #F5F5F7; } .ds-stepper button:focus-visible { outline: 2px solid #0071E3; outline-offset: 1px; }"
+    },
+    {
+      "name": "Barra de capítulos",
+      "kind": "nav",
+      "refersTo": "nav-bar",
+      "description": "Marca, capítulos en texto con punto bajo el activo, píldora con el capítulo siguiente.",
+      "html": "<nav class=\"ds-nav\"><strong>ChipGuard</strong><div class=\"ds-nav-tabs\"><a class=\"is-on\">El problema</a><a>Cómo pasa</a><a>La matemática</a></div><button class=\"ds-nav-next\">Cómo pasa →</button></nav>",
+      "css": ".ds-nav { font-family: Geist, system-ui, sans-serif; display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0 28px; background: #FFFFFF; border-bottom: 1px solid #D2D2D7; } .ds-nav strong { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; color: #1D1D1F; } .ds-nav-tabs { display: flex; gap: 0; } .ds-nav-tabs a { position: relative; padding: 0 10px; font-size: 15px; font-weight: 500; color: #6E6E73; cursor: pointer; } .ds-nav-tabs a:hover { color: #1D1D1F; } .ds-nav-tabs a.is-on { color: #1D1D1F; font-weight: 600; } .ds-nav-tabs a.is-on::after { content: ''; position: absolute; left: 50%; bottom: -12px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #0071E3; } .ds-nav-next { height: 36px; padding: 0 18px; border: none; border-radius: 9999px; background: #0071E3; color: #FFFFFF; font: inherit; font-size: 14px; font-weight: 500; } .ds-nav-next:hover { background: #006AD5; }"
+    },
+    {
+      "name": "Tarjeta blanca",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Superficie que flota sobre la página; sin borde, sombra suave.",
+      "html": "<div class=\"ds-card\"><h3>Lo que ve la operadora</h3><p>f⁻¹(Ana): los chips con su DNI</p></div>",
+      "css": ".ds-card { font-family: Geist, system-ui, sans-serif; padding: 22px; border-radius: 24px; background: #FFFFFF; box-shadow: 0 5px 14px rgba(0,0,0,0.08); } .ds-card h3 { margin: 0 0 6px; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; color: #1D1D1F; } .ds-card p { margin: 0; font-size: 14px; color: #0066CC; }"
+    },
+    {
+      "name": "Panel de código",
+      "kind": "custom",
+      "refersTo": "code-line-active",
+      "description": "Panel oscuro con el renglón activo resaltado en amarillo, como un editor.",
+      "html": "<pre class=\"ds-code\"><span>for (b : B)</span><span class=\"is-on\">  if (llegadas(b) &gt; 1)</span><span>    return false;</span></pre>",
+      "css": ".ds-code { margin: 0; padding: 18px 10px; border-radius: 22px; background: #1D1D1F; color: #D2D2D7; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 14px; line-height: 1.65; box-shadow: 0 5px 14px rgba(0,0,0,0.08); } .ds-code span { display: block; padding: 0 12px; border-radius: 6px; white-space: pre; } .ds-code span.is-on { background: #FFD60A; color: #1D1D1F; }"
+    },
+    {
+      "name": "Aviso",
+      "kind": "custom",
+      "refersTo": "toast",
+      "description": "Toast claro con punto de color con significado; entra deslizando y se desvanece.",
+      "html": "<div class=\"ds-toast\"><i style=\"background:#E5372C\"></i><div><b>Pierdes una vida</b><p>Rechazaste a alguien legítimo.</p></div></div>",
+      "css": ".ds-toast { font-family: Geist, system-ui, sans-serif; display: flex; gap: 10px; width: 360px; padding: 16px 20px; border-radius: 18px; background: #FFFFFF; border: 1px solid rgba(210,210,215,0.63); box-shadow: 0 5px 14px rgba(0,0,0,0.08); animation: ds-toast-in 260ms ease-out; } .ds-toast i { flex: none; width: 14px; height: 14px; margin-top: 3px; border-radius: 50%; } .ds-toast b { font-size: 15px; font-weight: 600; color: #1D1D1F; } .ds-toast p { margin: 4px 0 0; font-size: 14px; color: #6E6E73; } @keyframes ds-toast-in { from { opacity: 0; transform: translateX(40px); } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La keynote que se puede tocar",
+    "overview": "ChipGuard se proyecta en un aula como una presentación de Apple: un capítulo, una idea, a pantalla completa. Cada capítulo abre con un titular Geist Bold que enuncia la idea con tracking negativo, y debajo la idea se demuestra en movimiento: chips que se pegan a un DNI, flechas que crecen, código que avanza renglón por renglón, un celular que vibra. La superficie es casi blanca y casi muda; el color aparece solo cuando significa algo.\n\nLa densidad cambia según el tipo de capítulo. Los capítulos narrativos (El problema, Cómo pasa) respiran sobre fondo blanco roto con márgenes amplios y titulares enormes. Los capítulos de trabajo (La matemática, Simulación) suben la densidad: titular de 40 px en la misma fila que sus controles, un escenario blanco grande a la izquierda y la explicación a la derecha. Todo está dibujado a mano en Java2D: no hay componentes Swing visibles, ni bordes de sistema, ni una sola barra de pestañas tipo navegador.\n\nEl rechazo confirmado por el usuario es la app de pestañas que «parece navegador», con barras de botones y tarjetas apiladas. Lo que la reemplaza son textos de capítulo con un punto bajo el activo, píldoras, controles segmentados e interruptores tipo macOS/iOS, y listas sin chrome de tarjeta.",
+    "keyCharacteristics": [
+      "Fondo blanco roto, bandas grises a sangre y un solo azul de acción.",
+      "Colores de sistema solo con significado: rojo = fraude, verde = seguro, naranja = conjunto A, azul = acción y conjunto B.",
+      "Titulares Geist Bold con tracking negativo; el texto corrido en Geist Regular, el énfasis en SemiBold.",
+      "Controles en píldora completa; superficies con esquinas amplias (16–32 px) y sombra suave hacia abajo.",
+      "Íconos vectoriales dibujados con trazo redondeado; nunca glifos de fuente.",
+      "Transición de capítulo: fundido desde blanco y subida de 18 px; ← → avanzan como en una keynote."
+    ],
+    "rules": [
+      {
+        "name": "The Color-With-Meaning Rule",
+        "body": "Rojo es fraude, verde es seguro, naranja es el conjunto A, azul es acción o conjunto B. Ningún color de sistema aparece como adorno; si un elemento no significa nada de eso, va en grises.",
+        "section": "colors"
+      },
+      {
+        "name": "The Highlighter Rule",
+        "body": "El amarillo resaltador solo marca foco: el renglón activo y el elemento bajo revisión, como el resaltado de un editor. No es color de alerta, de premio ni de notificación.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tinted-Text Rule",
+        "body": "El texto de color sobre fondo claro usa la variante oscura (action-blue-text, fraud-red-deep, set-a-orange-text), nunca el relleno puro. Medido: blanco sobre action-blue da 4.7:1; blanco sobre safe-green, 4.4:1; blanco sobre fraud-red, 4.27:1; safe-green como texto sobre page-white, 4.25:1. Estas tres últimas combinaciones quedan bajo 4.5:1, así que en texto pequeño son el valor que trae el build, no un objetivo.",
+        "section": "colors"
+      },
+      {
+        "name": "The SemiBold-Is-Bold Rule",
+        "body": "En texto corrido, «negrita» significa Geist SemiBold. Geist Bold queda reservada a titulares, cifras y marca, siempre con tracking negativo (−0.025 em desde 40 px, −0.01 em por debajo).",
+        "section": "typography"
+      },
+      {
+        "name": "The Headline-Is-the-Idea Rule",
+        "body": "Cada capítulo abre con un titular que enuncia la idea en una frase («Cuenta las flechas.», «Ahora, cómo se arregla.»). Nada va encima del titular: ni etiqueta, ni número de capítulo, ni categoría.",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Tofu Rule",
+        "body": "Todo texto pasa por el dibujante con respaldo: si Geist no tiene un símbolo matemático (⁻¹, ∀, ∈, ≠), ese carácter se dibuja con la sans-serif del sistema para que nunca salga un cuadradito.",
+        "section": "typography"
+      },
+      {
+        "name": "The One-Idea-Per-Viewport Rule",
+        "body": "Un capítulo es una sola pantalla sin desplazamiento. Si una idea necesita más, se vuelve una escena siguiente (Anterior / Siguiente), no un scroll.",
+        "section": "layout"
+      },
+      {
+        "name": "The Soft-Lift Rule",
+        "body": "Las sombras son suaves, difusas y caen hacia abajo. Una superficie con sombra no lleva además borde, salvo el filete del aviso flotante.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** abrir cada capítulo con un titular Geist Bold que enuncie la idea (58 px narrativo, 40 px de trabajo), con tracking negativo.",
+      "**Do** usar el azul de acción solo en lo que avanza, ejecuta o pertenece al conjunto B.",
+      "**Do** reservar rojo, verde y naranja a fraude, seguro y conjunto A; lo demás va en grises.",
+      "**Do** usar el amarillo resaltador solo para el renglón activo y el elemento revisado.",
+      "**Do** dar a todo control la forma de píldora completa y a toda superficie esquinas de 16–32 px.",
+      "**Do** dibujar los íconos como vectores con trazo redondeado y escribir todo texto con el dibujante con respaldo de símbolos.",
+      "**Do** separar bloques con bandas gris banda a sangre o con aire, y las filas de una lista con filetes."
+    ],
+    "donts": [
+      "**Don't** construir barras de pestañas tipo navegador ni filas de botones; los capítulos son texto con un punto bajo el activo.",
+      "**Don't** poner etiquetas, números de capítulo ni categorías encima de un titular. Las mayúsculas pequeñas solo existen dentro de objetos dibujados que las llevan en la realidad (el encabezado impreso del DNI, la cabecera de una notificación de iOS).",
+      "**Don't** usar bordes de color, franjas laterales de color ni tarjetas por cada elemento de una lista.",
+      "**Don't** usar sombras duras, desplazadas de lado o sin desenfoque.",
+      "**Don't** usar glifos de fuente ni emoji como íconos.",
+      "**Don't** usar el amarillo resaltador como color de alerta, premio o notificación.",
+      "**Don't** rellenar de rojo un botón destructivo; va en gris control con texto rojo fraude profundo."
+    ]
+  }
+}
