@@ -44,6 +44,11 @@ public final class Capturas {
             guardar(app, carpeta, "3" + (char) ('a' + e) + "-chipguard.png");
         }
         app.irA(3);
+        for (int e = 0; e < app.arquitectura().cantidadEscenas(); e++) {
+            app.arquitectura().irAEscena(e);
+            guardar(app, carpeta, "3" + (char) ('f' + e) + "-arquitectura.png");
+        }
+        app.irA(4);
         PanelTienda t = app.tienda();
         guardar(app, carpeta, "4a-tienda-portada.png");
         t.continuar();
@@ -74,7 +79,7 @@ public final class Capturas {
         }
         t.continuar();
         guardar(app, carpeta, "4h-tienda-final.png");
-        app.irA(4);
+        app.irA(5);
         for (int e = 0; e < app.cierre().cantidadEscenas(); e++) {
             app.cierre().irAEscena(e);
             guardar(app, carpeta, "5" + (char) ('a' + e) + "-cierre.png");

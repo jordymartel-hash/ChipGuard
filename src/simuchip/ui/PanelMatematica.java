@@ -37,11 +37,20 @@ public final class PanelMatematica extends PanelEscenas {
                 "Un chip con dos dueños: ¿a quién busca la policía? Un chip sin dueño: nadie responde por él."),
             new Escena("Inyectiva: nadie comparte.",
                 "A cada persona le llega como mucho un chip. Que Pedro no tenga ninguno no importa."),
+            new Escena("Caso real: los asientos de un bus.",
+                "Cada pasajero tiene su propio asiento: inyectiva. Sobran asientos vacíos y no pasa nada. "
+                    + "Pero si venden el mismo asiento dos veces (sobreventa), deja de ser inyectiva."),
             new Escena("Sobreyectiva: nadie se queda fuera.",
                 "Todas las personas tienen al menos un chip. Ana tiene dos, y eso se vale."),
+            new Escena("Caso real: los grupos de esta expo.",
+                "Alumnos → grupos. Ningún grupo puede quedar vacío: todos reciben a alguien. Eso es sobreyectiva "
+                    + "(y como hay más alumnos que grupos, no puede ser inyectiva)."),
             new Escena("Biyectiva: parejas perfectas.",
                 "Un chip, una persona, y de vuelta. Con la inversa vas del chip a la persona sin perderte. "
                     + "Eso es lo que necesita la policía."),
+            new Escena("Caso real: tú y tu DNI.",
+                "Cada persona tiene un DNI y cada DNI es de una sola persona: biyectiva. Con el DNI encuentras a la "
+                    + "persona y con la persona, su DNI. Por eso a la policía le sirve tanto."),
             new Escena("El problema: dos flechas que no coinciden.",
                 "Cada chip tiene dos flechas: a nombre de quién está (el registro) y quién lo usa de verdad. "
                     + "En el …935 apuntan a personas distintas."),
@@ -71,9 +80,11 @@ public final class PanelMatematica extends PanelEscenas {
             }
             case 2 -> conjuntos(g, a, 3, new Look[] {ANA, LUIS, ROSA, PEDRO}, new int[][] {{0, 0, VERDE},
                 {1, 1, VERDE}, {2, 2, VERDE}}, t, "Una flecha como máximo por persona");
-            case 3 -> conjuntos(g, a, 4, new Look[] {ANA, LUIS, ROSA}, new int[][] {{0, 0, AZUL}, {1, 0, AZUL},
+            case 3 -> bus(g, a, t);
+            case 4 -> conjuntos(g, a, 4, new Look[] {ANA, LUIS, ROSA}, new int[][] {{0, 0, AZUL}, {1, 0, AZUL},
                 {2, 1, AZUL}, {3, 2, AZUL}}, t, "Nadie se queda sin flecha");
-            case 4 -> {
+            case 5 -> grupos(g, a, t);
+            case 6 -> {
                 conjuntos(g, a, 3, new Look[] {ANA, LUIS, ROSA}, new int[][] {{0, 0, VERDE}, {1, 1, VERDE},
                     {2, 2, VERDE}}, t, "Del chip a la persona, y de la persona al chip");
                 // las flechas de vuelta (la inversa)
@@ -84,8 +95,9 @@ public final class PanelMatematica extends PanelEscenas {
                             true, tramo(t, 1.6 + k * 0.2, 0.5));
                 }
             }
-            case 5 -> problema(g, a, t, false);
-            case 6 -> palomar(g, a, t);
+            case 7 -> dniCaso(g, a, t);
+            case 8 -> problema(g, a, t, false);
+            case 9 -> palomar(g, a, t);
             default -> problema(g, a, t, true);
         }
     }
@@ -135,6 +147,107 @@ public final class PanelMatematica extends PanelEscenas {
         g.setFont(Tema.letra(Font.BOLD, 18f));
         g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * q)));
         Tema.textoCentrado(g, pie, a.getCenterX(), a.y + a.height - 6);
+    }
+
+    // ── caso inyectiva: pasajeros → asientos; al final, una sobreventa ──
+    private void bus(Graphics2D g, Rectangle a, double t) {
+        Look[] gente = {ANA, LUIS, ROSA, PEDRO};
+        double xBus = a.x + a.width * 0.45;
+        double wBus = a.width * 0.5;
+        double hBus = Math.min(a.height - 60, 470);
+        double yBus = a.y + 30;
+        Tema.rectRedondo(g, xBus, yBus, wBus, hBus, 46, new Color(0xFFD25A));
+        Tema.rectRedondo(g, xBus + 16, yBus + 16, wBus - 32, hBus - 32, 34, Tema.BLANCO);
+        g.setFont(Tema.letra(Font.BOLD, 15f));
+        g.setColor(Tema.NARANJA_TEXTO);
+        Tema.textoCentrado(g, "BUS LIMA → ICA", xBus + wBus / 2, yBus + 40);
+        double sw = (wBus - 120) / 2;
+        double sh = (hBus - 110) / 3;
+        double[][] asiento = new double[6][];
+        for (int k = 0; k < 6; k++) {
+            double sx = xBus + 40 + (k % 2) * (sw + 40);
+            double sy = yBus + 64 + (k / 2) * sh;
+            asiento[k] = new double[] {sx + sw / 2, sy + sh / 2 - 6};
+            Tema.rectRedondo(g, sx, sy, sw, sh - 14, 16, Tema.GRIS_CLARO);
+            g.setFont(Tema.letra(Font.BOLD, 14f));
+            g.setColor(Tema.TEXTO_SUAVE);
+            Tema.texto(g, "asiento " + (k + 1), sx + 10, sy + 22);
+        }
+        int[] destino = {0, 3, 4, 1};
+        double paso = Math.min(110, (a.height - 40) / 4.0);
+        for (int k = 0; k < 4; k++) {
+            double px = a.x + a.width * 0.12;
+            double py = a.y + 40 + k * paso + paso * 0.5;
+            Personitas.persona(g, gente[k], px, py + 40, 80, Cara.FELIZ, 1);
+            double[] s2 = asiento[destino[k]];
+            Tema.flecha(g, px + 40, py, s2[0] - 30, s2[1], Tema.VERDE, 2.6f, false, tramo(t, 0.3 + k * 0.3, 0.5));
+            double p = tramo(t, 0.8 + k * 0.3, 0.3);
+            Personitas.persona(g, gente[k], s2[0], s2[1] + 30, 60, Cara.FELIZ, p);
+        }
+        // la sobreventa: Juana recibe el asiento 1, que ya es de Ana
+        double q = tramo(t, 2.6, 0.5);
+        if (q > 0) {
+            Look juana = new Look("Juana", new Color(0x1FA2A0), Personitas.PIEL_2, Personitas.PELO_CASTANO, Accesorio.MONO);
+            double px = a.x + a.width * 0.12;
+            double py = a.y + a.height - 20;
+            Personitas.persona(g, juana, px, py, 80, Cara.TRISTE, q);
+            Tema.flecha(g, px + 40, py - 40, asiento[0][0] - 30, asiento[0][1] + 20, Tema.ROJO, 3f, true, q);
+            Font f = Tema.letra(Font.BOLD, 16f);
+            Tema.pastilla(g, "¡sobreventa! 2 flechas al asiento 1", (int) (xBus + 20), (int) (yBus + hBus + 8),
+                    Tema.conAlfa(Tema.ROJO, (int) (255 * q)), Tema.BLANCO, f);
+        }
+    }
+
+    // ── caso sobreyectiva: 8 alumnos → 4 grupos, ninguno vacío ──
+    private void grupos(Graphics2D g, Rectangle a, double t) {
+        Look[] base = {ANA, LUIS, ROSA, PEDRO};
+        Color[] colorGrupo = {Tema.AZUL, Tema.VERDE, Tema.NARANJA, new Color(0x9C5BD9)};
+        double xG = a.x + a.width * 0.62;
+        double wG = a.width * 0.34;
+        double hG = (a.height - 40) / 4.0;
+        int[] cuenta = new int[4];
+        for (int k = 0; k < 8; k++) {
+            int grupo = k % 4;
+            double col = k / 4;
+            double px = a.x + a.width * (0.08 + col * 0.16);
+            double py = a.y + 30 + (k % 4) * hG + hG * (k / 4 == 0 ? 0.3 : 0.75);
+            Look l = base[(k + k / 4) % 4];
+            Personitas.persona(g, l, px, py + 32, 70, Cara.FELIZ, 1);
+            double p = tramo(t, 0.3 + k * 0.2, 0.5);
+            double gy = a.y + 30 + grupo * hG + hG * 0.5;
+            Tema.flecha(g, px + 30, py - 14, xG - 8, gy + (k / 4 == 0 ? -10 : 10), colorGrupo[grupo], 2.4f, false, p);
+            if (p >= 1) {
+                cuenta[grupo]++;
+            }
+        }
+        for (int k = 0; k < 4; k++) {
+            double gy = a.y + 30 + k * hG;
+            Tema.rectRedondo(g, xG, gy + 6, wG, hG - 12, 22, Tema.conAlfa(colorGrupo[k], 40));
+            g.setFont(Tema.titulo(22f));
+            g.setColor(Tema.AZUL_NOCHE);
+            Tema.texto(g, "Grupo " + (k + 1), xG + 22, gy + hG / 2 + 8);
+            g.setFont(Tema.letra(Font.BOLD, 17f));
+            g.setColor(cuenta[k] > 0 ? Tema.VERDE : Tema.ROJO);
+            Tema.texto(g, cuenta[k] + (cuenta[k] == 1 ? " alumno" : " alumnos"), xG + wG - 120, gy + hG / 2 + 8);
+        }
+    }
+
+    // ── caso biyectiva: persona ↔ DNI ──
+    private void dniCaso(Graphics2D g, Rectangle a, double t) {
+        Look[] gente = {ANA, LUIS, ROSA};
+        double paso = (a.height - 20) / 3.0;
+        double dw = Math.min(230, a.width * 0.36);
+        double dh = dw * 0.63;
+        for (int k = 0; k < 3; k++) {
+            double cy = a.y + 10 + k * paso + paso / 2;
+            double px = a.x + a.width * 0.12;
+            Personitas.persona(g, gente[k], px, cy + 50, 100, Cara.FELIZ, 1);
+            double xd = a.x + a.width - dw - 10;
+            Personitas.dni(g, xd, cy - dh / 2, dw, dh, gente[k].nombre(), tramo(t, 0.2 + k * 0.2, 0.4), gente[k]);
+            Tema.flecha(g, px + 50, cy - 8, xd - 10, cy - 8, Tema.VERDE, 3f, false, tramo(t, 0.6 + k * 0.3, 0.5));
+            Tema.flecha(g, xd - 10, cy + 12, px + 50, cy + 12, Tema.conAlfa(Tema.VERDE, 150), 2f, true,
+                    tramo(t, 1.6 + k * 0.3, 0.5));
+        }
     }
 
     // ── el chip …935 con sus dos flechas: registro y uso real ──
