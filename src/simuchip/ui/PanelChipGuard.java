@@ -22,7 +22,26 @@ import javax.swing.Timer;
  * Pestaña 3: la solución contada como historia. Ana, un celular simulado y lo que ve la operadora.
  * Primero pasa el problema (sin protección); luego se rebobina con ChipGuard.
  */
-public final class PanelChipGuard extends JComponent {
+public final class PanelChipGuard extends JComponent implements Capitulo {
+
+    @Override
+    public boolean avanzar() {
+        if (escena < ESCENAS.size() - 1) {
+            irAEscena(escena + 1);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean retroceder() {
+        if (escena > 0) {
+            irAEscena(escena - 1);
+            return true;
+        }
+        return false;
+    }
+
 
     private enum Pantalla { BLOQUEO, LLAMADA, APP, ALERTA, BLOQUEADO, HUELLA_FALLA, MAPA, RESUMEN }
 

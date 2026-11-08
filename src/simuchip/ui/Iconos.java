@@ -97,6 +97,8 @@ public final class Iconos {
                 g.draw(new RoundRectangle2D.Double(cx - h * 0.3, cy - h * 0.15, h * 0.6, h * 0.65, 4, 4));
             }
             case HUELLA -> {
+                g.setStroke(new BasicStroke((float) Math.max(1.6, t * 0.055), BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND));
                 for (int i = 0; i < 4; i++) {
                     double r = h * (0.22 + i * 0.2);
                     g.draw(new Arc2D.Double(cx - r, cy - r + h * 0.1, r * 2, r * 2, 20 + i * 8, 200 - i * 12,

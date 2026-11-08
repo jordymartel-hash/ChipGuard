@@ -19,8 +19,8 @@ import javax.swing.Timer;
  */
 public final class Aplicacion extends JPanel {
 
-    private static final String[] CAPITULOS = {"El problema", "Cómo pasa", "La matemática", "Simulación",
-        "ChipGuard", "Juego"};
+    private static final String[] CAPITULOS = {"El problema", "Cómo pasa", "Funciones", "Pruébalo", "El modelo",
+        "Simulación", "ChipGuard", "Juego", "Cierre"};
     private static final int ALTO_BARRA = 60;
     private static final int TRANSICION_MS = 420;
 
@@ -33,20 +33,34 @@ public final class Aplicacion extends JPanel {
     private final PanelSimula simula = new PanelSimula();
     private final PanelChipGuard chipGuard = new PanelChipGuard();
     private final PanelDetective detective = new PanelDetective();
+    private final PanelCasos casos = new PanelCasos();
+    private final PanelFunciones funciones = new PanelFunciones();
+    private final PanelModelo modelo = new PanelModelo();
+    private final PanelCierre cierre = new PanelCierre();
+    private final Cronometro cronometro = new Cronometro();
     private int actual = -1;
 
     public Aplicacion() {
         super(new BorderLayout());
         setBackground(Tema.CELESTE_FONDO);
-        paneles = new JComponent[] {new PanelProblema(() -> irA(1)), new PanelCasos(() -> irA(2)), aprende, simula,
-            chipGuard, detective};
+        paneles = new JComponent[] {new PanelProblema(() -> irA(1)), casos, funciones, aprende, modelo, simula,
+            chipGuard, detective, cierre};
         add(new Barra(), BorderLayout.NORTH);
         for (int i = 0; i < paneles.length; i++) {
             centro.add(paneles[i], CAPITULOS[i]);
         }
         add(centro, BorderLayout.CENTER);
-        atajo(KeyEvent.VK_RIGHT, "siguiente", () -> irA(actual + 1));
-        atajo(KeyEvent.VK_LEFT, "anterior", () -> irA(actual - 1));
+        // como en una keynote: primero las escenas del capítulo, luego el capítulo siguiente
+        atajo(KeyEvent.VK_RIGHT, "siguiente", () -> {
+            if (!(paneles[actual] instanceof Capitulo c) || !c.avanzar()) {
+                irA(actual + 1);
+            }
+        });
+        atajo(KeyEvent.VK_LEFT, "anterior", () -> {
+            if (!(paneles[actual] instanceof Capitulo c) || !c.retroceder()) {
+                irA(actual - 1);
+            }
+        });
         irA(0);
     }
 
@@ -99,6 +113,22 @@ public final class Aplicacion extends JPanel {
 
     public PanelDetective detective() {
         return detective;
+    }
+
+    public PanelCasos casos() {
+        return casos;
+    }
+
+    public PanelFunciones funciones() {
+        return funciones;
+    }
+
+    public PanelModelo modelo() {
+        return modelo;
+    }
+
+    public PanelCierre cierre() {
+        return cierre;
     }
 
     /** Contenedor de capítulos con la transición: fundido desde blanco y subida de 18 px. */
@@ -162,6 +192,7 @@ public final class Aplicacion extends JPanel {
             siguiente.setFont(Tema.medio(14f));
             siguiente.alHacerClic(() -> irA(actual + 1));
             add(siguiente);
+            add(cronometro);
         }
 
         @Override
@@ -177,7 +208,10 @@ public final class Aplicacion extends JPanel {
                 x += bw;
             }
             Dimension d = siguiente.getPreferredSize();
+            int xs = getWidth() - 28 - Math.max(d.width, 130);
             siguiente.setBounds(getWidth() - 28 - d.width, (ALTO_BARRA - 36) / 2, d.width, 36);
+            Dimension c = cronometro.getPreferredSize();
+            cronometro.setBounds(xs - 12 - c.width, (ALTO_BARRA - c.height) / 2, c.width, c.height);
         }
 
         @Override
