@@ -42,65 +42,133 @@ final class Personitas {
             return;
         }
         int a = (int) (255 * Math.min(1, alfa));
-        double r = alto * 0.17;
-        double cy = pies - alto + r;
-        double torsoY = cy + r * 0.9;
-        double torsoAlto = alto * 0.42;
-        double torsoAncho = alto * 0.4;
-        Color pantalon = Tema.conAlfa(new Color(0x2E3350), a);
-        // piernas
-        double piernaAncho = alto * 0.12;
-        g.setColor(pantalon);
-        g.fill(new RoundRectangle2D.Double(cx - torsoAncho * 0.36, torsoY + torsoAlto - 8, piernaAncho,
-                pies - torsoY - torsoAlto + 8, piernaAncho, piernaAncho));
-        g.fill(new RoundRectangle2D.Double(cx + torsoAncho * 0.36 - piernaAncho, torsoY + torsoAlto - 8, piernaAncho,
-                pies - torsoY - torsoAlto + 8, piernaAncho, piernaAncho));
+        double r = alto * 0.165;
+        double cy = pies - alto + r * 1.05;
+        double torsoY = cy + r * 1.05;
+        double torsoAlto = alto * 0.38;
+        double torsoAncho = alto * 0.36;
+        double piernaAncho = alto * 0.105;
+        double piernaY = torsoY + torsoAlto - 10;
+        double piernaAlto = pies - piernaY - alto * 0.04;
+        Color piel = l.piel();
+        Color pielSombra = piel.darker();
+        Color pantalon = new Color(0x2E3350);
+        // sombra en el piso
+        g.setColor(new Color(0, 0, 0, (int) (28 * Math.min(1, alfa))));
+        g.fill(new Ellipse2D.Double(cx - torsoAncho * 0.75, pies - alto * 0.025, torsoAncho * 1.5, alto * 0.05));
+        // piernas y zapatos
+        g.setColor(Tema.conAlfa(pantalon, a));
+        double xi = cx - torsoAncho * 0.34;
+        double xd = cx + torsoAncho * 0.34 - piernaAncho;
+        g.fill(new RoundRectangle2D.Double(xi, piernaY, piernaAncho, piernaAlto, piernaAncho * 0.6, piernaAncho * 0.6));
+        g.fill(new RoundRectangle2D.Double(xd, piernaY, piernaAncho, piernaAlto, piernaAncho * 0.6, piernaAncho * 0.6));
+        g.setColor(Tema.conAlfa(new Color(0x1C1C22), a));
+        g.fill(new RoundRectangle2D.Double(xi - piernaAncho * 0.25, pies - alto * 0.065, piernaAncho * 1.35, alto * 0.065,
+                alto * 0.06, alto * 0.06));
+        g.fill(new RoundRectangle2D.Double(xd - piernaAncho * 0.1, pies - alto * 0.065, piernaAncho * 1.35, alto * 0.065,
+                alto * 0.06, alto * 0.06));
         // capucha por detrás de la cabeza
         if (l.accesorio() == Accesorio.CAPUCHA) {
             g.setColor(Tema.conAlfa(l.camisa().darker(), a));
             g.fill(new Ellipse2D.Double(cx - r * 1.35, cy - r * 1.3, r * 2.7, r * 2.8));
         }
-        // torso y brazos
+        // brazos con manos
+        double brazo = alto * 0.09;
+        double largoBrazo = torsoAlto * 0.82;
+        g.setColor(Tema.conAlfa(l.camisa().darker(), a));
+        g.fill(new RoundRectangle2D.Double(cx - torsoAncho / 2 - brazo * 0.65, torsoY + r * 0.2, brazo, largoBrazo,
+                brazo, brazo));
+        g.fill(new RoundRectangle2D.Double(cx + torsoAncho / 2 - brazo * 0.35, torsoY + r * 0.2, brazo, largoBrazo,
+                brazo, brazo));
+        g.setColor(Tema.conAlfa(piel, a));
+        double mano = brazo * 1.05;
+        g.fill(new Ellipse2D.Double(cx - torsoAncho / 2 - brazo * 0.65 - (mano - brazo) / 2,
+                torsoY + r * 0.2 + largoBrazo - mano * 0.55, mano, mano));
+        g.fill(new Ellipse2D.Double(cx + torsoAncho / 2 - brazo * 0.35 - (mano - brazo) / 2,
+                torsoY + r * 0.2 + largoBrazo - mano * 0.55, mano, mano));
+        // cuello
+        g.setColor(Tema.conAlfa(pielSombra, a));
+        g.fill(new RoundRectangle2D.Double(cx - r * 0.28, cy + r * 0.6, r * 0.56, r * 0.7, 6, 6));
+        // torso con cuello en V
         g.setColor(Tema.conAlfa(l.camisa(), a));
-        g.fill(new RoundRectangle2D.Double(cx - torsoAncho / 2, torsoY, torsoAncho, torsoAlto, torsoAncho * 0.55,
-                torsoAncho * 0.55));
-        double brazo = alto * 0.1;
-        g.fill(new RoundRectangle2D.Double(cx - torsoAncho / 2 - brazo * 0.7, torsoY + 6, brazo, torsoAlto * 0.8,
-                brazo, brazo));
-        g.fill(new RoundRectangle2D.Double(cx + torsoAncho / 2 - brazo * 0.3, torsoY + 6, brazo, torsoAlto * 0.8,
-                brazo, brazo));
+        g.fill(new RoundRectangle2D.Double(cx - torsoAncho / 2, torsoY, torsoAncho, torsoAlto, torsoAncho * 0.5,
+                torsoAncho * 0.5));
+        Path2D cuelloV = new Path2D.Double();
+        cuelloV.moveTo(cx - r * 0.32, torsoY + 1);
+        cuelloV.lineTo(cx, torsoY + r * 0.42);
+        cuelloV.lineTo(cx + r * 0.32, torsoY + 1);
+        cuelloV.closePath();
+        g.setColor(Tema.conAlfa(pielSombra, a));
+        g.fill(cuelloV);
         if (l.accesorio() == Accesorio.MANDIL) {
             g.setColor(Tema.conAlfa(Tema.BLANCO, a));
-            g.fill(new RoundRectangle2D.Double(cx - torsoAncho * 0.3, torsoY + torsoAlto * 0.2, torsoAncho * 0.6,
+            g.fill(new RoundRectangle2D.Double(cx - torsoAncho * 0.3, torsoY + torsoAlto * 0.22, torsoAncho * 0.6,
                     torsoAlto * 0.85, 10, 10));
+            g.setColor(Tema.conAlfa(Tema.GRIS_CLARO, a));
+            g.fill(new RoundRectangle2D.Double(cx - torsoAncho * 0.15, torsoY + torsoAlto * 0.5, torsoAncho * 0.3,
+                    torsoAlto * 0.18, 6, 6));
         }
         if (l.accesorio() == Accesorio.GORRA) {
             g.setColor(Tema.conAlfa(Tema.DORADO, a));
-            g.fill(new Ellipse2D.Double(cx + torsoAncho * 0.08, torsoY + torsoAlto * 0.2, r * 0.45, r * 0.45));
+            g.fill(new Ellipse2D.Double(cx + torsoAncho * 0.1, torsoY + torsoAlto * 0.22, r * 0.42, r * 0.42));
         }
-        // cabeza
-        g.setColor(Tema.conAlfa(l.piel(), a));
-        g.fill(new Ellipse2D.Double(cx - r, cy - r, 2 * r, 2 * r));
+        // orejas y cabeza
+        g.setColor(Tema.conAlfa(pielSombra, a));
+        g.fill(new Ellipse2D.Double(cx - r * 1.12, cy - r * 0.05, r * 0.38, r * 0.45));
+        g.fill(new Ellipse2D.Double(cx + r * 0.74, cy - r * 0.05, r * 0.38, r * 0.45));
+        g.setColor(Tema.conAlfa(piel, a));
+        g.fill(new Ellipse2D.Double(cx - r, cy - r, 2 * r, 2 * r * 1.04));
         pelo(g, l, cx, cy, r, a);
-        // cara
-        Color ojo = Tema.conAlfa(new Color(0x231F20), a);
-        g.setColor(ojo);
-        double ojoR = Math.max(2, r * 0.13);
-        double ojoY = cy - r * 0.02;
-        if (cara == Cara.MALA) {
-            g.setStroke(new BasicStroke((float) Math.max(1.5, r * 0.09), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            g.draw(new java.awt.geom.Line2D.Double(cx - r * 0.55, ojoY - r * 0.28, cx - r * 0.18, ojoY - r * 0.12));
-            g.draw(new java.awt.geom.Line2D.Double(cx + r * 0.55, ojoY - r * 0.28, cx + r * 0.18, ojoY - r * 0.12));
+        // mejillas
+        if (cara == Cara.FELIZ || cara == Cara.ASUSTADA) {
+            g.setColor(new Color(0xFF, 0x7A, 0x8A, (int) (70 * Math.min(1, alfa))));
+            g.fill(new Ellipse2D.Double(cx - r * 0.78, cy + r * 0.2, r * 0.36, r * 0.22));
+            g.fill(new Ellipse2D.Double(cx + r * 0.42, cy + r * 0.2, r * 0.36, r * 0.22));
         }
-        g.fill(new Ellipse2D.Double(cx - r * 0.38 - ojoR, ojoY - ojoR, 2 * ojoR, 2 * ojoR));
-        g.fill(new Ellipse2D.Double(cx + r * 0.38 - ojoR, ojoY - ojoR, 2 * ojoR, 2 * ojoR));
+        // ojos: blanco, pupila y brillo (simples si la persona es chiquita)
+        double ojoY = cy - r * 0.02;
+        Color oscuro = Tema.conAlfa(new Color(0x231F20), a);
         g.setStroke(new BasicStroke((float) Math.max(1.5, r * 0.09), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        double by = cy + r * 0.38;
+        if (cara == Cara.MALA) {
+            g.setColor(oscuro);
+            g.draw(new java.awt.geom.Line2D.Double(cx - r * 0.58, ojoY - r * 0.3, cx - r * 0.16, ojoY - r * 0.12));
+            g.draw(new java.awt.geom.Line2D.Double(cx + r * 0.58, ojoY - r * 0.3, cx + r * 0.16, ojoY - r * 0.12));
+        }
+        for (int s = -1; s <= 1; s += 2) {
+            double ox = cx + s * r * 0.38;
+            if (r > 14) {
+                double ow = r * (cara == Cara.ASUSTADA ? 0.36 : 0.3);
+                g.setColor(Tema.conAlfa(Tema.BLANCO, a));
+                g.fill(new Ellipse2D.Double(ox - ow / 2, ojoY - ow * 0.6, ow, ow * 1.2));
+                double pw = ow * 0.62;
+                g.setColor(oscuro);
+                g.fill(new Ellipse2D.Double(ox - pw / 2, ojoY - pw * 0.45, pw, pw * 1.05));
+                g.setColor(Tema.conAlfa(Tema.BLANCO, a));
+                g.fill(new Ellipse2D.Double(ox + pw * 0.05, ojoY - pw * 0.35, pw * 0.35, pw * 0.35));
+            } else {
+                double ojoR = Math.max(1.6, r * 0.13);
+                g.setColor(oscuro);
+                g.fill(new Ellipse2D.Double(ox - ojoR, ojoY - ojoR, 2 * ojoR, 2 * ojoR));
+            }
+        }
+        // boca
+        g.setColor(oscuro);
+        double by = cy + r * 0.42;
         switch (cara) {
-            case FELIZ -> g.draw(new Arc2D.Double(cx - r * 0.35, by - r * 0.3, r * 0.7, r * 0.45, 200, 140, Arc2D.OPEN));
+            case FELIZ -> {
+                Path2D sonrisa = new Path2D.Double();
+                sonrisa.moveTo(cx - r * 0.3, by - r * 0.06);
+                sonrisa.quadTo(cx, by + r * 0.32, cx + r * 0.3, by - r * 0.06);
+                sonrisa.closePath();
+                g.setColor(Tema.conAlfa(new Color(0x8C2F39), a));
+                g.fill(sonrisa);
+            }
             case MALA -> g.draw(new Arc2D.Double(cx - r * 0.35, by - r * 0.25, r * 0.7, r * 0.35, 210, 90, Arc2D.OPEN));
             case TRISTE -> g.draw(new Arc2D.Double(cx - r * 0.3, by - r * 0.02, r * 0.6, r * 0.4, 20, 140, Arc2D.OPEN));
-            case ASUSTADA -> g.fill(new Ellipse2D.Double(cx - r * 0.13, by - r * 0.12, r * 0.26, r * 0.32));
+            case ASUSTADA -> {
+                g.setColor(Tema.conAlfa(new Color(0x8C2F39), a));
+                g.fill(new Ellipse2D.Double(cx - r * 0.14, by - r * 0.12, r * 0.28, r * 0.34));
+            }
             default -> g.draw(new java.awt.geom.Line2D.Double(cx - r * 0.25, by, cx + r * 0.25, by));
         }
         g.setStroke(new BasicStroke(1f));
@@ -110,21 +178,30 @@ final class Personitas {
         g.setColor(Tema.conAlfa(l.pelo(), a));
         switch (l.accesorio()) {
             case MONO -> {
-                g.fill(new Arc2D.Double(cx - r * 1.05, cy - r * 1.08, r * 2.1, r * 1.5, 0, 180, Arc2D.CHORD));
-                g.fill(new Ellipse2D.Double(cx - r * 0.45, cy - r * 1.75, r * 0.9, r * 0.9));
+                g.fill(new Arc2D.Double(cx - r * 1.06, cy - r * 1.1, r * 2.12, r * 1.6, 0, 180, Arc2D.CHORD));
+                g.fill(new Ellipse2D.Double(cx - r * 0.42, cy - r * 1.72, r * 0.84, r * 0.84));
+                // mechones a los lados
+                g.fill(new RoundRectangle2D.Double(cx - r * 1.06, cy - r * 0.4, r * 0.3, r * 0.9, r * 0.3, r * 0.3));
+                g.fill(new RoundRectangle2D.Double(cx + r * 0.76, cy - r * 0.4, r * 0.3, r * 0.9, r * 0.3, r * 0.3));
             }
             case CAPUCHA -> {
                 g.setColor(Tema.conAlfa(l.camisa().darker(), a));
-                g.fill(new Arc2D.Double(cx - r * 1.1, cy - r * 1.2, r * 2.2, r * 1.6, 0, 180, Arc2D.CHORD));
+                g.fill(new Arc2D.Double(cx - r * 1.12, cy - r * 1.22, r * 2.24, r * 1.66, 0, 180, Arc2D.CHORD));
             }
             case GORRA -> {
                 g.setColor(Tema.conAlfa(l.camisa().darker(), a));
-                g.fill(new Arc2D.Double(cx - r * 1.02, cy - r * 1.15, r * 2.04, r * 1.5, 0, 180, Arc2D.CHORD));
-                g.fill(new RoundRectangle2D.Double(cx - r * 0.2, cy - r * 0.48, r * 1.45, r * 0.24, 6, 6));
+                g.fill(new Arc2D.Double(cx - r * 1.04, cy - r * 1.18, r * 2.08, r * 1.54, 0, 180, Arc2D.CHORD));
+                g.fill(new RoundRectangle2D.Double(cx - r * 0.2, cy - r * 0.5, r * 1.45, r * 0.24, 6, 6));
                 g.setColor(Tema.conAlfa(Tema.DORADO, a));
-                g.fill(new Ellipse2D.Double(cx - r * 0.15, cy - r * 0.95, r * 0.3, r * 0.3));
+                g.fill(new Ellipse2D.Double(cx - r * 0.15, cy - r * 0.97, r * 0.3, r * 0.3));
             }
-            default -> g.fill(new Arc2D.Double(cx - r * 1.02, cy - r * 1.06, r * 2.04, r * 1.3, 0, 180, Arc2D.CHORD));
+            default -> {
+                g.fill(new Arc2D.Double(cx - r * 1.04, cy - r * 1.08, r * 2.08, r * 1.36, 0, 180, Arc2D.CHORD));
+                // flequillo
+                for (int k = 0; k < 3; k++) {
+                    g.fill(new Ellipse2D.Double(cx - r * 0.75 + k * r * 0.45, cy - r * 0.68, r * 0.6, r * 0.42));
+                }
+            }
         }
     }
 

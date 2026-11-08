@@ -13,8 +13,8 @@ import java.util.List;
 public final class PanelArquitectura extends PanelEscenas {
 
     // nodos: posición relativa en el área, ícono, nombre, detalle y si ChipGuard lo agrega
-    private static final double[][] POS = {{0.09, 0.42}, {0.34, 0.42}, {0.34, 0.08}, {0.62, 0.42}, {0.9, 0.42},
-        {0.62, 0.8}};
+    private static final double[][] POS = {{0.1, 0.45}, {0.37, 0.45}, {0.37, 0.1}, {0.64, 0.45}, {0.9, 0.45},
+        {0.64, 0.84}};
     private static final Iconos.Tipo[] ICONO = {Iconos.Tipo.TIENDA, Iconos.Tipo.CHIP, Iconos.Tipo.HUELLA,
         Iconos.Tipo.ESCUDO, Iconos.Tipo.TELEFONO, Iconos.Tipo.DOCUMENTO};
     private static final String[] NOMBRE = {"Tienda", "Operadora", "RENIEC", "Servidor ChipGuard",
@@ -51,7 +51,7 @@ public final class PanelArquitectura extends PanelEscenas {
 
     public PanelArquitectura() {
         super(List.of(
-            new Escena("Así funciona ChipGuard por dentro.",
+            new Escena("ChipGuard por dentro.",
                 "Seis piezas. Cuatro ya existen hoy en el Perú; ChipGuard agrega dos: un servidor y una app.", true),
             new Escena("El viaje de una solicitud.",
                 "Desde que pones tu huella en la tienda hasta que el chip se activa: siete pasos, en segundos.", true),
@@ -70,6 +70,23 @@ public final class PanelArquitectura extends PanelEscenas {
     protected void dibujarFigura(Graphics2D g, int i, Rectangle a, double t) {
         switch (i) {
             case 0 -> {
+                int[][] lazos = {{TIENDA, OPERADORA}, {OPERADORA, RENIEC}, {OPERADORA, SERVIDOR}, {SERVIDOR, APP},
+                    {SERVIDOR, OSIPTEL}};
+                for (int k = 0; k < lazos.length; k++) {
+                    double[] o = borde(a, lazos[k][0], lazos[k][1], 0);
+                    double[] d = borde(a, lazos[k][1], lazos[k][0], 0);
+                    boolean nuevo = NUEVO[lazos[k][0]] || NUEVO[lazos[k][1]];
+                    Tema.flecha(g, o[0], o[1], d[0], d[1], Tema.conAlfa(nuevo ? Tema.VERDE : Tema.GRIS, 200), 2.5f,
+                            true, tramo(t, 1.9 + k * 0.15, 0.5));
+                }
+                double q = tramo(t, 2.6, 0.4);
+                Tema.rectRedondo(g, a.x, a.y + a.height * 0.78, 24, 24, 8, Tema.conAlfa(Tema.BLANCO, (int) (255 * q)));
+                Tema.borde(g, a.x, a.y + a.height * 0.78, 24, 24, 8, Tema.conAlfa(Tema.FILETE, (int) (255 * q)), 1.5f);
+                Tema.rectRedondo(g, a.x, a.y + a.height * 0.78 + 40, 24, 24, 8, Tema.conAlfa(Tema.VERDE_SUAVE, (int) (255 * q)));
+                g.setFont(Tema.letra(Font.PLAIN, 18f));
+                g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * q)));
+                Tema.texto(g, "ya existe hoy en el Perú", a.x + 38, a.y + a.height * 0.78 + 18);
+                Tema.texto(g, "lo que agrega ChipGuard", a.x + 38, a.y + a.height * 0.78 + 58);
                 for (int n = 0; n < NOMBRE.length; n++) {
                     nodo(g, a, n, tramo(t, 0.2 + n * 0.3, 0.4), null);
                 }
@@ -92,8 +109,8 @@ public final class PanelArquitectura extends PanelEscenas {
         return new double[] {a.x + a.width * POS[n][0], a.y + a.height * POS[n][1]};
     }
 
-    private static final int ANCHO_NODO = 240;
-    private static final int ALTO_NODO = 92;
+    private static final int ANCHO_NODO = 270;
+    private static final int ALTO_NODO = 100;
 
     private void nodo(Graphics2D g, Rectangle a, int n, double alfa, Color resalte) {
         if (alfa <= 0) {
@@ -109,10 +126,15 @@ public final class PanelArquitectura extends PanelEscenas {
             Tema.borde(g, x, y, ANCHO_NODO, ALTO_NODO, 22, resalte, 3f);
         }
         Iconos.dibujar(g, ICONO[n], x + 36, c[1], 34, Tema.conAlfa(NUEVO[n] ? Tema.VERDE : Tema.AZUL_NOCHE, al));
-        g.setFont(Tema.titulo(19f));
+        // el nombre se achica si no entra en la caja
+        float tam = 21f;
+        while (tam > 14f && g.getFontMetrics(Tema.titulo(tam)).stringWidth(NOMBRE[n]) > ANCHO_NODO - 80) {
+            tam -= 1f;
+        }
+        g.setFont(Tema.titulo(tam));
         g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, al));
         Tema.texto(g, NOMBRE[n], x + 64, c[1] - 4);
-        g.setFont(Tema.letra(Font.PLAIN, 14f));
+        g.setFont(Tema.letra(Font.PLAIN, 15f));
         g.setColor(Tema.conAlfa(Tema.TEXTO_SUAVE, al));
         Tema.texto(g, DETALLE[n], x + 64, c[1] + 18);
         if (NUEVO[n]) {

@@ -14,12 +14,13 @@ import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 /**
- * ChipGuard: seis capítulos en orden, como una keynote. Barra superior mínima con la marca,
+ * ChipGuard: siete capítulos en orden, como una keynote. Barra superior mínima con la marca,
  * los capítulos en texto (un punto bajo el activo) y «Siguiente». Las flechas ← → también avanzan.
  */
 public final class Aplicacion extends JPanel {
 
-    private static final String[] CAPITULOS = {"La historia", "La matemática", "ChipGuard", "Arquitectura", "La tienda", "Cierre"};
+    private static final String[] CAPITULOS = {"La historia", "La matemática", "Qué es ChipGuard", "En acción", "Por dentro", "La tienda",
+        "Cierre"};
     private static final int ALTO_BARRA = 60;
     private static final int TRANSICION_MS = 420;
 
@@ -31,6 +32,7 @@ public final class Aplicacion extends JPanel {
     private final PanelHistoria historia = new PanelHistoria();
     private final PanelMatematica matematica = new PanelMatematica();
     private final PanelChipGuard chipGuard = new PanelChipGuard();
+    private final PanelQueEs queEs = new PanelQueEs();
     private final PanelArquitectura arquitectura = new PanelArquitectura();
     private final PanelTienda tienda = new PanelTienda();
     private final PanelCierre cierre = new PanelCierre();
@@ -40,7 +42,7 @@ public final class Aplicacion extends JPanel {
     public Aplicacion() {
         super(new BorderLayout());
         setBackground(Tema.CELESTE_FONDO);
-        paneles = new JComponent[] {historia, matematica, chipGuard, arquitectura, tienda, cierre};
+        paneles = new JComponent[] {historia, matematica, queEs, chipGuard, arquitectura, tienda, cierre};
         add(new Barra(), BorderLayout.NORTH);
         for (int i = 0; i < paneles.length; i++) {
             centro.add(paneles[i], CAPITULOS[i]);
@@ -105,6 +107,10 @@ public final class Aplicacion extends JPanel {
 
     public PanelChipGuard chipGuard() {
         return chipGuard;
+    }
+
+    public PanelQueEs queEs() {
+        return queEs;
     }
 
     public PanelArquitectura arquitectura() {
