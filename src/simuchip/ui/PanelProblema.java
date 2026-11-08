@@ -126,8 +126,8 @@ public final class PanelProblema extends JComponent implements Capitulo {
         }
         g.setFont(Tema.letra(Font.PLAIN, 12.5f));
         g.setColor(Tema.TEXTO_SUAVE);
-        String fuente = "Fuente: OSIPTEL, notas de prensa de 2025.";
-        Tema.texto(g, fuente, w - x - g.getFontMetrics().stringWidth(fuente), y0 - 12);
+        Tema.texto(g, "Fuentes: OSIPTEL, citado por el Congreso de la República, DPL News y Canal N (2025).", x,
+                y0 - 12);
 
         dibujarDni(g, w, h);
         g.dispose();

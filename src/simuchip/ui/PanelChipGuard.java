@@ -83,6 +83,7 @@ public final class PanelChipGuard extends JComponent {
     private final Timer vibracion = new Timer(16, e -> repaint());
     private Rectangle2D zonaBloquear;
     private Rectangle2D zonaSi;
+    private int yAvisos = 400;
 
     public PanelChipGuard() {
         setLayout(null);
@@ -192,7 +193,7 @@ public final class PanelChipGuard extends JComponent {
         if (anchoOp >= 300) {
             dibujarOperadora(g, e, xOp, 60, anchoOp, h - 140);
         }
-        avisos.dibujar(g, w - 34, 20, 340);
+        avisos.dibujar(g, 48 + colAncho, yAvisos, Math.min(380, colAncho));
         g.dispose();
     }
 
@@ -220,6 +221,7 @@ public final class PanelChipGuard extends JComponent {
         Tema.parrafo(g, e.mate(), x + 20, y + 16, ancho - 40, 1.2f);
         // los botones van justo debajo: sin vacío en la columna
         int yBotones = y + altoMate + 28;
+        yAvisos = yBotones + 76;
         if (anterior.getY() != yBotones) {
             anterior.setLocation(anterior.getX(), yBotones);
             siguiente.setLocation(siguiente.getX(), yBotones);
@@ -532,9 +534,6 @@ public final class PanelChipGuard extends JComponent {
                 default -> Tema.NARANJA;
             };
             Tema.rectRedondo(g, xL - 44, yl - 20, 88, 40, 40, fondo);
-            if (est == EstadoLinea.FRAUDE) {
-                Tema.borde(g, xL - 44, yl - 20, 88, 40, 40, Tema.ROJO, 3f);
-            }
             g.setColor(est == EstadoLinea.FRAUDE ? Tema.ROJO_OSCURO : Tema.AZUL_NOCHE);
             g.setFont(Tema.letra(Font.BOLD, 17f));
             Tema.textoCentrado(g, nombre + (pendiente ? " ?" : ""), xL, yl);

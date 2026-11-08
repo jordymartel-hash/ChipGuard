@@ -50,7 +50,7 @@ La propuesta ChipGuard no reemplaza la biometría que OSIPTEL ya exige en la tie
 - Las extorsiones concretas de la historia de Ana son ilustrativas, no casos reales.
 - Normas de 2025, verificadas en prensa jurídica el 2026-11-07:
   - La Resolución 000116-2025-CD/OSIPTEL exige validar la identidad a quien tiene más de 10 líneas y permite pedir que se restrinjan los canales de contratación (fuentes: LP Derecho, «Osiptel: medidas para fortalecer la seguridad en la contratación del servicio móvil»; La República, 28/11/2025).
-  - Los más de 650 mil celulares bloqueados vienen de una nota del Congreso de la República de 2025.
+  - Los más de 650 mil celulares bloqueados durante el estado de emergencia vienen de una nota del Congreso de la República de 2025 («OSIPTEL bloquea más de 650 mil celulares…»), recogida también por Gestión.
 - No hay testimonios ni clientes. No hay que inventarlos.
 
 ## Product Principles

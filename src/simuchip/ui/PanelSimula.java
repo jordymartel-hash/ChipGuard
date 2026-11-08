@@ -326,9 +326,7 @@ public final class PanelSimula extends JPanel {
             } else {
                 dibujarBitacora(g, w, h);
             }
-            if (seleccionada == null) {
-                avisos.dibujar(g, w - 28, 72, 340);
-            }
+
             g.dispose();
         }
 
@@ -455,14 +453,18 @@ public final class PanelSimula extends JPanel {
             int x = 48;
             int y = h - 150;
             int ancho = w - 96;
-            Tema.rectRedondo(g, x, y, ancho, 116, 20, Tema.conAlfa(Tema.AZUL_NOCHE, 14));
+            Tema.rectRedondo(g, x, y, ancho, 102, 20, Tema.conAlfa(Tema.AZUL_NOCHE, 10));
 
             List<Evento> eventos = sim.eventos();
             int desde = Math.max(0, eventos.size() - 3);
             g.setFont(Tema.letra(Font.PLAIN, 15f));
             for (int i = desde; i < eventos.size(); i++) {
                 Evento e = eventos.get(i);
-                int yy = y + 50 + (i - desde) * 26;
+                int yy = y + 31 + (i - desde) * 26;
+                if (i == eventos.size() - 1 && e.tipo() != Evento.Tipo.LEGAL && e.tipo() != Evento.Tipo.INFO) {
+                    // el evento más reciente e importante se resalta (reemplaza a la notificación)
+                    Tema.rectRedondo(g, x + 8, yy - 18, ancho - 16, 26, 13, Tema.conAlfa(colorEvento(e.tipo()), 34));
+                }
                 g.setColor(colorEvento(e.tipo()));
                 g.fill(new Ellipse2D.Double(x + 20, yy - 10, 11, 11));
                 g.setColor(Tema.AZUL_NOCHE);
@@ -470,7 +472,7 @@ public final class PanelSimula extends JPanel {
             }
             if (eventos.isEmpty()) {
                 g.setColor(Tema.TEXTO_SUAVE);
-                Tema.texto(g, "Aquí aparecerá lo que pasa cada día.", x + 20, y + 52);
+                Tema.texto(g, "Aquí aparecerá lo que pasa cada día.", x + 20, y + 32);
             }
         }
 
