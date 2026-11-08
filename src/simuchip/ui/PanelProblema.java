@@ -169,39 +169,7 @@ public final class PanelProblema extends JComponent implements Capitulo {
                     ajeno ? Tema.conAlfa(Tema.ROJO, 200) : Tema.conAlfa(Tema.AZUL_NOCHE, 160), 2.2f, ajeno, p);
         }
 
-        // la tarjeta del DNI
-        double aparece = tramo(0, 0.7);
-        Tema.sombra(g, x, y, dw, dh, 26, (int) (30 * aparece));
-        g.setPaint(new GradientPaint((float) x, (float) y, new Color(0xF2F6FB), (float) x, (float) (y + dh),
-                new Color(0xE4EBF5)));
-        g.fill(new RoundRectangle2D.Double(x, y, dw, dh, 26, 26));
-        // foto
-        double fx = x + dw * 0.07;
-        double fy = y + dh * 0.24;
-        double fw = dw * 0.27;
-        double fh = dh * 0.62;
-        Tema.rectRedondo(g, fx, fy, fw, fh, 14, new Color(0xD5DEEB));
-        g.setColor(new Color(0xA9B7CB));
-        g.fill(new Ellipse2D.Double(fx + fw * 0.3, fy + fh * 0.16, fw * 0.4, fw * 0.4));
-        Path2D hombros = new Path2D.Double();
-        hombros.moveTo(fx + fw * 0.12, fy + fh);
-        hombros.quadTo(fx + fw * 0.5, fy + fh * 0.48, fx + fw * 0.88, fy + fh);
-        hombros.closePath();
-        g.fill(hombros);
-        // textos
-        g.setColor(Tema.TEXTO_SUAVE);
-        g.setFont(Tema.medio((float) (dw * 0.034)));
-        Tema.texto(g, "DOCUMENTO NACIONAL DE IDENTIDAD", x + dw * 0.07, y + dh * 0.15);
-        g.setColor(Tema.AZUL_NOCHE);
-        g.setFont(Tema.titulo((float) (dw * 0.075)));
-        Tema.texto(g, "Ana Quispe", fx + fw + dw * 0.06, fy + dh * 0.16);
-        g.setFont(Tema.codigo((float) (dw * 0.048)));
-        g.setColor(Tema.TEXTO_SUAVE);
-        Tema.texto(g, "DNI 41234560", fx + fw + dw * 0.06, fy + dh * 0.3);
-        for (int i = 0; i < 3; i++) {
-            Tema.rectRedondo(g, fx + fw + dw * 0.06, fy + dh * (0.4 + i * 0.09), dw * (0.42 - i * 0.08), 6, 6,
-                    new Color(0xD5DEEB));
-        }
+        dni(g, x, y, dw, dh, "Ana Quispe", tramo(0, 0.7));
 
         // chips
         for (int i = 0; i < 4; i++) {
@@ -238,8 +206,43 @@ public final class PanelProblema extends JComponent implements Capitulo {
         }
     }
 
+    /** La tarjeta del DNI con foto genérica y el nombre dado. */
+    static void dni(Graphics2D g, double x, double y, double dw, double dh, String nombre, double aparece) {
+        Tema.sombra(g, x, y, dw, dh, 26, (int) (30 * aparece));
+        g.setPaint(new GradientPaint((float) x, (float) y, new Color(0xF2F6FB), (float) x, (float) (y + dh),
+                new Color(0xE4EBF5)));
+        g.fill(new RoundRectangle2D.Double(x, y, dw, dh, 26, 26));
+        // foto
+        double fx = x + dw * 0.07;
+        double fy = y + dh * 0.24;
+        double fw = dw * 0.27;
+        double fh = dh * 0.62;
+        Tema.rectRedondo(g, fx, fy, fw, fh, 14, new Color(0xD5DEEB));
+        g.setColor(new Color(0xA9B7CB));
+        g.fill(new Ellipse2D.Double(fx + fw * 0.3, fy + fh * 0.16, fw * 0.4, fw * 0.4));
+        Path2D hombros = new Path2D.Double();
+        hombros.moveTo(fx + fw * 0.12, fy + fh);
+        hombros.quadTo(fx + fw * 0.5, fy + fh * 0.48, fx + fw * 0.88, fy + fh);
+        hombros.closePath();
+        g.fill(hombros);
+        // textos
+        g.setColor(Tema.TEXTO_SUAVE);
+        g.setFont(Tema.medio((float) (dw * 0.034)));
+        Tema.texto(g, "DOCUMENTO NACIONAL DE IDENTIDAD", x + dw * 0.07, y + dh * 0.15);
+        g.setColor(Tema.AZUL_NOCHE);
+        g.setFont(Tema.titulo((float) (dw * 0.075)));
+        Tema.texto(g, nombre, fx + fw + dw * 0.06, fy + dh * 0.16);
+        g.setFont(Tema.codigo((float) (dw * 0.048)));
+        g.setColor(Tema.TEXTO_SUAVE);
+        Tema.texto(g, "DNI 41234560", fx + fw + dw * 0.06, fy + dh * 0.3);
+        for (int i = 0; i < 3; i++) {
+            Tema.rectRedondo(g, fx + fw + dw * 0.06, fy + dh * (0.4 + i * 0.09), dw * (0.42 - i * 0.08), 6, 6,
+                    new Color(0xD5DEEB));
+        }
+    }
+
     /** Un chip SIM: tarjeta blanca con esquina cortada y contacto dorado. */
-    private void chip(Graphics2D g, double cx, double cy, double ancho, double opacidad, double rojo, String etiqueta) {
+    static void chip(Graphics2D g, double cx, double cy, double ancho, double opacidad, double rojo, String etiqueta) {
         double w = ancho;
         double h = ancho * 1.3;
         double x = cx - w / 2;

@@ -14,12 +14,12 @@ import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 /**
- * ChipGuard: seis capítulos en orden, como una keynote. Barra superior mínima con la marca,
+ * ChipGuard: capítulos en orden, como una keynote. Barra superior mínima con la marca,
  * los capítulos en texto (un punto bajo el activo) y «Siguiente». Las flechas ← → también avanzan.
  */
 public final class Aplicacion extends JPanel {
 
-    private static final String[] CAPITULOS = {"El problema", "Cómo pasa", "Funciones", "Pruébalo", "El modelo",
+    private static final String[] CAPITULOS = {"Tu DNI", "El problema", "Cómo pasa", "Funciones", "Pruébalo", "El modelo",
         "Simulación", "ChipGuard", "Juego", "Cierre"};
     private static final int ALTO_BARRA = 60;
     private static final int TRANSICION_MS = 420;
@@ -37,13 +37,14 @@ public final class Aplicacion extends JPanel {
     private final PanelFunciones funciones = new PanelFunciones();
     private final PanelModelo modelo = new PanelModelo();
     private final PanelCierre cierre = new PanelCierre();
+    private final PanelTuDni tuDni = new PanelTuDni();
     private final Cronometro cronometro = new Cronometro();
     private int actual = -1;
 
     public Aplicacion() {
         super(new BorderLayout());
         setBackground(Tema.CELESTE_FONDO);
-        paneles = new JComponent[] {new PanelProblema(() -> irA(1)), casos, funciones, aprende, modelo, simula,
+        paneles = new JComponent[] {tuDni, new PanelProblema(() -> irA(2)), casos, funciones, aprende, modelo, simula,
             chipGuard, detective, cierre};
         add(new Barra(), BorderLayout.NORTH);
         for (int i = 0; i < paneles.length; i++) {
@@ -125,6 +126,10 @@ public final class Aplicacion extends JPanel {
 
     public PanelModelo modelo() {
         return modelo;
+    }
+
+    public PanelTuDni tuDni() {
+        return tuDni;
     }
 
     public PanelCierre cierre() {

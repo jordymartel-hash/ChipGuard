@@ -50,7 +50,6 @@ public final class PanelSimula extends JPanel {
     private Linea seleccionada;
 
     private Boton botonAuto;
-    private Boton botonBiometria;
     private Boton botonTope;
 
     public PanelSimula() {
@@ -83,11 +82,6 @@ public final class PanelSimula extends JPanel {
                 auto.stop();
             }
         });
-        botonBiometria = new Boton("Biometría", Boton.Estilo.SECUNDARIO, true);
-        botonBiometria.alHacerClic(() -> {
-            sim.setBiometria(botonBiometria.encendido());
-            refrescar();
-        });
         botonTope = new Boton("Tope de 3", Boton.Estilo.SECUNDARIO, true);
         botonTope.alHacerClic(() -> {
             sim.setTopeActivo(botonTope.encendido());
@@ -99,8 +93,8 @@ public final class PanelSimula extends JPanel {
         });
         Boton reiniciar = new Boton("", Boton.Estilo.SECUNDARIO).conIcono(Iconos.Tipo.REINICIAR)
                 .alHacerClic(this::reiniciar);
-        JComponent[] controles = {simular, botonAuto, botonBiometria, botonTope, auditoria, reiniciar};
-        int[] separacion = {10, 28, 10, 10, 28, 0};
+        JComponent[] controles = {simular, botonAuto, botonTope, auditoria, reiniciar};
+        int[] separacion = {10, 28, 10, 28, 0};
         JComponent cabecera = new JComponent() {
             @Override
             public void doLayout() {
@@ -120,7 +114,7 @@ public final class PanelSimula extends JPanel {
                 Tema.suavizar(g);
                 g.setFont(Tema.titulo(40f));
                 g.setColor(Tema.AZUL_NOCHE);
-                Tema.texto(g, sim.biometria() ? "Ahora, cómo se arregla." : "Mira cómo falla.", 24, 58);
+                Tema.texto(g, botonTope.encendido() ? "Ahora, cómo se arregla." : "Mira cómo falla.", 24, 58);
                 g.dispose();
             }
         };
@@ -149,12 +143,6 @@ public final class PanelSimula extends JPanel {
         refrescar();
     }
 
-    public void activarBiometria(boolean valor) {
-        sim.setBiometria(valor);
-        botonBiometria.setEncendido(valor);
-        refrescar();
-    }
-
     public void activarTope(boolean valor) {
         sim.setTopeActivo(valor);
         botonTope.setEncendido(valor);
@@ -176,7 +164,6 @@ public final class PanelSimula extends JPanel {
     public void reiniciar() {
         detenerAuto();
         sim.reiniciar();
-        botonBiometria.setEncendido(false);
         botonTope.setEncendido(false);
         seleccionada = null;
         animador.olvidarTodo();

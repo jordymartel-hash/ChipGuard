@@ -31,9 +31,6 @@ public final class PanelFunciones extends PanelEscenas {
                     + "perderte. Como DNI y persona: con uno llegas al otro."),
             new Escena("Cuatro preguntas para clasificar cualquier función.",
                 "Todo se reduce a contar flechas: las que salen de A y las que llegan a B.", true),
-            new Escena("4 palomas, 3 nidos: alguien comparte.",
-                "Si hay más palomas que nidos, algún nido recibe dos. En funciones: si |A| > |B|, ninguna función puede "
-                    + "ser inyectiva. El tope de chips por persona usa esta misma idea."),
             new Escena("Las funciones están en tu día a día.",
                 "Muchos sistemas funcionan solo si su función cumple una propiedad. Cuando se rompe, aparece un "
                     + "problema real.", true)
@@ -68,7 +65,6 @@ public final class PanelFunciones extends PanelEscenas {
             case 5 -> Diagrama.dibujar(g, a.x, a.y, a.width, a.height, tres, abc,
                     new int[][] {{0, 0}, {1, 1}, {2, 2}}, t, new Diagrama.Opciones().conInversa());
             case 6 -> resumen(g, a, t);
-            case 7 -> palomar(g, a, t);
             default -> diaADia(g, a, t);
         }
     }
@@ -171,41 +167,6 @@ public final class PanelFunciones extends PanelEscenas {
             Tema.texto(g, filas[f][2], a.x + a.width * col[2], y + alto / 2.0 + 7);
             g.setFont(Tema.codigo(18f));
             Tema.texto(g, filas[f][3], a.x + a.width * col[3], y + alto / 2.0 + 7);
-        }
-    }
-
-    // ── escena 7: palomas que llegan a sus nidos ──
-    private void palomar(Graphics2D g, Rectangle a, double t) {
-        double yNidos = a.y + a.height * 0.68;
-        double[] xNido = {a.x + a.width * 0.2, a.x + a.width * 0.5, a.x + a.width * 0.8};
-        int[] destino = {0, 1, 2, 0};
-        for (int n = 0; n < 3; n++) {
-            boolean doble = n == 0 && t > 0.3 + 3 * 0.55 + 0.6;
-            double w = 180;
-            Tema.sombra(g, xNido[n] - w / 2, yNidos - 36, w, 72, 24, 18);
-            Tema.rectRedondo(g, xNido[n] - w / 2, yNidos - 36, w, 72, 24, doble ? Tema.ROJO_SUAVE : Tema.AZUL_SUAVE);
-            g.setFont(Tema.letra(Font.BOLD, 17f));
-            g.setColor(doble ? Tema.ROJO_OSCURO : Tema.AZUL_TEXTO);
-            Tema.textoCentrado(g, "nido " + (n + 1), xNido[n], yNidos + 56);
-        }
-        int[] enNido = new int[3];
-        for (int p = 0; p < 4; p++) {
-            double x0 = a.x + a.width * (0.14 + p * 0.24);
-            double y0 = a.y + 40;
-            double avance = tramo(t, 0.3 + p * 0.55, 0.6);
-            int d = destino[p];
-            double xf = xNido[d] - 36 + enNido[d] * 72;
-            double yf = yNidos;
-            enNido[d]++;
-            double x = x0 + (xf - x0) * avance;
-            double y = y0 + (yf - y0) * avance - Math.sin(avance * Math.PI) * 50;
-            bola(g, x, y, String.valueOf(p + 1), Tema.NARANJA, Tema.AZUL_NOCHE, 1, 28);
-        }
-        double fin = tramo(t, 0.3 + 3 * 0.55 + 0.7, 0.4);
-        if (fin > 0) {
-            g.setFont(Tema.letra(Font.BOLD, 18f));
-            g.setColor(Tema.conAlfa(Tema.ROJO_OSCURO, (int) (255 * fin)));
-            Tema.textoCentrado(g, "el nido 1 recibe dos: no puede ser inyectiva", xNido[1], yNidos + 104);
         }
     }
 
