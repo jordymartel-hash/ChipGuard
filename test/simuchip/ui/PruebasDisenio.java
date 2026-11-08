@@ -19,6 +19,18 @@ public final class PruebasDisenio {
                     + " ≥ " + a.y);
         }
         igual(420.0, PanelHistoria.anchoTienda(new Rectangle(0, 0, 1600, 700), 420), "con alto de sobra no se achica");
+
+        titulo("Texto sin cuadraditos en Windows");
+        java.awt.Font geist = Tema.letra(java.awt.Font.BOLD, 40f);
+        for (String txt : new String[] {"f⁻¹(tú) = ?", "f⁻¹(Ana): los chips con su DNI", "existe la inversa f⁻¹"}) {
+            java.text.AttributedCharacterIterator it = Tema.preparar(txt, geist).getIterator();
+            boolean todo = true;
+            for (char c = it.first(); c != java.text.CharacterIterator.DONE; c = it.next()) {
+                java.awt.Font f = (java.awt.Font) it.getAttribute(java.awt.font.TextAttribute.FONT);
+                todo &= f != null && f.getFamily().equals(geist.getFamily()) && f.canDisplay(c);
+            }
+            verificar(todo, "«" + txt + "» se dibuja entero con Geist");
+        }
         terminar();
     }
 }

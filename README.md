@@ -71,7 +71,7 @@ Si Windows muestra «Windows protegió su PC», pulsa **Más información → Ej
 Java 17+ puro (Swing, sin librerías externas). Tipografía Geist incluida.
 
 ```bash
-./probar.sh                                                              # compila y corre las 141 pruebas
+./probar.sh                                                              # compila y corre las 144 pruebas
 ./ejecutar.sh                                                            # abre la app desde el código
 java -Djava.awt.headless=true -cp out:recursos simuchip.Capturas capturas  # regenera las capturas
 python3 informe/generar.py                                               # regenera el informe PDF

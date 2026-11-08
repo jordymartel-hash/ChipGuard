@@ -269,6 +269,10 @@ public final class PanelMatematica extends PanelEscenas {
 
     // ── el chip …935 con sus dos flechas: registro y uso real ──
     private void problema(Graphics2D g, Rectangle a, double t, boolean solucion) {
+        if (solucion) {
+            solucion(g, a, t);
+            return;
+        }
         double cx = a.getCenterX();
         double yChip = a.y + a.height * 0.72;
         double yGente = a.y + a.height * 0.42;
@@ -302,6 +306,40 @@ public final class PanelMatematica extends PanelEscenas {
         g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * p)));
         Tema.textoCentrado(g, solucion ? "registro = uso real: el chip lleva a la persona correcta"
                 : "registro ≠ uso real: la policía llega a la persona equivocada", cx, a.y + a.height - 4);
+    }
+
+    /** Las dos flechas (registro y uso real) suben en V desde el chip y llegan a Ana, una por cada lado. */
+    private void solucion(Graphics2D g, Rectangle a, double t) {
+        double cx = a.getCenterX();
+        double alto = Math.min(200, a.height * 0.42);
+        double yGente = a.y + alto / 2 + 20;
+        double yChip = a.y + a.height - 110;
+        Personitas.persona(g, ANA, cx, yGente + alto / 2, alto, Cara.FELIZ, 1);
+        etiquetaBajo(g, "Ana", cx, yGente + alto / 2 + 26);
+        double q = tramo(t, 0.3, 0.4);
+        double hc = alto * 0.62;
+        double xc = cx + alto * 0.62;
+        Personitas.celular(g, xc, yGente + 4, hc, "Fui yo", Tema.VERDE, q);
+        Iconos.dibujar(g, Iconos.Tipo.VISTO, xc, yGente - hc * 0.18, hc * 0.24, Tema.conAlfa(Tema.BLANCO, (int) (255 * q)));
+        Personitas.chip(g, cx, yChip, 60, 1, 0, "…935");
+
+        double yIni = yChip - 40;
+        double yFin = yGente + alto * 0.62;
+        double abre = alto * 0.42;
+        Tema.flecha(g, cx - 18, yIni, cx - abre, yFin, Tema.AZUL, 3.5f, false, tramo(t, 0.4, 0.6));
+        Tema.flecha(g, cx + 18, yIni, cx + abre, yFin, Tema.VERDE, 3.5f, false, tramo(t, 1.2, 0.6));
+        double yMed = (yIni + yFin) / 2;
+        double dx = (abre - 18) / 2 + 18;
+        rotulo(g, "registro", cx - dx - 74, yMed, Tema.AZUL_TEXTO, tramo(t, 0.8, 0.3));
+        rotulo(g, "uso real", cx + dx + 74, yMed, Tema.VERDE, tramo(t, 1.6, 0.3));
+
+        double p = tramo(t, 2.0, 0.5);
+        g.setFont(Tema.titulo(44f));
+        g.setColor(Tema.conAlfa(Tema.VERDE, (int) (255 * p)));
+        Tema.textoCentrado(g, "=", cx, yMed);
+        g.setFont(Tema.letra(Font.BOLD, 18f));
+        g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * p)));
+        Tema.textoCentrado(g, "registro = uso real: el chip lleva a la persona correcta", cx, a.y + a.height - 4);
     }
 
     private static void etiquetaBajo(Graphics2D g, String s, double cx, double y) {

@@ -232,7 +232,7 @@ public final class Tema {
     }
 
     /**
-     * Dibuja texto. Si la fuente no tiene algún símbolo (⁻, ∀, ∈…), ese carácter se dibuja con la
+     * Dibuja texto. Si la fuente no tiene algún símbolo (∀, ∈…), ese carácter se dibuja con la
      * fuente del sistema para que nunca salga un cuadradito.
      */
     public static void texto(Graphics2D g, String s, double x, double y) {
@@ -244,18 +244,29 @@ public final class Tema {
             g.drawString(s, (float) x, (float) y);
             return;
         }
-        AttributedString as = new AttributedString(s);
+        g.drawString(preparar(s, f).getIterator(), (float) x, (float) y);
+    }
+
+    /**
+     * Texto listo para dibujar: «⁻» (que Geist no tiene, y en Windows tampoco la fuente de respaldo) pasa a «−» en
+     * superíndice con la misma fuente; cualquier otro símbolo faltante usa la fuente del sistema.
+     */
+    static AttributedString preparar(String s, Font f) {
+        AttributedString as = new AttributedString(s.replace('⁻', '−'));
         as.addAttribute(TextAttribute.FONT, f);
         Font alterna = new Font(Font.SANS_SERIF, f.isBold() ? Font.BOLD : Font.PLAIN, 1).deriveFont(f.getSize2D());
+        Font sup = f.deriveFont(Map.of(TextAttribute.SUPERSCRIPT, TextAttribute.SUPERSCRIPT_SUPER));
         for (int i = 0; i < s.length();) {
             int cp = s.codePointAt(i);
             int n = Character.charCount(cp);
-            if (!f.canDisplay(cp)) {
+            if (cp == '⁻') {
+                as.addAttribute(TextAttribute.FONT, sup, i, i + n);
+            } else if (!f.canDisplay(cp)) {
                 as.addAttribute(TextAttribute.FONT, alterna, i, i + n);
             }
             i += n;
         }
-        g.drawString(as.getIterator(), (float) x, (float) y);
+        return as;
     }
 
     /** Sombra suave con desplazamiento (simula desenfoque con capas). */
