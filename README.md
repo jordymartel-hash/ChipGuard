@@ -1,59 +1,27 @@
-# SimuChip
+# ChipGuard — ¿a quién le pertenece tu chip?
 
-Simulador visual en Java que explica **funciones inyectivas, sobreyectivas y biyectivas** con un problema real del Perú: líneas móviles registradas a nombre de otra persona (usadas en extorsiones).
+Expo de Matemática Discreta (UPCH): funciones inyectivas, sobreyectivas y biyectivas aplicadas a las líneas móviles
+registradas a nombre de terceros en el Perú, y la propuesta **ChipGuard**: ningún chip se activa con tu DNI sin tu permiso.
 
-## Cómo abrirlo
-
-Se necesita Java 17 o superior.
-
+## Abrir
 ```bash
-./ejecutar.sh          # o: java -jar SimuChip.jar
+java -jar ChipGuard.jar      # Java 17+  (o ./ejecutar.sh)
 ```
+Flechas ← → avanzan escenas y capítulos. Cronómetro: clic para empezar o pausar, clic derecho para reiniciar.
 
-Otros comandos:
+## Capítulos
+1. La historia: el caso de Ana (la doble huella, el chip extra, la extorsión y la policía).
+2. La matemática: función, inyectiva, sobreyectiva y biyectiva con casos reales (bus, grupos, DNI); registro ≠ uso real; palomar.
+3. Qué es ChipGuard: app + web + servidor, usos, actores, pantallas y comparación con «Checa tus líneas».
+4. En acción: la alerta en el celular.
+5. Por dentro: la arquitectura y el flujo de 7 pasos.
+6. La tienda: un juego en 2 rondas, sin y con ChipGuard (3 → 0 chips en manos criminales).
+7. Cierre y referencias APA.
 
+## Desarrollo
 ```bash
-./probar.sh            # compila y corre las 119 pruebas
-./empaquetar.sh        # vuelve a crear SimuChip.jar
-java -Djava.awt.headless=true -cp out simuchip.Capturas capturas   # capturas PNG (antes correr ./probar.sh)
-```
-
-## Qué hace cada pestaña
-
-| Pestaña | Para qué sirve |
-|---|---|
-| Inicio | Presenta la pregunta: ¿a quién le pertenece tu chip? |
-| 1 · Aprende | Dibujas flechas entre A = {1, 2, 3…} y B = {a, b, c…}. La app dice si es función, inyectiva, sobreyectiva o biyectiva y explica por qué. Con «Ejecutar paso a paso» el código corre renglón por renglón, con variables y notificación final. |
-| 2 · Simula | El caso real. Cada día alguien contrata una línea; a veces es un extorsionador con un DNI robado. Se ven el registro f, el uso real u, el tope de líneas y la solución con biometría (g: Línea ↔ Contrato biyectiva). Clic en una línea = rastreo policial. |
-| 3 · Yo Autorizo | La propuesta contada como historia: Ana, un celular simulado (vibra, se pueden tocar sus botones) y lo que ve la operadora. 8 escenas: el problema y luego la solución. |
-| 4 · Detective | Juego de 60 s y 3 vidas: aprueba o rechaza solicitudes de chips (teclas A y R). Las 3 reglas son las funciones del caso. |
-
-## Modelo matemático
-
-| Símbolo | Significado |
-|---|---|
-| L | líneas activas (chips) |
-| P | personas con DNI (incluye al extorsionador) |
-| C | contratos validados con huella |
-| f: L → P | registro: lo que dice la operadora |
-| u: L → P | uso real: quién usa el chip |
-| g: L → C | contrato biométrico |
-
-- El problema: hay líneas con f(l) ≠ u(l).
-- El tope de líneas por persona es |f⁻¹(p)| ≤ k (principio del palomar).
-- La solución: g biyectiva, con la huella del contrato igual a u(l). Gracias a g⁻¹, cada chip lleva a una persona real.
-
-## Código
-
-```
-src/simuchip/
-  funciones/Funciones.java     ← el corazón: contar flechas que salen y llegan
-  funciones/Diagnostico.java   ← explica en palabras por qué cumple o no
-  funciones/Flecha.java
-  caso/Simulador.java          ← f, u, g, fraude, biometría, tope, auditoría, rastreo
-  caso/Persona, Linea, Contrato, Rastreo, Evento, Resultado
-  ui/                          ← interfaz Swing dibujada a mano (sin librerías)
-  Principal.java               ← abre la ventana
-  Capturas.java                ← genera PNG sin abrir ventana
-test/simuchip/                 ← 119 pruebas sin librerías externas
+./probar.sh                                                              # 136 pruebas
+java -Djava.awt.headless=true -cp out:recursos simuchip.Capturas capturas  # capturas
+python3 informe/generar.py                                               # informe PDF
+./empaquetar.sh                                                          # ChipGuard.jar
 ```
