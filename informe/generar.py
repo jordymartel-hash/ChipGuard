@@ -21,6 +21,15 @@ SALIDA = Path.home() / "claude/entregas/expo-funciones/Informe-ChipGuard.pdf"
 LOGO = base64.b64encode((Path(__file__).resolve().parent.parent / "recursos/imagenes/logo-upch.png").read_bytes()).decode()
 
 
+# Llenar el ORCID de cada integrante cuando lo tengan (formato 0000-0000-0000-0000).
+INTEGRANTES = [
+    ("Martel, Jordy", ""),
+    ("Sanga, Angeles", ""),
+    ("Tangoa, Richard", ""),
+    ("Vidalon, Eduardo", ""),
+]
+
+
 def imagen(nombre, pie, ancho="100%"):
     datos = base64.b64encode((CAPTURAS / nombre).read_bytes()).decode()
     return (f'<figure><img src="data:image/png;base64,{datos}" style="width:{ancho}">'
@@ -54,7 +63,9 @@ pre { font-family: 'DejaVu Sans Mono', monospace; font-size: 8.8pt; line-height:
 .formula { font-family: 'Noto Sans', sans-serif; text-align: center; font-size: 11.5pt; margin: 6pt 0 10pt; }
 .portada { height: 24cm; display: flex; flex-direction: column; justify-content: space-between; break-after: page; }
 .portada .sup { font-family: 'Noto Sans', sans-serif; letter-spacing: 3px; font-size: 10pt; color: #A90A2E; font-weight: 700; }
-.portada .logo { width: 7.5cm; margin-bottom: 14pt; }
+.equipo { width: auto; margin: 4pt 0 6pt; font-family: 'Noto Sans', sans-serif; font-size: 10pt; }
+.portada .logo { width: 6.5cm; margin-bottom: 10pt; }
+.equipo td, .equipo th { padding: 3pt 10pt; }
 .portada h1 { font-size: 30pt; margin-top: 10pt; }
 .portada .sub { font-family: 'Noto Sans', sans-serif; font-size: 13pt; color: #4A5568; margin-top: 8pt; }
 .portada .datos p { text-align: left; margin: 0 0 4pt; font-family: 'Noto Sans', sans-serif; }
@@ -112,11 +123,15 @@ CUERPO = f"""
     <div class="sub">Funciones inyectivas, sobreyectivas y biyectivas aplicadas al registro de líneas móviles en el Perú,
     y una propuesta para que ningún chip se active sin el permiso del dueño del DNI</div>
   </div>
-  {imagen("1c-historia.png", "La aplicación de la exposición: la historia de Ana, contada con personitas")}
+  {imagen("1c-historia.png", "La aplicación de la exposición: la historia de Ana, contada con personitas", "68%")}
   <div class="datos">
     <p><b>Universidad:</b> Universidad Peruana Cayetano Heredia</p>
-    <p><b>Curso:</b> Matemática Discreta &nbsp;·&nbsp; <b>Docente:</b> [Nombre del docente]</p>
-    <p><b>Grupo:</b> [N] &nbsp;·&nbsp; <b>Integrantes:</b> Martel, Jordy; Sanga, Angeles; Tangoa, Richard; Vilva, Eduardo</p>
+    <p><b>Curso:</b> Matemática Discreta &nbsp;·&nbsp; <b>Grupo:</b> [N]</p>
+    <p><b>Docente:</b> Dr. Ing. CIP. Illesca Cangalaya, Omar Felix (ORCID: 0000-0002-0144-6878)</p>
+    <table class="equipo">
+      <tr><th>Integrante</th><th>ORCID</th></tr>
+      {"".join(f"<tr><td>{n}</td><td>{o or '[por completar]'}</td></tr>" for n, o in INTEGRANTES)}
+    </table>
     <p><b>Fecha:</b> 13 de noviembre de 2026</p>
   </div>
 </div>
@@ -406,7 +421,7 @@ simulación es didáctica: usa una fila fija de seis clientes y no estima tasas 
   <tr><td>Martel, Jordy</td><td>La historia</td><td>3:00</td><td>A Ana le sacaron un chip con su segunda huella, y la policía llegó a ella.</td></tr>
   <tr><td>Sanga, Angeles</td><td>La matemática</td><td>4:00</td><td>El registro es una función; el problema es que registro ≠ uso real.</td></tr>
   <tr><td>Tangoa, Richard</td><td>Qué es ChipGuard · En acción · Por dentro</td><td>4:30</td><td>Ningún chip se activa sin el permiso del dueño del DNI.</td></tr>
-  <tr><td>Vilva, Eduardo</td><td>La tienda (con el público) · Cierre</td><td>3:30</td><td>Sin ChipGuard terminan 3 chips en manos criminales; con ChipGuard, 0.</td></tr>
+  <tr><td>Vidalon, Eduardo</td><td>La tienda (con el público) · Cierre</td><td>3:30</td><td>Sin ChipGuard terminan 3 chips en manos criminales; con ChipGuard, 0.</td></tr>
 </table>
 <p>Si el tiempo supera los 15 minutos, se recorta primero el capítulo «Por dentro» (mostrar solo el flujo de siete
 pasos).</p>

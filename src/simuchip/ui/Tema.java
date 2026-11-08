@@ -63,7 +63,11 @@ public final class Tema {
 
     // ── Universidad y equipo ──
     public static final String UNIVERSIDAD = "Universidad Peruana Cayetano Heredia";
-    public static final String[] INTEGRANTES = {"Martel, Jordy", "Sanga, Angeles", "Tangoa, Richard", "Vilva, Eduardo"};
+    public static final String DOCENTE = "Dr. Ing. CIP. Illesca Cangalaya, Omar Felix";
+    public static final String ORCID_DOCENTE = "0000-0002-0144-6878";
+    /** Apellido y nombre de cada integrante. */
+    public static final String[][] INTEGRANTES = {{"Martel", "Jordy"}, {"Sanga", "Angeles"}, {"Tangoa", "Richard"},
+        {"Vidalon", "Eduardo"}};
     public static final java.awt.image.BufferedImage LOGO = imagen("logo-upch.png");
     public static final java.awt.image.BufferedImage ESCUDO = imagen("escudo-upch.png");
 
@@ -90,25 +94,76 @@ public final class Tema {
         return w;
     }
 
-    /** Logo de la UPCH arriba y la lista de integrantes debajo, centrados en el área. */
+    /** Tarjeta de portada: logo UPCH, docente con ORCID e integrantes con sus iniciales, centrada en el área. */
     public static void portadaEquipo(Graphics2D g, java.awt.Rectangle a, double alfa) {
         java.awt.Composite antes = g.getComposite();
         g.setComposite(java.awt.AlphaComposite.SrcOver.derive((float) Math.max(0, Math.min(1, alfa))));
-        double altoLogo = Math.min(a.height * 0.42, a.width * 382.0 / 871);
-        double wl = LOGO == null ? 0 : LOGO.getWidth() * altoLogo / LOGO.getHeight();
-        dibujarImagen(g, LOGO, a.getCenterX() - wl / 2, a.y, altoLogo);
-        double y = a.y + altoLogo + 10;
-        g.setColor(AZUL);
-        g.fillRect((int) a.getCenterX() - 40, (int) y, 80, 3);
-        g.setFont(letra(Font.BOLD, 15f));
-        g.setColor(TEXTO_SUAVE);
-        textoCentrado(g, "INTEGRANTES", a.getCenterX(), y + 32);
-        g.setFont(titulo(26f));
+        int pad = 36;
+        int w = Math.min(a.width, 640);
+        int h = 446;
+        int x = (int) a.getCenterX() - w / 2;
+        int y = (int) Math.max(a.y, a.getCenterY() - h / 2.0 - 10);
+        tarjeta(g, x, y, w, h, 28, BLANCO);
+        java.awt.Shape clipAntes = g.getClip();
+        g.clip(new RoundRectangle2D.Double(x, y, w, h, 28, 28));
+        rectRedondo(g, x, y, w, 6, 0, AZUL);          // filete granate arriba
+        rectRedondo(g, x, y + h - 6, w, 6, 0, DORADO); // y amarillo abajo
+        g.setClip(clipAntes);
+
+        int cy = y + pad;
+        dibujarImagen(g, LOGO, x + pad, cy, 76);
+        cy += 76 + 26;
+        g.setColor(FILETE);
+        g.fillRect(x + pad, cy, w - 2 * pad, 1);
+        cy += 26;
+
+        etiquetaSeccion(g, "DOCENTE", x + pad, cy);
+        cy += 12;
+        g.setFont(titulo(21f));
         g.setColor(AZUL_NOCHE);
+        cy += parrafo(g, DOCENTE, x + pad, cy, w - 2 * pad, 1.1f) + 4;
+        insigniaOrcid(g, x + pad, cy, 18);
+        g.setFont(codigo(14f));
+        g.setColor(TEXTO_SUAVE);
+        texto(g, "ORCID " + ORCID_DOCENTE, x + pad + 26, cy + 14);
+        cy += 56;
+
+        etiquetaSeccion(g, "INTEGRANTES", x + pad, cy);
+        cy += 20;
+        int col = (w - 2 * pad) / 2;
         for (int k = 0; k < INTEGRANTES.length; k++) {
-            textoCentrado(g, INTEGRANTES[k], a.getCenterX(), y + 72 + k * 38);
+            int ix = x + pad + (k % 2) * col;
+            int iy = cy + (k / 2) * 66;
+            String ap = INTEGRANTES[k][0];
+            String no = INTEGRANTES[k][1];
+            g.setColor(AZUL);
+            g.fill(new Ellipse2D.Double(ix, iy, 48, 48));
+            g.setFont(letra(Font.BOLD, 17f));
+            g.setColor(BLANCO);
+            textoCentrado(g, "" + no.charAt(0) + ap.charAt(0), ix + 24, iy + 24);
+            g.setFont(titulo(19f));
+            g.setColor(AZUL_NOCHE);
+            texto(g, ap, ix + 62, iy + 21);
+            g.setFont(letra(Font.PLAIN, 16f));
+            g.setColor(TEXTO_SUAVE);
+            texto(g, no, ix + 62, iy + 42);
         }
         g.setComposite(antes);
+    }
+
+    private static void etiquetaSeccion(Graphics2D g, String s, int x, int y) {
+        g.setFont(letra(Font.BOLD, 12f).deriveFont(Map.of(TextAttribute.TRACKING, 0.12f)));
+        g.setColor(AZUL);
+        texto(g, s, x, y);
+    }
+
+    /** Círculo verde con «iD», como el de ORCID. */
+    private static void insigniaOrcid(Graphics2D g, int x, int y, int d) {
+        g.setColor(new Color(0xA6CE39));
+        g.fill(new Ellipse2D.Double(x, y, d, d));
+        g.setFont(letra(Font.BOLD, d * 0.5f));
+        g.setColor(BLANCO);
+        textoCentrado(g, "iD", x + d / 2.0, y + d / 2.0);
     }
 
     // ── Tipografía ──
