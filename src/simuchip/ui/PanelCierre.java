@@ -14,7 +14,8 @@ public final class PanelCierre extends PanelEscenas {
             new Escena("¿Ya revisaste tus líneas?",
                 "Saca tu celular ahora: busca «Checa tus líneas» de OSIPTEL y pon tu DNI. Si aparece un chip que no es "
                     + "tuyo, repórtalo ahí mismo. Hoy lo haces a mano; con ChipGuard te avisaría solo."),
-            new Escena("Referencias.", "En formato APA (7.ª ed.). Toca un título en celeste para abrir la fuente.", true)
+            new Escena("Referencias.", "En formato APA (7.ª ed.). Toca un título en granate para abrir la fuente.", true),
+            new Escena("Gracias.", "¿Preguntas? " + Tema.UNIVERSIDAD + ", curso de Matemática Discreta.")
         ));
     }
 
@@ -23,7 +24,8 @@ public final class PanelCierre extends PanelEscenas {
         switch (i) {
             case 0 -> ideas(g, a, t);
             case 1 -> pregunta(g, a, t);
-            default -> fuentes(g, a, t);
+            case 2 -> fuentes(g, a, t);
+            default -> Tema.portadaEquipo(g, a, tramo(t, 0.1, 0.6));
         }
     }
 

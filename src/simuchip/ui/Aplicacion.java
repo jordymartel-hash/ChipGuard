@@ -3,6 +3,7 @@ package simuchip.ui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -216,11 +217,15 @@ public final class Aplicacion extends JPanel {
             g.fillRect(0, 0, getWidth(), getHeight());
             g.setColor(Tema.FILETE);
             g.fillRect(0, getHeight() - 1, getWidth(), 1);
-            Iconos.dibujar(g, Iconos.Tipo.ESCUDO, 42, ALTO_BARRA / 2.0, 26, Tema.AZUL);
-            Iconos.dibujar(g, Iconos.Tipo.VISTO, 42, ALTO_BARRA / 2.0 + 1, 12, Tema.AZUL);
+            g.setColor(Tema.AZUL);
+            g.fillRect(0, 0, getWidth(), 3); // franja granate UPCH
+            int we = Tema.dibujarImagen(g, Tema.ESCUDO, 26, 9, ALTO_BARRA - 18);
             g.setFont(Tema.titulo(20f));
             g.setColor(Tema.AZUL_NOCHE);
-            Tema.texto(g, "ChipGuard", 64, ALTO_BARRA / 2.0 + 7);
+            Tema.texto(g, "ChipGuard", 26 + we + 10, ALTO_BARRA / 2.0 + 3);
+            g.setFont(Tema.letra(Font.BOLD, 10f));
+            g.setColor(Tema.AZUL);
+            Tema.texto(g, "UPCH", 26 + we + 10, ALTO_BARRA / 2.0 + 17);
             g.dispose();
         }
     }

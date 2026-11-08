@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Sistema visual de ChipGuard: minimalismo estilo Apple.
- * Fondo blanco y gris claro, texto casi negro, un azul de acción y colores de sistema con significado
- * (rojo = fraude, verde = seguro, naranja = conjunto A). Tipografía Geist incluida en el proyecto.
+ * Sistema visual de ChipGuard con la paleta de la Universidad Peruana Cayetano Heredia:
+ * granate UPCH para acción y conjunto B, amarillo/dorado UPCH para conjunto A y resaltado, gris UPCH para texto
+ * secundario. Rojo vivo = fraude, verde = seguro. Tipografía Geist incluida en el proyecto.
  */
 public final class Tema {
 
@@ -33,7 +33,7 @@ public final class Tema {
     public static final Color CELESTE_FONDO = new Color(0xF5F5F7);  // fondo de la ventana (gris Apple)
     public static final Color AZUL_NOCHE = new Color(0x1D1D1F);     // texto principal y paneles oscuros
     public static final Color AZUL_NOCHE_2 = new Color(0x2C2C2E);   // paneles oscuros secundarios
-    public static final Color TEXTO_SUAVE = new Color(0x6E6E73);    // texto secundario
+    public static final Color TEXTO_SUAVE = new Color(0x6B6B6A);    // texto secundario (gris UPCH oscurecido)
     public static final Color TEXTO_OSCURO_SUAVE = new Color(0xA1A1A6); // texto secundario sobre oscuro
     public static final Color GRIS = new Color(0xC7C7CC);
     public static final Color GRIS_CLARO = new Color(0xE8E8ED);     // botones grises, rellenos
@@ -42,13 +42,13 @@ public final class Tema {
     public static final Color FONDO_PAGINA = new Color(0xFBFBFD);   // fondo de los capítulos
 
     // ── Colores de sistema (con significado) ──
-    public static final Color NARANJA = new Color(0xFF9F0A);        // conjunto A
-    public static final Color NARANJA_TEXTO = new Color(0xB25000);
-    public static final Color NARANJA_SUAVE = new Color(0xFFF2DF);
-    public static final Color DORADO = new Color(0xFFD60A);         // resaltado activo
-    public static final Color AZUL = new Color(0x0071E3);           // acción y conjunto B
-    public static final Color AZUL_TEXTO = new Color(0x0066CC);
-    public static final Color AZUL_SUAVE = new Color(0xE8F2FD);
+    public static final Color NARANJA = new Color(0xD8A200);        // conjunto A (dorado UPCH)
+    public static final Color NARANJA_TEXTO = new Color(0x8A6500);
+    public static final Color NARANJA_SUAVE = new Color(0xFEF7D6);
+    public static final Color DORADO = new Color(0xFCD703);         // resaltado activo (amarillo UPCH)
+    public static final Color AZUL = new Color(0xA90A2E);           // acción y conjunto B (granate UPCH)
+    public static final Color AZUL_TEXTO = new Color(0x8C0826);
+    public static final Color AZUL_SUAVE = new Color(0xFBE9EC);
     public static final Color VERDE = new Color(0x248A3D);          // seguro (con texto blanco)
     public static final Color VERDE_SUAVE = new Color(0xE4F6E8);
     public static final Color ROJO = new Color(0xE5372C);           // fraude
@@ -57,7 +57,59 @@ public final class Tema {
     // versiones para fondos oscuros
     public static final Color VERDE_CLARO = new Color(0x30D158);
     public static final Color ROJO_CLARO = new Color(0xFF6961);
-    public static final Color AZUL_CLARO = new Color(0x409CFF);
+    public static final Color AZUL_CLARO = new Color(0xF08DA2);
+
+    public static final Color GRIS_UPCH = new Color(0x9D9D9C);
+
+    // ── Universidad y equipo ──
+    public static final String UNIVERSIDAD = "Universidad Peruana Cayetano Heredia";
+    public static final String[] INTEGRANTES = {"Martel, Jordy", "Sanga, Angeles", "Tangoa, Richard", "Vilva, Eduardo"};
+    public static final java.awt.image.BufferedImage LOGO = imagen("logo-upch.png");
+    public static final java.awt.image.BufferedImage ESCUDO = imagen("escudo-upch.png");
+
+    private static java.awt.image.BufferedImage imagen(String nombre) {
+        try (InputStream in = Tema.class.getResourceAsStream("/imagenes/" + nombre)) {
+            if (in != null) {
+                return javax.imageio.ImageIO.read(in);
+            }
+            File f = new File("recursos/imagenes/" + nombre);
+            return f.exists() ? javax.imageio.ImageIO.read(f) : null;
+        } catch (Exception e) {
+            return null; // sin la imagen la app sigue funcionando
+        }
+    }
+
+    /** Dibuja una imagen escalada a la altura dada, con buena calidad. Devuelve el ancho usado. */
+    public static int dibujarImagen(Graphics2D g, java.awt.image.BufferedImage img, double x, double y, double alto) {
+        if (img == null) {
+            return 0;
+        }
+        int w = (int) Math.round(img.getWidth() * alto / img.getHeight());
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.drawImage(img, (int) x, (int) y, w, (int) alto, null);
+        return w;
+    }
+
+    /** Logo de la UPCH arriba y la lista de integrantes debajo, centrados en el área. */
+    public static void portadaEquipo(Graphics2D g, java.awt.Rectangle a, double alfa) {
+        java.awt.Composite antes = g.getComposite();
+        g.setComposite(java.awt.AlphaComposite.SrcOver.derive((float) Math.max(0, Math.min(1, alfa))));
+        double altoLogo = Math.min(a.height * 0.42, a.width * 382.0 / 871);
+        double wl = LOGO == null ? 0 : LOGO.getWidth() * altoLogo / LOGO.getHeight();
+        dibujarImagen(g, LOGO, a.getCenterX() - wl / 2, a.y, altoLogo);
+        double y = a.y + altoLogo + 10;
+        g.setColor(AZUL);
+        g.fillRect((int) a.getCenterX() - 40, (int) y, 80, 3);
+        g.setFont(letra(Font.BOLD, 15f));
+        g.setColor(TEXTO_SUAVE);
+        textoCentrado(g, "INTEGRANTES", a.getCenterX(), y + 32);
+        g.setFont(titulo(26f));
+        g.setColor(AZUL_NOCHE);
+        for (int k = 0; k < INTEGRANTES.length; k++) {
+            textoCentrado(g, INTEGRANTES[k], a.getCenterX(), y + 72 + k * 38);
+        }
+        g.setComposite(antes);
+    }
 
     // ── Tipografía ──
     private static final Font REGULAR = cargar("Geist-Regular.ttf");

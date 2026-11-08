@@ -18,6 +18,9 @@ CAPTURAS = RAIZ / "capturas"
 SALIDA = Path.home() / "claude/entregas/expo-funciones/Informe-ChipGuard.pdf"
 
 
+LOGO = base64.b64encode((Path(__file__).resolve().parent.parent / "recursos/imagenes/logo-upch.png").read_bytes()).decode()
+
+
 def imagen(nombre, pie, ancho="100%"):
     datos = base64.b64encode((CAPTURAS / nombre).read_bytes()).decode()
     return (f'<figure><img src="data:image/png;base64,{datos}" style="width:{ancho}">'
@@ -31,33 +34,34 @@ def codigo(texto):
 
 CSS = """
 @page { size: A4; margin: 2.3cm 2.2cm 2.3cm 2.2cm; }
-body { font-family: 'Noto Serif', 'DejaVu Serif', serif; font-size: 11pt; line-height: 1.55; color: #1E2A44; }
-h1, h2, h3 { font-family: 'Noto Sans', 'DejaVu Sans', sans-serif; color: #1E2A44; line-height: 1.25; }
+body { font-family: 'Noto Serif', 'DejaVu Serif', serif; font-size: 11pt; line-height: 1.55; color: #1D1D1F; }
+h1, h2, h3 { font-family: 'Noto Sans', 'DejaVu Sans', sans-serif; color: #1D1D1F; line-height: 1.25; }
 h1 { font-size: 20pt; margin: 0 0 6pt; }
-h2 { font-size: 15pt; margin: 22pt 0 8pt; padding-bottom: 4pt; border-bottom: 2px solid #E8832E; break-after: avoid; }
-h3 { font-size: 12pt; margin: 14pt 0 6pt; color: #2559A8; break-after: avoid; }
+h2 { font-size: 15pt; margin: 22pt 0 8pt; padding-bottom: 4pt; border-bottom: 2px solid #D8A200; break-after: avoid; }
+h3 { font-size: 12pt; margin: 14pt 0 6pt; color: #A90A2E; break-after: avoid; }
 p { margin: 0 0 8pt; text-align: justify; }
 ul, ol { margin: 0 0 8pt 18pt; padding: 0; }
 li { margin-bottom: 3pt; }
 table { width: 100%; border-collapse: collapse; margin: 8pt 0 12pt; font-size: 10pt; break-inside: avoid; }
-th { background: #1E2A44; color: #FFF8EE; font-family: 'Noto Sans', sans-serif; text-align: left; padding: 6pt 8pt; }
+th { background: #A90A2E; color: #FFFFFF; font-family: 'Noto Sans', sans-serif; text-align: left; padding: 6pt 8pt; }
 td { border-bottom: 1px solid #D5DCE6; padding: 6pt 8pt; vertical-align: top; }
 tr:nth-child(even) td { background: #F6F8FB; }
 figure { margin: 10pt 0 14pt; break-inside: avoid; text-align: center; }
 figure img { border: 1px solid #D5DCE6; border-radius: 6px; }
 figcaption { font-family: 'Noto Sans', sans-serif; font-size: 9pt; color: #4A5568; margin-top: 4pt; }
-pre { font-family: 'DejaVu Sans Mono', monospace; font-size: 8.8pt; line-height: 1.45; background: #1E2A44; color: #E6ECF5;
+pre { font-family: 'DejaVu Sans Mono', monospace; font-size: 8.8pt; line-height: 1.45; background: #1D1D1F; color: #E6ECF5;
       padding: 10pt 12pt; border-radius: 6px; white-space: pre-wrap; break-inside: avoid; }
 .formula { font-family: 'Noto Sans', sans-serif; text-align: center; font-size: 11.5pt; margin: 6pt 0 10pt; }
 .portada { height: 24cm; display: flex; flex-direction: column; justify-content: space-between; break-after: page; }
-.portada .sup { font-family: 'Noto Sans', sans-serif; letter-spacing: 3px; font-size: 10pt; color: #B85A12; font-weight: 700; }
+.portada .sup { font-family: 'Noto Sans', sans-serif; letter-spacing: 3px; font-size: 10pt; color: #A90A2E; font-weight: 700; }
+.portada .logo { width: 7.5cm; margin-bottom: 14pt; }
 .portada h1 { font-size: 30pt; margin-top: 10pt; }
 .portada .sub { font-family: 'Noto Sans', sans-serif; font-size: 13pt; color: #4A5568; margin-top: 8pt; }
 .portada .datos p { text-align: left; margin: 0 0 4pt; font-family: 'Noto Sans', sans-serif; }
 .indice li { margin-bottom: 2pt; }
 .salto { break-before: page; }
 .ref { text-align: left; padding-left: 1.27cm; text-indent: -1.27cm; }
-a { color: #2559A8; word-break: break-all; }
+a { color: #8C0826; word-break: break-all; }
 """
 
 
@@ -102,16 +106,17 @@ REFERENCIAS = "\n".join([
 CUERPO = f"""
 <div class="portada">
   <div>
+    <img class="logo" src="data:image/png;base64,{LOGO}">
     <div class="sup">MATEMÁTICA DISCRETA · PROYECTO DE MODELAMIENTO Y SIMULACIÓN</div>
     <h1>ChipGuard: ¿a quién le pertenece tu chip?</h1>
     <div class="sub">Funciones inyectivas, sobreyectivas y biyectivas aplicadas al registro de líneas móviles en el Perú,
     y una propuesta para que ningún chip se active sin el permiso del dueño del DNI</div>
   </div>
-  {imagen("1b-historia.png", "La aplicación de la exposición: la historia de Ana, contada con personitas")}
+  {imagen("1c-historia.png", "La aplicación de la exposición: la historia de Ana, contada con personitas")}
   <div class="datos">
     <p><b>Universidad:</b> Universidad Peruana Cayetano Heredia</p>
     <p><b>Curso:</b> Matemática Discreta &nbsp;·&nbsp; <b>Docente:</b> [Nombre del docente]</p>
-    <p><b>Grupo:</b> [N] &nbsp;·&nbsp; <b>Integrantes:</b> [Integrante 1], [Integrante 2], [Integrante 3], [Integrante 4]</p>
+    <p><b>Grupo:</b> [N] &nbsp;·&nbsp; <b>Integrantes:</b> Martel, Jordy; Sanga, Angeles; Tangoa, Richard; Vilva, Eduardo</p>
     <p><b>Fecha:</b> 13 de noviembre de 2026</p>
   </div>
 </div>
@@ -164,7 +169,7 @@ que OSIPTEL ha advertido, es la <b>doble huella</b>: el vendedor le dice al clie
 ponerla otra vez; con esa segunda lectura, que es válida, activa un chip adicional a nombre del cliente y lo vende
 aparte (DPL News, s. f.). También se han documentado bandas que activaban chips con datos de terceros (América TV,
 s. f.) y casos de huellas clonadas en moldes de silicona (Bloomberg Línea, s. f.).</p>
-{imagen("1d-historia.png", "Figura 1. La extorsión se hace desde un chip registrado a nombre de Ana", "88%")}
+{imagen("1e-historia.png", "Figura 1. La extorsión se hace desde un chip registrado a nombre de Ana", "88%")}
 <h3>2.3 Lo que ya existe</h3>
 <p>El Estado ha tomado medidas. OSIPTEL ofrece el portal «Checa tus líneas», donde cualquier persona puede consultar las
 líneas registradas con su DNI y reportar las que no reconoce (El Peruano, s. f.); permite además restringir la
@@ -398,10 +403,10 @@ simulación es didáctica: usa una fila fija de seis clientes y no estima tasas 
 <h2 class="salto">Anexo A: guion de la exposición (15 minutos, 4 integrantes)</h2>
 <table>
   <tr><th>Integrante</th><th>Capítulos</th><th>Tiempo</th><th>Idea que debe quedar</th></tr>
-  <tr><td>1</td><td>La historia</td><td>3:00</td><td>A Ana le sacaron un chip con su segunda huella, y la policía llegó a ella.</td></tr>
-  <tr><td>2</td><td>La matemática</td><td>4:00</td><td>El registro es una función; el problema es que registro ≠ uso real.</td></tr>
-  <tr><td>3</td><td>Qué es ChipGuard · En acción · Por dentro</td><td>4:30</td><td>Ningún chip se activa sin el permiso del dueño del DNI.</td></tr>
-  <tr><td>4</td><td>La tienda (con el público) · Cierre</td><td>3:30</td><td>Sin ChipGuard terminan 3 chips en manos criminales; con ChipGuard, 0.</td></tr>
+  <tr><td>Martel, Jordy</td><td>La historia</td><td>3:00</td><td>A Ana le sacaron un chip con su segunda huella, y la policía llegó a ella.</td></tr>
+  <tr><td>Sanga, Angeles</td><td>La matemática</td><td>4:00</td><td>El registro es una función; el problema es que registro ≠ uso real.</td></tr>
+  <tr><td>Tangoa, Richard</td><td>Qué es ChipGuard · En acción · Por dentro</td><td>4:30</td><td>Ningún chip se activa sin el permiso del dueño del DNI.</td></tr>
+  <tr><td>Vilva, Eduardo</td><td>La tienda (con el público) · Cierre</td><td>3:30</td><td>Sin ChipGuard terminan 3 chips en manos criminales; con ChipGuard, 0.</td></tr>
 </table>
 <p>Si el tiempo supera los 15 minutos, se recorta primero el capítulo «Por dentro» (mostrar solo el flujo de siete
 pasos).</p>

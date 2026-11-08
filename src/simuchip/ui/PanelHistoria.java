@@ -19,6 +19,8 @@ public final class PanelHistoria extends PanelEscenas {
 
     public PanelHistoria() {
         super(List.of(
+            new Escena("ChipGuard.", "Funciones inyectivas, sobreyectivas y biyectivas aplicadas a los chips "
+                + "registrados a tu nombre. Matemática Discreta, " + Tema.UNIVERSIDAD + "."),
             new Escena("Ella es Ana.", "Tiene 34 años, una bodega en Comas y un solo chip. Hoy va a una tienda de su barrio a sacar uno nuevo para su negocio. Lo que pasa en los próximos minutos le va a cambiar la semana.", true),
             new Escena("«Uy, no salió. Ponga su huella otra vez.»",
                 "Para sacar un chip piden tu DNI y tu huella. El vendedor dice que la primera «no salió» y Ana la pone otra vez. Con esa segunda huella, válida para RENIEC, él registra un segundo chip a nombre de Ana. OSIPTEL advierte justamente sobre esta trampa.", true),
@@ -38,9 +40,13 @@ public final class PanelHistoria extends PanelEscenas {
     protected void dibujarFigura(Graphics2D g, int i, Rectangle a, double t) {
         double piso = a.y + a.height - 24;
         double alto = Math.min(250, a.height * 0.62);
+        if (i == 0) {
+            Tema.portadaEquipo(g, a, tramo(t, 0.1, 0.6));
+            return;
+        }
         g.setColor(Tema.FILETE);
         g.fillRect(a.x, (int) piso, a.width, 2);
-        switch (i) {
+        switch (i - 1) { // la escena 0 es la portada
             case 0 -> anaLlega(g, a, piso, alto, t);
             case 1 -> dobleHuella(g, a, piso, alto, t);
             case 2 -> ventaExtra(g, a, piso, alto, t);
