@@ -51,45 +51,30 @@ public final class PanelChipGuard extends JComponent implements Capitulo {
             List<EstadoLinea> lineas, boolean extorsionador, String nota) {}
 
     private static final List<Escena> ESCENAS = List.of(
-        new Escena("Conoce a Ana",
-            "Ana tiene 34 años y una bodega en Comas. Tiene un solo chip. Hace meses dejó una fotocopia de su DNI "
-                + "en una tienda para un trámite… y esa copia terminó en malas manos.",
-            "f⁻¹(Ana) = { L1 }  →  1 chip a su nombre", "9:41", Pantalla.BLOQUEO,
-            List.of(EstadoLinea.OK), false, "Todo en orden: 1 chip, usado por Ana."),
-        new Escena("3:12 a. m.: alguien saca un chip con su DNI",
-            "En un puesto ambulante registran una línea nueva con la fotocopia del DNI de Ana. Nadie le pide la "
-                + "huella. Ana está durmiendo y su celular no dice nada.",
-            "f(L2) = Ana, pero quien lo usa es u(L2) = extorsionador.  f ≠ u", "3:12", Pantalla.BLOQUEO,
-            List.of(EstadoLinea.OK, EstadoLinea.FRAUDE), true, "Ana NO sabe que existe L2."),
-        new Escena("La extorsión… y buscan a Ana",
-            "Desde L2 extorsionan a un comerciante. La policía rastrea el número y llega a la dueña en papel: Ana. "
-                + "Ella no sabía que tenía dos chips.",
-            "Rastrear con f lleva a f(L2) = Ana: una inocente", "10:05", Pantalla.LLAMADA,
-            List.of(EstadoLinea.OK, EstadoLinea.FRAUDE), true, "El sistema apunta a Ana. El culpable sigue libre."),
-        new Escena("Rebobinemos… ahora con ChipGuard",
-            "Ana registra su huella una sola vez en la app. Desde ese momento ningún chip nace con su DNI sin que "
+        new Escena("La solución: ChipGuard",
+            "Rebobinemos la historia. Ana registra su huella una sola vez en la app. Desde ese momento ningún chip nace con su DNI sin que "
                 + "ella lo apruebe desde su celular.",
-            "Cada chip ↔ un contrato con su huella: g es biyectiva", "9:41", Pantalla.APP,
+            "Ningún chip nace con tu DNI sin tu permiso", "9:41", Pantalla.APP,
             List.of(EstadoLinea.OK_HUELLA), false, "L1 ya tiene contrato con la huella de Ana."),
-        new Escena("3:12 a. m. otra vez",
-            "Intentan sacar el chip con la misma fotocopia. Esta vez el celular de Ana vibra. "
+        new Escena("La segunda huella, otra vez.",
+            "El vendedor intenta sacar el chip extra. Esta vez el celular de Ana vibra en ese mismo instante. "
                 + "Toca un botón en el celular: ¿fuiste tú?",
-            "La línea queda PENDIENTE: no entra al conjunto L sin la aprobación de Ana", "3:12", Pantalla.ALERTA,
+            "El chip queda en espera hasta que Ana responda", "3:12", Pantalla.ALERTA,
             List.of(EstadoLinea.OK_HUELLA, EstadoLinea.PENDIENTE), true, "L2 espera la huella de Ana."),
         new Escena("Bloqueado",
             "El chip nunca se activó. El extorsionador se quedó sin línea y la operadora y OSIPTEL reciben el "
                 + "reporte con la tienda y la hora.",
-            "L2 no entra a L: la biyección chip ↔ contrato se mantiene", "3:13", Pantalla.BLOQUEADO,
+            "El extorsionador se queda sin chip", "3:13", Pantalla.BLOQUEADO,
             List.of(EstadoLinea.OK_HUELLA, EstadoLinea.BLOQUEADA), true, "Fraude detenido antes de nacer."),
         new Escena("Mi mapa de chips",
             "Cuando quiera, Ana ve TODOS los chips a su nombre, como un diagrama. Si aparece uno que no reconoce, "
                 + "lo da de baja con un toque.",
-            "La app le entrega a Ana la inversa: f⁻¹(Ana) en su bolsillo, con tope |f⁻¹(Ana)| ≤ 3", "9:41",
+            "Todos los chips a nombre de Ana, en su bolsillo (máximo 3)", "9:41",
             Pantalla.MAPA, List.of(EstadoLinea.OK_HUELLA), false, "Lo que ve la operadora = lo que ve Ana."),
         new Escena("Lo que proponemos",
             "ChipGuard: 1) alerta en tu celular por cada chip con tu DNI, 2) se activa solo con tu huella, "
                 + "3) tu DNI bloqueado por defecto y 4) tu mapa de chips siempre visible.",
-            "Problema: f ≠ u.   Solución: g biyectiva + la aprobación del dueño real", "9:41", Pantalla.RESUMEN,
+            "Registro = uso real: cada chip lleva a una persona real", "9:41", Pantalla.RESUMEN,
             List.of(EstadoLinea.OK_HUELLA), false, "Cada chip lleva a una persona real.")
     );
 
@@ -411,7 +396,7 @@ public final class PanelChipGuard extends JComponent implements Capitulo {
         Tema.texto(g, "¿Estás sacando un chip?", bx + 14, by + 62);
         g.setFont(Tema.letra(Font.PLAIN, 13.5f));
         g.setColor(Tema.TEXTO_SUAVE);
-        Tema.parrafo(g, "Intentan registrar una línea con tu DNI en: Puesto ambulante · Av. Abancay, 3:12 a. m.",
+        Tema.parrafo(g, "Se está registrando un 2.º chip con tu DNI en: Chips al toque · Comas. ¿Sacaste 2?",
                 bx + 14, by + 72, bw - 28, 1.2f);
         zonaBloquear = new Rectangle2D.Double(bx + 14, by + bh - 104, bw - 28, 42);
         zonaSi = new Rectangle2D.Double(bx + 14, by + bh - 54, bw - 28, 42);

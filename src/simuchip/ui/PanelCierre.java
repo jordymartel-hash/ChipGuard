@@ -12,8 +12,8 @@ public final class PanelCierre extends PanelEscenas {
         super(List.of(
             new Escena("Lo que nos llevamos.", "Cuatro ideas para recordar.", true),
             new Escena("¿Ya revisaste tus líneas?",
-                "Busca «Checa tus líneas» de OSIPTEL, ingresa tu DNI y mira cuántas líneas hay a tu nombre. Si una no "
-                    + "es tuya, repórtala ahí mismo. Acabas de calcular tu propio f⁻¹."),
+                "Saca tu celular ahora: busca «Checa tus líneas» de OSIPTEL y pon tu DNI. Si aparece un chip que no es "
+                    + "tuyo, repórtalo ahí mismo. Hoy lo haces a mano; con ChipGuard te avisaría solo."),
             new Escena("Fuentes.", "Datos y normas citados en la presentación.", true)
         ));
     }
@@ -29,9 +29,9 @@ public final class PanelCierre extends PanelEscenas {
 
     private void ideas(Graphics2D g, Rectangle a, double t) {
         String[][] ideas = {
-            {"Una función no basta.", "El registro puede estar bien definido y aun así mentir: hace falta que f = u."},
+            {"El registro es una función.", "Cada chip apunta a un dueño; el problema es cuando no es quien lo usa."},
             {"No toda función debe ser inyectiva.", "Tener dos chips no es delito; el problema es quién los usa."},
-            {"La biyección da trazabilidad.", "Con chip ↔ contrato con huella, g⁻¹ lleva de cada chip a una persona real."},
+            {"Biyectiva = trazable.", "Chip ↔ persona real: la policía llega al culpable, no a Ana."},
             {"La última palabra, en tu celular.", "ChipGuard no cambia la cerradura: te avisa y te deja decidir."}
         };
         int alto = Math.min(110, a.height / 4);

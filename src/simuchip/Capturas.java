@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import simuchip.ui.Animador;
 import simuchip.ui.Aplicacion;
+import simuchip.ui.PanelTienda;
 
 /**
  * Genera capturas PNG de la app sin abrir ventanas (para el informe y la PPT).
@@ -28,66 +29,55 @@ public final class Capturas {
         Aplicacion app = new Aplicacion();
 
         app.irA(0);
-        app.tuDni().ponerNombre("Jordy");
-        for (int e = 0; e < app.tuDni().cantidadEscenas(); e++) {
-            app.tuDni().irAEscena(e);
-            guardar(app, carpeta, "00" + (char) ('a' + e) + "-tu-dni.png");
+        for (int e = 0; e < app.historia().cantidadEscenas(); e++) {
+            app.historia().irAEscena(e);
+            guardar(app, carpeta, "1" + (char) ('a' + e) + "-historia.png");
         }
         app.irA(1);
-        guardar(app, carpeta, "01-problema.png");
-
+        for (int e = 0; e < app.matematica().cantidadEscenas(); e++) {
+            app.matematica().irAEscena(e);
+            guardar(app, carpeta, "2" + (char) ('a' + e) + "-matematica.png");
+        }
         app.irA(2);
-        for (int e = 0; e < app.casos().cantidadEscenas(); e++) {
-            app.casos().irAEscena(e);
-            guardar(app, carpeta, "02" + (char) ('a' + e) + "-casos.png");
+        for (int e = 0; e < 5; e++) {
+            app.chipGuard().irAEscena(e);
+            guardar(app, carpeta, "3" + (char) ('a' + e) + "-chipguard.png");
         }
         app.irA(3);
-        for (int e = 0; e < app.funciones().cantidadEscenas(); e++) {
-            app.funciones().irAEscena(e);
-            guardar(app, carpeta, "03" + (char) ('a' + e) + "-funciones.png");
+        PanelTienda t = app.tienda();
+        guardar(app, carpeta, "4a-tienda-portada.png");
+        t.continuar();
+        guardar(app, carpeta, "4b-tienda-cliente.png");
+        t.decidir(true);
+        t.continuar();
+        guardar(app, carpeta, "4c-tienda-encapuchado.png");
+        t.decidir(true);
+        guardar(app, carpeta, "4d-tienda-fraude.png");
+        t.continuar();
+        t.decidir(true);
+        guardar(app, carpeta, "4e-tienda-extra.png");
+        for (int k = 0; k < 3; k++) {
+            t.continuar();
+            t.decidir(k != 1);
         }
-
+        t.continuar();
+        guardar(app, carpeta, "4f-tienda-resumen.png");
+        t.continuar();
+        t.continuar();
+        t.decidir(true);
+        t.continuar();
+        t.decidir(true);
+        guardar(app, carpeta, "4g-tienda-bloqueado.png");
+        for (int k = 0; k < 4; k++) {
+            t.continuar();
+            t.decidir(true);
+        }
+        t.continuar();
+        guardar(app, carpeta, "4h-tienda-final.png");
         app.irA(4);
-        app.aprende().setTarjeta(1);
-        app.aprende().cargar(4, 3, new int[][] {{1, 'a'}, {2, 'a'}, {3, 'b'}, {4, 'c'}});
-        guardar(app, carpeta, "04a-pruebalo.png");
-        app.aprende().ejecutarHasta(2);
-        guardar(app, carpeta, "04b-pruebalo-paso-a-paso.png");
-
-        app.irA(5);
-        for (int e = 0; e < app.modelo().cantidadEscenas(); e++) {
-            app.modelo().irAEscena(e);
-            guardar(app, carpeta, "05" + (char) ('a' + e) + "-modelo.png");
-        }
-
-        app.irA(6);
-        app.simula().simularDias(12);
-        guardar(app, carpeta, "06a-simula-problema.png");
-        app.simula().rastrearEjemplo();
-        guardar(app, carpeta, "06b-simula-rastreo-falla.png");
-        app.simula().activarTope(true);
-        app.simula().simularDias(4);
-        app.simula().auditar();
-        app.simula().rastrearEjemplo();
-        guardar(app, carpeta, "06c-simula-solucion.png");
-
-        app.irA(7);
-        app.chipGuard().irAEscena(1);
-        guardar(app, carpeta, "07a-chipguard-sin-proteccion.png");
-        app.chipGuard().irAEscena(4);
-        guardar(app, carpeta, "07b-chipguard-alerta.png");
-        app.chipGuard().irAEscena(6);
-        guardar(app, carpeta, "07c-chipguard-mapa.png");
-
-        app.irA(8);
-        guardar(app, carpeta, "08a-juego-portada.png");
-        app.detective().jugarDemo(4);
-        guardar(app, carpeta, "08b-juego-jugando.png");
-
-        app.irA(9);
         for (int e = 0; e < app.cierre().cantidadEscenas(); e++) {
             app.cierre().irAEscena(e);
-            guardar(app, carpeta, "09" + (char) ('a' + e) + "-cierre.png");
+            guardar(app, carpeta, "5" + (char) ('a' + e) + "-cierre.png");
         }
         System.out.println("Capturas guardadas en " + carpeta.getAbsolutePath());
         System.exit(0);

@@ -14,13 +14,12 @@ import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 /**
- * ChipGuard: capítulos en orden, como una keynote. Barra superior mínima con la marca,
+ * ChipGuard: cinco capítulos en orden, como una keynote. Barra superior mínima con la marca,
  * los capítulos en texto (un punto bajo el activo) y «Siguiente». Las flechas ← → también avanzan.
  */
 public final class Aplicacion extends JPanel {
 
-    private static final String[] CAPITULOS = {"Tu DNI", "El problema", "Cómo pasa", "Funciones", "Pruébalo", "El modelo",
-        "Simulación", "ChipGuard", "Juego", "Cierre"};
+    private static final String[] CAPITULOS = {"La historia", "La matemática", "ChipGuard", "La tienda", "Cierre"};
     private static final int ALTO_BARRA = 60;
     private static final int TRANSICION_MS = 420;
 
@@ -29,23 +28,18 @@ public final class Aplicacion extends JPanel {
     private final Boton[] pestanas = new Boton[CAPITULOS.length];
     private final Boton siguiente = new Boton("Siguiente", Boton.Estilo.PRIMARIO).conIcono(Iconos.Tipo.SIGUIENTE);
     private final JComponent[] paneles;
-    private final PanelAprende aprende = new PanelAprende();
-    private final PanelSimula simula = new PanelSimula();
+    private final PanelHistoria historia = new PanelHistoria();
+    private final PanelMatematica matematica = new PanelMatematica();
     private final PanelChipGuard chipGuard = new PanelChipGuard();
-    private final PanelDetective detective = new PanelDetective();
-    private final PanelCasos casos = new PanelCasos();
-    private final PanelFunciones funciones = new PanelFunciones();
-    private final PanelModelo modelo = new PanelModelo();
+    private final PanelTienda tienda = new PanelTienda();
     private final PanelCierre cierre = new PanelCierre();
-    private final PanelTuDni tuDni = new PanelTuDni();
     private final Cronometro cronometro = new Cronometro();
     private int actual = -1;
 
     public Aplicacion() {
         super(new BorderLayout());
         setBackground(Tema.CELESTE_FONDO);
-        paneles = new JComponent[] {tuDni, new PanelProblema(() -> irA(2)), casos, funciones, aprende, modelo, simula,
-            chipGuard, detective, cierre};
+        paneles = new JComponent[] {historia, matematica, chipGuard, tienda, cierre};
         add(new Barra(), BorderLayout.NORTH);
         for (int i = 0; i < paneles.length; i++) {
             centro.add(paneles[i], CAPITULOS[i]);
@@ -100,36 +94,20 @@ public final class Aplicacion extends JPanel {
         return CAPITULOS.length;
     }
 
-    public PanelAprende aprende() {
-        return aprende;
+    public PanelHistoria historia() {
+        return historia;
     }
 
-    public PanelSimula simula() {
-        return simula;
+    public PanelMatematica matematica() {
+        return matematica;
     }
 
     public PanelChipGuard chipGuard() {
         return chipGuard;
     }
 
-    public PanelDetective detective() {
-        return detective;
-    }
-
-    public PanelCasos casos() {
-        return casos;
-    }
-
-    public PanelFunciones funciones() {
-        return funciones;
-    }
-
-    public PanelModelo modelo() {
-        return modelo;
-    }
-
-    public PanelTuDni tuDni() {
-        return tuDni;
+    public PanelTienda tienda() {
+        return tienda;
     }
 
     public PanelCierre cierre() {
