@@ -59,6 +59,8 @@ public final class PanelArquitectura extends PanelEscenas {
                 "El mismo viaje, pero ahora el chip lo pidió otra persona.", true),
             new Escena("¿Y si no responde o no tiene smartphone?",
                 "La regla de oro: si el dueño no aprueba, la línea no se activa.", true),
+            new Escena("¿Y si es su primer chip?",
+                "No tiene otro chip para recibir la alerta. Su chip nuevo se vuelve su llave: es el caso base de una inducción.", true),
             new Escena("Qué guarda ChipGuard (y qué no).",
                 "La huella nunca sale de RENIEC. ChipGuard solo necesita saber a quién avisar.", true),
             new Escena("Con qué se construye.",
@@ -98,7 +100,12 @@ public final class PanelArquitectura extends PanelEscenas {
                 {"No tiene smartphone", "Le llega un SMS con un código, o una llamada automática que pide marcar 1 o 2."},
                 {"No tiene celular", "Va a una agencia de la operadora y aprueba con su huella, en persona."}
             }, new Iconos.Tipo[] {Iconos.Tipo.ALERTA, Iconos.Tipo.TELEFONO, Iconos.Tipo.TIENDA});
-            case 4 -> guarda(g, a, t);
+            case 4 -> tarjetas(g, a, t, new String[][] {
+                {"1. Llamada en el mostrador", "ChipGuard llama al número nuevo. Si suena en SU celular, el chip está en su mano."},
+                {"2. Solo 1 chip por 72 h", "Un DNI sin líneas activa un solo chip al inicio. El chip extra de la doble huella no pasa."},
+                {"3. Ese chip es su llave", "Desde ahí, cada chip nuevo con su DNI se aprueba desde el que ya está validado."}
+            }, new Iconos.Tipo[] {Iconos.Tipo.TELEFONO, Iconos.Tipo.ESCUDO, Iconos.Tipo.VISTO});
+            case 5 -> guarda(g, a, t);
             default -> pila(g, a, t);
         }
     }

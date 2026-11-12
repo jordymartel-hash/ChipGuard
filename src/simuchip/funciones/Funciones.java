@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * El corazón del proyecto: las definiciones de matemática discreta escritas en Java.
+ * El corazón del proyecto: las definiciones de Estructuras Discretas escritas en Java.
  *
  * Todo se reduce a CONTAR FLECHAS:
  *   - salidas(a):  cuántas flechas salen de un elemento de A.

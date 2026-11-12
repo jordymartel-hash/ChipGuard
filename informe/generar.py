@@ -24,7 +24,7 @@ COPIAS = [RAIZ / "docs/Informe-ChipGuard.pdf", Path.home() / "claude/entregas/ex
 
 LOGO = base64.b64encode((RAIZ / "recursos/imagenes/logo-upch.png").read_bytes()).decode()
 TITULO = "ChipGuard: ¿a quién le pertenece tu chip?"
-SUBTITULO_CORTO = "Proyecto grupal de Matemática Discreta"
+SUBTITULO_CORTO = "Proyecto grupal de Estructuras Discretas I"
 REPO = "https://github.com/jordymartel-hash/ChipGuard"
 
 DOCENTE = ("Dr. Ing. CIP. Illesca Cangalaya, Omar Felix", "0000-0002-0144-6878")
@@ -156,7 +156,7 @@ def portada():
   <p class="nom">{DOCENTE[0]}</p><p class="orcid">ORCID: {DOCENTE[1]}</p>
   <p class="rot" style="margin-top:0.7cm">INTEGRANTES</p>
   {gente}
-  <div class="pie">Matemática Discreta<br>Lima, Perú<br>2026</div>
+  <div class="pie">Estructuras Discretas I<br>Lima, Perú<br>2026</div>
 </div></body></html>"""
 
 

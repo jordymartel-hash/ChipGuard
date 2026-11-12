@@ -10,7 +10,7 @@ desktop (Java 17+, Swing dibujado a mano; se proyecta en clase desde una laptop 
 
 ## Users
 
-- Público de la exposición: estudiantes universitarios y el profesor de Matemática Discreta, mirando un proyector durante 10–12 minutos.
+- Público de la exposición: estudiantes universitarios y el profesor de Estructuras Discretas I, mirando un proyector durante 10–12 minutos.
 - Presentadores: un grupo de 4 estudiantes que maneja la app en vivo y pide un voluntario para el juego.
 
 ## Product Purpose

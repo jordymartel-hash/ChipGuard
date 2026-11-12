@@ -20,7 +20,7 @@ public final class PanelHistoria extends PanelEscenas {
     public PanelHistoria() {
         super(List.of(
             new Escena("ChipGuard.", "¿A quién le pertenece tu chip? Funciones inyectivas, sobreyectivas y biyectivas "
-                + "aplicadas a las líneas registradas a tu nombre. Proyecto del curso de Matemática Discreta."),
+                + "aplicadas a las líneas registradas a tu nombre. Proyecto del curso de Estructuras Discretas I."),
             new Escena("Ella es Ana.", "Tiene 34 años, una bodega en Comas y un solo chip. Hoy va a una tienda de su barrio a sacar uno nuevo para su negocio. Lo que pasa en los próximos minutos le va a cambiar la semana.", true),
             new Escena("«Uy, no salió. Ponga su huella otra vez.»",
                 "Para sacar un chip piden tu DNI y tu huella. El vendedor dice que la primera «no salió» y Ana la pone otra vez. Con esa segunda huella, válida para RENIEC, él registra un segundo chip a nombre de Ana. OSIPTEL advierte justamente sobre esta trampa.", true),

@@ -14,8 +14,8 @@ public final class PanelCierre extends PanelEscenas {
             new Escena("¿Ya revisaste tus líneas?",
                 "Saca tu celular ahora: busca «Checa tus líneas» de OSIPTEL y pon tu DNI. Si aparece un chip que no es "
                     + "tuyo, repórtalo ahí mismo. Hoy lo haces a mano; con ChipGuard te avisaría solo."),
-            new Escena("Referencias.", "En formato APA (7.ª ed.). Toca un título en granate para abrir la fuente.", true),
-            new Escena("Gracias.", "¿Preguntas? " + Tema.UNIVERSIDAD + ", curso de Matemática Discreta.")
+            new Escena("Referencias.", "Fuentes principales; la lista completa, en IEEE, está en el informe. Toca un título en granate para abrirla.", true),
+            new Escena("Gracias.", "¿Preguntas? " + Tema.UNIVERSIDAD + ", curso de Estructuras Discretas I.")
         ));
     }
 
@@ -67,7 +67,7 @@ public final class PanelCierre extends PanelEscenas {
         Tema.textoCentrado(g, "las líneas que el registro manda hacia tu DNI", a.getCenterX(), a.getCenterY() + 70);
     }
 
-    /** Autor y año (APA), título y enlace de cada referencia. */
+    /** Autor y año, título y enlace de cada referencia. */
     private static final String[][] REFERENCIAS = {
         {"América TV. (s. f.).", "Así operaba banda criminal que vendía chips activados a nombre de terceras personas.",
             "https://www.americatv.com.pe/noticias/amp/actualidad/asi-operaba-banda-criminal-que-vendia-chips-activados-nombres-terceras-personas-n492832"},

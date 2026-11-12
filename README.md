@@ -5,7 +5,7 @@
 <h1 align="center">ChipGuard — ¿a quién le pertenece tu chip?</h1>
 
 <p align="center">
-  Exposición de <b>Matemática Discreta</b> · Universidad Peruana Cayetano Heredia<br>
+  Exposición de <b>Estructuras Discretas I</b> · Universidad Peruana Cayetano Heredia<br>
   Funciones inyectivas, sobreyectivas y biyectivas aplicadas a las líneas móviles registradas a nombre de terceros en el Perú.
 </p>
 
@@ -48,7 +48,7 @@ Si Windows muestra «Windows protegió su PC», pulsa **Más información → Ej
 4. **En acción:** la alerta llega al celular.
 5. **Por dentro:** la arquitectura y el flujo de 7 pasos.
 6. **La tienda:** un juego en 2 rondas, sin y con ChipGuard (de 3 chips en manos criminales a 0).
-7. **Cierre:** conclusiones y referencias APA.
+7. **Cierre:** conclusiones y referencias.
 
 | | |
 |---|---|
@@ -80,6 +80,6 @@ python3 informe/generar.py                                               # regen
 
 ## Informe
 
-El informe completo (20 páginas, formato UPCH, referencias en formato APA) explica el modelo matemático, la propuesta y los resultados de la simulación:
+El informe completo (formato del curso Estructuras Discretas I, referencias IEEE) explica el modelo matemático, la propuesta y los resultados de la simulación:
 
 **[📄 Informe-ChipGuard.pdf](docs/Informe-ChipGuard.pdf)** (también está en la [release](https://github.com/jordymartel-hash/ChipGuard/releases/latest)).
