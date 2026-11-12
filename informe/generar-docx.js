@@ -542,9 +542,9 @@ function anexos(pruebasTexto) {
   H2("Anexo C. Distribución de tareas y bitácora");
   tabla("Reparto de la exposición (15 minutos, 4 integrantes)", [
     ["Integrante", "Capítulos", "Tiempo", "Idea que debe quedar"],
-    ["Martel Vasquez, Jordy Joel", "La historia", "3:00", "A Ana le sacaron un chip con su segunda huella, y la policía llegó a ella."],
+    ["Tangoa Alva, Richard José Hernan", "La historia", "3:00", "A Ana le sacaron un chip con su segunda huella, y la policía llegó a ella."],
     ["Sanga Limache, Angeles Jemina", "La matemática", "4:00", "El registro es una función; el problema es que registro ≠ uso real."],
-    ["Tangoa Alva, Richard José Hernan", "Qué es ChipGuard · En acción · Por dentro", "4:30", "Ningún chip se activa sin el permiso del dueño del DNI."],
+    ["Martel Vasquez, Jordy Joel", "Qué es ChipGuard · En acción · Por dentro", "4:30", "Ningún chip se activa sin el permiso del dueño del DNI."],
     ["Vidalon Ampudia, Eduardo Josias", "La tienda (con el público) · Cierre", "3:30", "Aun decidiendo bien, sin ChipGuard 2 chips llegan a criminales; con ChipGuard, 0."],
   ], [1.4, 1.3, 0.5, 2]);
   tabla("Bitácora de versiones del repositorio", [
