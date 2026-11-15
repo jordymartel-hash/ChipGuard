@@ -15,7 +15,7 @@ desktop (Java 17+, Swing dibujado a mano; se proyecta en clase desde una laptop 
 
 ## Product Purpose
 
-ChipGuard explica un problema real del Perú, los chips registrados con el DNI de otra persona y usados para extorsionar, y lo modela con funciones inyectivas, sobreyectivas y biyectivas. La exposición sigue este orden: primero el caso de Ana (la problemática), luego la matemática, después la propuesta ChipGuard (qué es, cómo actúa y cómo está hecha), luego el juego «La tienda», que simula el antes y el después, y al final el cierre. El éxito es que el público entienda el problema sin saber matemática y que el profesor vea el modelo formal y el código.
+ChipGuard explica un problema real del Perú, los chips registrados con el DNI de otra persona y usados para extorsionar, y lo modela con funciones inyectivas, sobreyectivas y biyectivas. La exposición sigue este orden: primero el caso de Ana (la problemática), luego el objetivo y el marco teórico, después la matemática, después la propuesta ChipGuard (qué es, cómo actúa y cómo está hecha), luego el juego «La tienda», que simula el antes y el después, y al final el cierre. El éxito es que el público entienda el problema sin saber matemática y que el profesor vea el modelo formal y el código.
 
 ## Objetivos
 
@@ -61,12 +61,13 @@ La propuesta ChipGuard no reemplaza la biometría que OSIPTEL ya exige en la tie
 
 - Capítulos actuales (`src/simuchip/ui/Aplicacion.java`, en orden):
   1. La historia: el caso de Ana. La «doble huella» es el truco que la biometría no detecta: el vendedor dice que la huella «no salió», pide una segunda lectura y con ella registra un chip extra a nombre de Ana (informe §2.2). Luego vienen la extorsión y la policía.
-  2. La matemática: función, inyectiva, sobreyectiva y biyectiva con casos reales; registro ≠ uso real; principio del palomar.
-  3. Qué es ChipGuard: app, web y servidor; usos, actores, pantallas y comparación con «Checa tus líneas».
-  4. En acción: la alerta llega al celular.
-  5. Por dentro: la arquitectura y el flujo de 7 pasos.
-  6. La tienda: juego en 2 rondas, sin y con ChipGuard (de 3 chips en manos criminales a 0).
-  7. Cierre: conclusiones y referencias.
+  2. Objetivos: el objetivo general, los 4 específicos (cada uno con el capítulo donde se cumple) y el marco teórico con un diagrama sagital por definición (pedido del profesor, 2026-11-14).
+  3. La matemática: función, inyectiva, sobreyectiva y biyectiva con casos reales; registro ≠ uso real; principio del palomar.
+  4. Qué es ChipGuard: app, web y servidor; usos, actores, pantallas y comparación con «Checa tus líneas».
+  5. En acción: la alerta llega al celular.
+  6. Por dentro: la arquitectura y el flujo de 7 pasos.
+  7. La tienda: juego en 2 rondas, sin y con ChipGuard (de 3 chips en manos criminales a 0).
+  8. Cierre: conclusiones y referencias.
 - 119 pruebas sin librerías externas.
 - La app debe correr con `java -jar`, sin dependencias. Las fuentes van dentro del proyecto.
 - En Linux, Java solo escala con números enteros.

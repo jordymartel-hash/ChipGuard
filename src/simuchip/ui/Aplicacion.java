@@ -15,13 +15,13 @@ import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 /**
- * ChipGuard: siete capítulos en orden, como una keynote. Barra superior mínima con la marca,
+ * ChipGuard: ocho capítulos en orden, como una keynote. Barra superior mínima con la marca,
  * los capítulos en texto (un punto bajo el activo) y «Siguiente». Las flechas ← → también avanzan.
  */
 public final class Aplicacion extends JPanel {
 
-    private static final String[] CAPITULOS = {"La historia", "La matemática", "Qué es ChipGuard", "En acción", "Por dentro", "La tienda",
-        "Cierre"};
+    private static final String[] CAPITULOS = {"La historia", "Objetivos", "La matemática", "Qué es ChipGuard", "En acción",
+        "Por dentro", "La tienda", "Cierre"};
     private static final int ALTO_BARRA = 60;
     private static final int TRANSICION_MS = 420;
 
@@ -31,6 +31,7 @@ public final class Aplicacion extends JPanel {
     private final Boton siguiente = new Boton("Siguiente", Boton.Estilo.PRIMARIO).conIcono(Iconos.Tipo.SIGUIENTE);
     private final JComponent[] paneles;
     private final PanelHistoria historia = new PanelHistoria();
+    private final PanelObjetivos objetivos = new PanelObjetivos();
     private final PanelMatematica matematica = new PanelMatematica();
     private final PanelChipGuard chipGuard = new PanelChipGuard();
     private final PanelQueEs queEs = new PanelQueEs();
@@ -43,7 +44,7 @@ public final class Aplicacion extends JPanel {
     public Aplicacion() {
         super(new BorderLayout());
         setBackground(Tema.CELESTE_FONDO);
-        paneles = new JComponent[] {historia, matematica, queEs, chipGuard, arquitectura, tienda, cierre};
+        paneles = new JComponent[] {historia, objetivos, matematica, queEs, chipGuard, arquitectura, tienda, cierre};
         add(new Barra(), BorderLayout.NORTH);
         for (int i = 0; i < paneles.length; i++) {
             centro.add(paneles[i], CAPITULOS[i]);
@@ -98,8 +99,16 @@ public final class Aplicacion extends JPanel {
         return CAPITULOS.length;
     }
 
+    public String nombreCapitulo(int indice) {
+        return CAPITULOS[indice];
+    }
+
     public PanelHistoria historia() {
         return historia;
+    }
+
+    public PanelObjetivos objetivos() {
+        return objetivos;
     }
 
     public PanelMatematica matematica() {
@@ -190,23 +199,51 @@ public final class Aplicacion extends JPanel {
             add(cronometro);
         }
 
+        /** Donde termina la marca (escudo + «ChipGuard»); las pestañas no entran ahí. */
+        private static final int FIN_MARCA = 190;
+
         @Override
         public void doLayout() {
-            int total = 0;
-            for (Boton b : pestanas) {
-                total += b.getPreferredSize().width;
+            Dimension d = siguiente.getPreferredSize();
+            int xs = getWidth() - 28 - Math.max(d.width, 130);
+            siguiente.setBounds(getWidth() - 28 - d.width, (ALTO_BARRA - 36) / 2, d.width, 36);
+            Dimension c = cronometro.getPreferredSize();
+            int xc = xs - 12 - c.width;
+            cronometro.setBounds(xc, (ALTO_BARRA - c.height) / 2, c.width, c.height);
+
+            // en proyectores angostos (1280, 1024 px): primero se achica la letra y, si aun así no cabe,
+            // se oculta el cronómetro; la navegación nunca se monta sobre otra cosa
+            int tope = xc - 8;
+            int total = anchoPestanas(15f);
+            for (float tam = 14f; total > tope - FIN_MARCA && tam >= 12f; tam -= 1f) {
+                total = anchoPestanas(tam);
             }
+            cronometro.setVisible(total <= tope - FIN_MARCA);
+            if (!cronometro.isVisible()) {
+                tope = xs - 8;
+                for (float tam = 12f; total > tope - FIN_MARCA && tam >= 10.5f; tam -= 0.5f) {
+                    total = anchoPestanas(tam);
+                }
+            }
+            // centradas en la ventana si caben así; si no, centradas en el hueco libre
             int x = (getWidth() - total) / 2;
+            if (x < FIN_MARCA || x + total > tope) {
+                x = FIN_MARCA + Math.max(0, (tope - FIN_MARCA - total) / 2);
+            }
             for (Boton b : pestanas) {
                 int bw = b.getPreferredSize().width;
                 b.setBounds(x, 6, bw, ALTO_BARRA - 8);
                 x += bw;
             }
-            Dimension d = siguiente.getPreferredSize();
-            int xs = getWidth() - 28 - Math.max(d.width, 130);
-            siguiente.setBounds(getWidth() - 28 - d.width, (ALTO_BARRA - 36) / 2, d.width, 36);
-            Dimension c = cronometro.getPreferredSize();
-            cronometro.setBounds(xs - 12 - c.width, (ALTO_BARRA - c.height) / 2, c.width, c.height);
+        }
+
+        private int anchoPestanas(float tamano) {
+            int total = 0;
+            for (Boton b : pestanas) {
+                b.setFont(Tema.medio(tamano));
+                total += b.getPreferredSize().width;
+            }
+            return total;
         }
 
         @Override

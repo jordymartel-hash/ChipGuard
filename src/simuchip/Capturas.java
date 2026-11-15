@@ -34,26 +34,31 @@ public final class Capturas {
             guardar(app, carpeta, "1" + (char) ('a' + e) + "-historia.png");
         }
         app.irA(1);
+        for (int e = 0; e < app.objetivos().cantidadEscenas(); e++) {
+            app.objetivos().irAEscena(e);
+            guardar(app, carpeta, "O" + (char) ('a' + e) + "-objetivos.png");
+        }
+        app.irA(2);
         for (int e = 0; e < app.matematica().cantidadEscenas(); e++) {
             app.matematica().irAEscena(e);
             guardar(app, carpeta, "2" + (char) ('a' + e) + "-matematica.png");
         }
-        app.irA(2);
+        app.irA(3);
         for (int e = 0; e < app.queEs().cantidadEscenas(); e++) {
             app.queEs().irAEscena(e);
             guardar(app, carpeta, "Q" + (char) ('a' + e) + "-que-es.png");
         }
-        app.irA(3);
+        app.irA(4);
         for (int e = 0; e < 5; e++) {
             app.chipGuard().irAEscena(e);
             guardar(app, carpeta, "3" + (char) ('a' + e) + "-chipguard.png");
         }
-        app.irA(4);
+        app.irA(5);
         for (int e = 0; e < app.arquitectura().cantidadEscenas(); e++) {
             app.arquitectura().irAEscena(e);
             guardar(app, carpeta, "3" + (char) ('f' + e) + "-arquitectura.png");
         }
-        app.irA(5);
+        app.irA(6);
         PanelTienda t = app.tienda();
         guardar(app, carpeta, "4a-tienda-portada.png");
         t.continuar();
@@ -84,7 +89,7 @@ public final class Capturas {
         }
         t.continuar();
         guardar(app, carpeta, "4h-tienda-final.png");
-        app.irA(6);
+        app.irA(7);
         for (int e = 0; e < app.cierre().cantidadEscenas(); e++) {
             app.cierre().irAEscena(e);
             guardar(app, carpeta, "5" + (char) ('a' + e) + "-cierre.png");

@@ -43,15 +43,17 @@ Si Windows muestra «Windows protegió su PC», pulsa **Más información → Ej
 ## Capítulos
 
 1. **La historia:** el caso de Ana (la doble huella, el chip extra, la extorsión y la policía).
-2. **La matemática:** función, inyectiva, sobreyectiva y biyectiva con casos reales; registro ≠ uso real; principio del palomar.
-3. **Qué es ChipGuard:** app + web + servidor, usos, actores, pantallas y comparación con «Checa tus líneas» de OSIPTEL.
-4. **En acción:** la alerta llega al celular.
-5. **Por dentro:** la arquitectura y el flujo de 7 pasos.
-6. **La tienda:** un juego en 2 rondas, sin y con ChipGuard (de 3 chips en manos criminales a 0).
-7. **Cierre:** conclusiones y referencias.
+2. **Objetivos:** el objetivo general, los 4 específicos (cada uno con el capítulo donde se cumple) y el marco teórico con sus diagramas.
+3. **La matemática:** función, inyectiva, sobreyectiva y biyectiva con casos reales; registro ≠ uso real; principio del palomar.
+4. **Qué es ChipGuard:** app + web + servidor, usos, actores, pantallas y comparación con «Checa tus líneas» de OSIPTEL.
+5. **En acción:** la alerta llega al celular.
+6. **Por dentro:** la arquitectura y el flujo de 7 pasos.
+7. **La tienda:** un juego en 2 rondas, sin y con ChipGuard (de 3 chips en manos criminales a 0).
+8. **Cierre:** conclusiones y referencias.
 
 | | |
 |---|---|
+| ![Objetivos](capturas/Oa-objetivos.png) | ![Marco teórico](capturas/Ob-objetivos.png) |
 | ![La matemática](capturas/2a-matematica.png) | ![Qué es ChipGuard](capturas/Qa-que-es.png) |
 | ![En acción](capturas/3b-chipguard.png) | ![La tienda](capturas/4h-tienda-final.png) |
 

@@ -417,10 +417,11 @@ celular y bloquea el chip antes de que se active.</p>
 <h2>9. La aplicación desarrollada</h2>
 <p>La aplicación ChipGuard está escrita en Java 17 con Swing y gráficos dibujados a mano (Java2D), sin librerías
 externas. Se usa para exponer: avanza con las flechas del teclado como una presentación y tiene un cronómetro para el
-expositor. Está organizada en siete capítulos:</p>
+expositor. Está organizada en ocho capítulos:</p>
 {tabla("Capítulos de la aplicación", [
     ["Capítulo", "Contenido"],
     ["La historia", "Portada con el equipo y el caso de Ana en seis escenas animadas, de la doble huella a la policía, con las cifras de OSIPTEL"],
+    ["Objetivos", "El objetivo general y los cuatro específicos, cada uno con el capítulo donde se cumple, y el marco teórico: función, inyectiva, sobreyectiva, biyectiva y palomar, cada una con su diagrama"],
     ["La matemática", "Función, inyectiva, sobreyectiva y biyectiva con personas y casos reales; el problema f(c) ≠ u(c); el palomar; la solución"],
     ["Qué es ChipGuard", "Las tres partes, sus usos, sus actores, las pantallas de la app, la web y la comparación con lo que existe"],
     ["En acción", "El celular de Ana recibe la alerta y bloquea el chip"],

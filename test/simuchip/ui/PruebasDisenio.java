@@ -31,6 +31,43 @@ public final class PruebasDisenio {
             }
             verificar(todo, "«" + txt + "» se dibuja entero con Geist");
         }
+        titulo("Capítulo de objetivo y marco teórico");
+        Aplicacion app = new Aplicacion();
+        igual(8, app.cantidadCapitulos(), "la app tiene 8 capítulos");
+        igual("Objetivos", app.nombreCapitulo(1), "va justo después de La historia, como en el informe");
+        igual("La matemática", app.nombreCapitulo(2), "la matemática sigue después");
+        igual(2, app.objetivos().cantidadEscenas(), "dos escenas: objetivo y marco teórico");
+        igual(4, PanelObjetivos.ESPECIFICOS.length, "los 4 objetivos específicos del informe");
+        igual(5, PanelObjetivos.CONCEPTOS.length, "cinco conceptos del marco teórico");
+
+        titulo("Barra: los 8 capítulos no chocan con la marca ni con el cronómetro");
+        java.awt.Container barra = (java.awt.Container) app.getComponent(0);
+        for (int ancho : new int[] {1920, 1600, 1366, 1280, 1024}) {
+            barra.setSize(ancho, 60);
+            barra.doLayout();
+            java.awt.Component[] hijos = barra.getComponents();
+            java.awt.Component crono = hijos[hijos.length - 1];
+            if (!crono.isVisible()) {
+                crono = hijos[hijos.length - 2]; // sin cronómetro, el límite es «Siguiente»
+            }
+            int izq = Integer.MAX_VALUE;
+            int der = 0;
+            for (int k = 0; k < app.cantidadCapitulos(); k++) {
+                izq = Math.min(izq, hijos[k].getX());
+                der = Math.max(der, hijos[k].getX() + hijos[k].getWidth());
+            }
+            verificar(izq >= 180 && der <= crono.getX() - 8,
+                    ancho + " px: pestañas de " + izq + " a " + der + ", cronómetro en " + crono.getX());
+        }
+        for (String[] c : PanelObjetivos.CONCEPTOS) {
+            java.text.AttributedCharacterIterator it = Tema.preparar(c[1], geist).getIterator();
+            boolean todo = true;
+            for (char ch = it.first(); ch != java.text.CharacterIterator.DONE; ch = it.next()) {
+                java.awt.Font f = (java.awt.Font) it.getAttribute(java.awt.font.TextAttribute.FONT);
+                todo &= f != null && f.getFamily().equals(geist.getFamily()) && f.canDisplay(ch);
+            }
+            verificar(todo, "fórmula «" + c[1] + "» sin cuadraditos");
+        }
         terminar();
     }
 }
