@@ -491,14 +491,15 @@ simulación es didáctica: usa una fila fija de seis clientes y no estima tasas 
 {REFERENCIAS}
 
 <h2>Anexo A. Guion de la exposición</h2>
-{tabla("Reparto de la exposición (15 minutos, 4 integrantes)", [
+{tabla("Reparto de la exposición (16 minutos, 4 integrantes)", [
     ["Integrante", "Capítulos", "Tiempo", "Idea que debe quedar"],
     ["Martel Vasquez, Jordy Joel", "La historia", "3:00", "A Ana le sacaron un chip con su segunda huella, y la policía llegó a ella."],
     ["Sanga Limache, Angeles Jemina", "La matemática", "4:00", "El registro es una función; el problema es que registro ≠ uso real."],
+    ["Tangoa Alva, Richard José Hernan", "Objetivos (tras La historia)", "1:00", "Qué buscamos y con qué cinco definiciones lo sostenemos."],
     ["Tangoa Alva, Richard José Hernan", "Qué es ChipGuard · En acción · Por dentro", "4:30", "Ningún chip se activa sin el permiso del dueño del DNI."],
     ["Vidalon Ampudia, Eduardo Josias", "La tienda (con el público) · Cierre", "3:30", "Sin ChipGuard terminan 3 chips en manos criminales; con ChipGuard, 0."],
 ])}
-<p>Si el tiempo supera los 15 minutos, se recorta primero el capítulo «Por dentro» (mostrar solo el flujo de siete
+<p>Si el tiempo supera los 16 minutos, se recorta primero el capítulo «Por dentro» (mostrar solo el flujo de siete
 pasos).</p>
 
 <h2>Anexo B. Cómo abrir la aplicación</h2>
