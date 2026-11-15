@@ -5,6 +5,7 @@ import static simuchip.ui.Personitas.EXTORSIONADOR;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.List;
@@ -184,7 +185,8 @@ public final class PanelMatematica extends PanelEscenas {
         for (int k = 0; k < 6; k++) {
             double sx = xBus + 40 + (k % 2) * (sw + 40);
             double sy = yBus + 64 + (k / 2) * sh;
-            asiento[k] = new double[] {sx + sw / 2, sy + sh / 2 - 6};
+            // el pasajero va de pie bajo el rótulo, sin taparlo: sus pies en el fondo del asiento
+            asiento[k] = new double[] {sx + sw / 2, sy + sh / 2 - 6, sy + sh - 18, Math.min(60, sh - 14 - 34 - 4)};
             Tema.rectRedondo(g, sx, sy, sw, sh - 14, 16, Tema.GRIS_CLARO);
             g.setFont(Tema.letra(Font.BOLD, 14f));
             g.setColor(Tema.TEXTO_SUAVE);
@@ -199,7 +201,7 @@ public final class PanelMatematica extends PanelEscenas {
             double[] s2 = asiento[destino[k]];
             Tema.flecha(g, px + 40, py, s2[0] - 30, s2[1], Tema.VERDE, 2.6f, false, tramo(t, 0.3 + k * 0.3, 0.5));
             double p = tramo(t, 0.8 + k * 0.3, 0.3);
-            Personitas.persona(g, gente[k], s2[0], s2[1] + 30, 60, Cara.FELIZ, p);
+            Personitas.persona(g, gente[k], s2[0], s2[2], s2[3], Cara.FELIZ, p);
         }
         // la sobreventa: Juana recibe el asiento 1, que ya es de Ana
         double q = tramo(t, 2.6, 0.5);
@@ -209,9 +211,18 @@ public final class PanelMatematica extends PanelEscenas {
             double py = a.y + a.height - 20;
             Personitas.persona(g, juana, px, py, 80, Cara.TRISTE, q);
             Tema.flecha(g, px + 40, py - 40, asiento[0][0] - 30, asiento[0][1] + 20, Tema.ROJO, 3f, true, q);
-            Font f = Tema.letra(Font.BOLD, 16f);
-            Tema.pastilla(g, "¡sobreventa! 2 flechas al asiento 1", (int) (xBus + 20), (int) (yBus + hBus + 8),
-                    Tema.conAlfa(Tema.ROJO, (int) (255 * q)), Tema.BLANCO, f);
+            // la etiqueta se parte en dos líneas si no cabe bajo el bus
+            g.setFont(Tema.letra(Font.BOLD, 16f));
+            FontMetrics fm = g.getFontMetrics();
+            List<String> lineas = Tema.partir("¡sobreventa! 2 flechas al asiento 1", fm, (int) wBus - 24);
+            int ancho = lineas.stream().mapToInt(fm::stringWidth).max().orElse(0) + 24;
+            double yP = yBus + hBus + 8;
+            Tema.rectRedondo(g, xBus + (wBus - ancho) / 2, yP, ancho, lineas.size() * fm.getHeight() + 8,
+                    fm.getHeight() + 8, Tema.conAlfa(Tema.ROJO, (int) (255 * q)));
+            g.setColor(Tema.BLANCO);
+            for (int i = 0; i < lineas.size(); i++) {
+                Tema.textoCentrado(g, lineas.get(i), xBus + wBus / 2, yP + 4 + fm.getHeight() * (i + 0.5));
+            }
         }
     }
 
@@ -240,12 +251,20 @@ public final class PanelMatematica extends PanelEscenas {
         for (int k = 0; k < 4; k++) {
             double gy = a.y + 30 + k * hG;
             Tema.rectRedondo(g, xG, gy + 6, wG, hG - 12, 22, Tema.conAlfa(colorGrupo[k], 40));
-            g.setFont(Tema.titulo(22f));
+            String nombre = "Grupo " + (k + 1);
+            String cuantos = cuenta[k] + (cuenta[k] == 1 ? " alumno" : " alumnos");
+            Font fNombre = Tema.titulo(22f);
+            Font fCuenta = Tema.letra(Font.BOLD, 17f);
+            int wCuenta = g.getFontMetrics(fCuenta).stringWidth(cuantos);
+            // lado a lado si caben; si no, el conteo baja a su propia línea
+            boolean juntos = 22 + g.getFontMetrics(fNombre).stringWidth(nombre) + 16 + wCuenta + 22 <= wG;
+            double yN = juntos ? gy + hG / 2 + 8 : gy + hG / 2 - 4;
+            g.setFont(fNombre);
             g.setColor(Tema.AZUL_NOCHE);
-            Tema.texto(g, "Grupo " + (k + 1), xG + 22, gy + hG / 2 + 8);
-            g.setFont(Tema.letra(Font.BOLD, 17f));
+            Tema.texto(g, nombre, xG + 22, yN);
+            g.setFont(fCuenta);
             g.setColor(cuenta[k] > 0 ? Tema.VERDE : Tema.ROJO);
-            Tema.texto(g, cuenta[k] + (cuenta[k] == 1 ? " alumno" : " alumnos"), xG + wG - 120, gy + hG / 2 + 8);
+            Tema.texto(g, cuantos, juntos ? xG + wG - 22 - wCuenta : xG + 22, juntos ? yN : yN + 26);
         }
     }
 
@@ -291,12 +310,14 @@ public final class PanelMatematica extends PanelEscenas {
         }
         Tema.flecha(g, cx - 40, yChip - 20, xIzq + alto * 0.3, yGente + 10, Tema.AZUL, 3.5f, false,
                 tramo(t, 0.4, 0.6));
-        rotulo(g, "registro", (cx + xIzq) / 2 - 30, (yChip + yGente) / 2 - 10, Tema.AZUL_TEXTO, tramo(t, 0.8, 0.3));
+        // los rótulos flanquean el chip, abajo: más arriba tapaban los pies de Ana y del extorsionador
+        double wReg = g.getFontMetrics(Tema.letra(Font.BOLD, 15f)).stringWidth("registro") + 24;
+        double wUso = g.getFontMetrics(Tema.letra(Font.BOLD, 15f)).stringWidth("uso real") + 24;
+        rotulo(g, "registro", cx - 50 - wReg / 2, yChip, Tema.AZUL_TEXTO, tramo(t, 0.8, 0.3));
         double xFin = solucion ? xIzq + alto * 0.35 : xDer - alto * 0.3;
         Tema.flecha(g, cx + (solucion ? -10 : 40), yChip - 20, xFin, yGente + (solucion ? 40 : 10),
                 solucion ? Tema.VERDE : Tema.ROJO, 3.5f, !solucion, tramo(t, 1.2, 0.6));
-        rotulo(g, "uso real", solucion ? (cx + xIzq) / 2 + 20 : (cx + xDer) / 2 + 30,
-                (yChip + yGente) / 2 + (solucion ? 30 : -10), solucion ? Tema.VERDE : Tema.ROJO_OSCURO,
+        rotulo(g, "uso real", cx + 50 + wUso / 2, yChip, solucion ? Tema.VERDE : Tema.ROJO_OSCURO,
                 tramo(t, 1.6, 0.3));
         double p = tramo(t, 2.0, 0.5);
         g.setFont(Tema.titulo(90f));
@@ -377,7 +398,7 @@ public final class PanelMatematica extends PanelEscenas {
             Tema.rectRedondo(g, x, yCaj, bw, bh, 18, lleno ? Tema.AZUL_SUAVE : Tema.GRIS_CLARO);
             g.setFont(Tema.letra(Font.BOLD, 14f));
             g.setColor(Tema.AZUL_TEXTO);
-            Tema.textoCentrado(g, "cajón " + (c + 1), x + bw / 2, yCaj + bh + 22);
+            Tema.textoCentrado(g, "cajón " + (c + 1), x + bw / 2, yCaj + bh + 36);
         }
         String[] num = {"…412", "…087", "…935", "…260", "…771"};
         for (int k = 0; k < 5; k++) {
