@@ -109,11 +109,13 @@ public final class PanelHistoria extends PanelEscenas {
             double x1 = xt + wt * 0.3 + (xt - 40 - xt - wt * 0.3) * p;
             Personitas.chip(g, x1, yMostrador - 40 + 30 * p, 44, 1, 0, "de Ana");
             double x2 = xt + wt * 0.45 + (xt + wt + 70 - xt - wt * 0.45) * p;
-            Personitas.chip(g, x2, yMostrador - 40 + 120 * p, 44, 1, tramo(t, 3.8, 0.4), "extra");
+            // aterriza con su pastilla por encima del piso: debajo va el rótulo de la escena
+            double y2 = piso - 44 * 0.65 - 50;
+            Personitas.chip(g, x2, yMostrador - 40 + (y2 - yMostrador + 40) * p, 44, 1, tramo(t, 3.8, 0.4), "extra");
         }
         Personitas.burbuja(g, "Listo, señito. Su chip.", xt + wt * 0.6, piso - alto * 1.25 - 10, 360,
                 Tema.AZUL_SUAVE, Tema.AZUL_NOCHE, t > 4.6 ? tramo(t, 4.6, 0.3) : 0);
-        etiqueta(g, "Ana no sabe que se registraron 2 chips con su DNI.", a.getCenterX(), piso + 2,
+        etiqueta(g, a, "Ana no sabe que se registraron 2 chips con su DNI.", a.getCenterX(), piso + 2,
                 tramo(t, 5.2, 0.5));
     }
 
@@ -129,7 +131,8 @@ public final class PanelHistoria extends PanelEscenas {
         g.fillRect((int) (a.x + a.width * 0.36), (int) (piso - alto * 1.3), 10, (int) (alto * 1.3));
         g.setFont(Tema.letra(Font.BOLD, 15f));
         g.setColor(Tema.TEXTO_SUAVE);
-        Tema.textoCentrado(g, "mientras tanto, atrás de la tienda…", a.x + a.width * 0.68, a.y + 14);
+        // bajo el piso: arriba lo tapaba la burbuja del vendedor
+        Tema.textoCentrado(g, "mientras tanto, atrás de la tienda…", a.x + a.width * 0.68, piso + 14);
 
         double xv = a.x + a.width * 0.55;
         double xe = a.x + a.width * 0.85;
@@ -162,7 +165,8 @@ public final class PanelHistoria extends PanelEscenas {
         Tema.flecha(g, xe + alto * 0.45, yCel, xv - alto * 0.5, yCel, Tema.ROJO, 3f, true, tramo(t, 0.3, 0.8));
         Personitas.burbuja(g, "Paga 5 mil soles o te va a ir mal.", xe + 40, piso - alto - 10, 340, Tema.ROJO,
                 Tema.BLANCO, tramo(t, 1.0, 0.4));
-        etiqueta(g, "Llama el 987 654 935  ·  registrado a nombre de: Ana", xv - alto * 0.3, yCel + alto * 0.36,
+        // bajo el piso, como los otros rótulos: a media altura tapaba las piernas de Don Julio
+        etiqueta(g, a, "Llama el 987 654 935  ·  registrado a nombre de: Ana", xv - alto * 0.3, piso + 2,
                 tramo(t, 2.0, 0.5));
     }
 
@@ -180,7 +184,7 @@ public final class PanelHistoria extends PanelEscenas {
         double q = tramo(t, 2.8, 2.5);
         double xe = a.x + a.width * 0.86 + a.width * 0.1 * q;
         Personitas.persona(g, EXTORSIONADOR, xe, piso, alto * 0.6, Cara.MALA, 1 - Math.max(0, (q - 0.6) * 2.5));
-        etiqueta(g, "el culpable, libre", a.x + a.width * 0.88, piso + 2, tramo(t, 3.0, 0.4) * (1 - q * 0.5));
+        etiqueta(g, a, "el culpable, libre", a.x + a.width * 0.88, piso + 2, tramo(t, 3.0, 0.4) * (1 - q * 0.5));
     }
 
     // ── 5: muchas Anas y el contador de OSIPTEL ──
@@ -200,33 +204,53 @@ public final class PanelHistoria extends PanelEscenas {
                         Cara.TRISTE, tramo(t, 0.1 + n * 0.035, 0.3));
             }
         }
-        double xc = a.x + a.width * 0.66 + 40;
+        // la columna de datos arranca donde acaba la multitud y apila sus bloques según lo que miden
+        int xc = (int) (a.x + paso * cols + 50);
+        int ancho = a.x + a.width - xc;
+        double piso = a.y + a.height - 24;
+        String fuentes = "Fuentes: OSIPTEL vía Congreso de la República y Canal N (2025).";
+        Font fNum = Tema.titulo(76f);
+        Font fNum2 = Tema.titulo(44f);
+        Font fPar = Tema.letra(Font.PLAIN, 20f);
+        Font fFuente = Tema.letra(Font.PLAIN, 13f);
+        int altoPar = g.getFontMetrics(fPar).getHeight();
+        int h1 = Tema.partir("líneas con datos inconsistentes (mayo–octubre 2025)", g.getFontMetrics(fPar), ancho).size();
+        int h2 = Tema.partir("personas con más de 10 líneas a su nombre", g.getFontMetrics(fPar), ancho).size();
+        int hf = Tema.partir(fuentes, g.getFontMetrics(fFuente), ancho).size() * g.getFontMetrics(fFuente).getHeight();
+        double yFuente = piso - 10 - hf;
+        // alto del bloque: número, párrafo, número chico, párrafo
+        double bloque = g.getFontMetrics(fNum).getAscent() * 0.8 + 18 + h1 * altoPar * 1.3 + 14
+                + g.getFontMetrics(fNum2).getAscent() * 0.8 + 18 + h2 * altoPar * 1.3;
+        double y = Math.min(a.y + 110 - g.getFontMetrics(fNum).getAscent() * 0.8, yFuente - 14 - bloque);
+        y = Math.max(a.y, y);
+
         double p = tramo(t, 0.4, 2.4);
-        g.setFont(Tema.titulo(76f));
+        g.setFont(fNum);
         g.setColor(Tema.ROJO);
-        Tema.texto(g, String.format("%,d", Math.round(309454 * p)).replace(',', ' '), xc, a.y + 110);
-        g.setFont(Tema.letra(Font.PLAIN, 20f));
+        y += g.getFontMetrics().getAscent() * 0.8; // las cifras no usan todo el ascenso
+        Tema.texto(g, String.format("%,d", Math.round(309454 * p)).replace(',', ' '), xc, y);
+        g.setFont(fPar);
         g.setColor(Tema.AZUL_NOCHE);
-        Tema.parrafo(g, "líneas con datos inconsistentes (mayo–octubre 2025)", (int) xc, a.y + 128,
-                (int) (a.x + a.width - xc), 1.3f);
+        y += 18 + Tema.parrafo(g, "líneas con datos inconsistentes (mayo–octubre 2025)", xc, (int) y + 18, ancho, 1.3f);
         double q = tramo(t, 2.4, 0.6);
-        g.setFont(Tema.titulo(44f));
+        g.setFont(fNum2);
         g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * q)));
-        Tema.texto(g, "~200 000", xc, a.y + 250);
-        g.setFont(Tema.letra(Font.PLAIN, 20f));
-        Tema.parrafo(g, "personas con más de 10 líneas a su nombre", (int) xc, a.y + 268,
-                (int) (a.x + a.width - xc), 1.3f);
-        g.setFont(Tema.letra(Font.PLAIN, 13f));
+        y += 14 + g.getFontMetrics().getAscent() * 0.8;
+        Tema.texto(g, "~200 000", xc, y);
+        g.setFont(fPar);
+        Tema.parrafo(g, "personas con más de 10 líneas a su nombre", xc, (int) y + 18, ancho, 1.3f);
+        g.setFont(fFuente);
         g.setColor(Tema.TEXTO_SUAVE);
-        Tema.texto(g, "Fuentes: OSIPTEL vía Congreso de la República y Canal N (2025).", xc, a.y + a.height - 6);
+        Tema.parrafo(g, fuentes, xc, (int) yFuente, ancho, 1f);
     }
 
-    private static void etiqueta(Graphics2D g, String texto, double cx, double y, double alfa) {
+    private static void etiqueta(Graphics2D g, Rectangle a, String texto, double cx, double y, double alfa) {
         if (alfa <= 0) {
             return;
         }
         Font f = Tema.letra(Font.BOLD, 16f);
         int w = g.getFontMetrics(f).stringWidth(texto) + 24;
+        cx = Math.max(a.x + w / 2.0, Math.min(a.x + a.width - w / 2.0, cx)); // que no se salga del área
         Tema.pastilla(g, texto, (int) (cx - w / 2.0), (int) y + 8, Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * alfa)),
                 Tema.conAlfa(Tema.BLANCO, (int) (255 * alfa)), f);
     }
