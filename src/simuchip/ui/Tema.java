@@ -203,24 +203,42 @@ public final class Tema {
         return f != null ? f : new Font(Font.SANS_SERIF, estilo, 1);
     }
 
+    /** Cuánto crece el texto más chico para que se lea desde el fondo del aula (pedido del profesor). */
+    static final float AUMENTO_PROYECTOR = 0.22f;
+
+    /**
+     * Tamaño proyectado: el texto de 18 px o menos crece un 22 %; el aumento se reduce hasta cero en los
+     * titulares de 40 px, que ya se leen desde lejos. Todas las fuentes de la app pasan por aquí.
+     */
+    static float proyectar(float tamano) {
+        double peso = Math.max(0, Math.min(1, (40 - tamano) / 22.0));
+        return (float) (tamano * (1 + AUMENTO_PROYECTOR * peso));
+    }
+
     /** Texto normal: PLAIN = Regular, BOLD = SemiBold (como en las apps de Apple). */
     public static Font letra(int estilo, float tamano) {
         Font base = (estilo & Font.BOLD) != 0 ? o(SEMI, Font.BOLD) : o(REGULAR, Font.PLAIN);
-        return base.deriveFont(tamano);
+        return base.deriveFont(proyectar(tamano));
+    }
+
+    /** La misma fuente en SemiBold, sin volver a proyectar el tamaño (ya viene proyectado). */
+    public static Font enNegrita(Font f) {
+        return o(SEMI, Font.BOLD).deriveFont(f.getSize2D());
     }
 
     public static Font medio(float tamano) {
-        return o(MEDIO, Font.PLAIN).deriveFont(tamano);
+        return o(MEDIO, Font.PLAIN).deriveFont(proyectar(tamano));
     }
 
     /** Titulares: Bold con tracking negativo. */
     public static Font titulo(float tamano) {
-        return o(NEGRITA, Font.BOLD).deriveFont(Map.of(TextAttribute.SIZE, tamano, TextAttribute.TRACKING,
-                tamano >= 40 ? -0.025f : -0.01f));
+        float t = proyectar(tamano);
+        return o(NEGRITA, Font.BOLD).deriveFont(Map.of(TextAttribute.SIZE, t, TextAttribute.TRACKING,
+                t >= 40 ? -0.025f : -0.01f));
     }
 
     public static Font codigo(float tamano) {
-        return o(MONO, Font.PLAIN).deriveFont(tamano);
+        return o(MONO, Font.PLAIN).deriveFont(proyectar(tamano));
     }
 
     public static void suavizar(Graphics2D g) {

@@ -94,7 +94,7 @@ public final class Segmentado extends JComponent {
                 g.fillRect(x, 10, 1, h - 20);
             }
             g.setColor(i == elegido ? Tema.AZUL_NOCHE : Tema.TEXTO_SUAVE);
-            g.setFont(i == elegido ? Tema.letra(java.awt.Font.BOLD, getFont().getSize2D()) : getFont());
+            g.setFont(i == elegido ? Tema.enNegrita(getFont()) : getFont());
             fm = g.getFontMetrics();
             Tema.texto(g, opciones[i], x + (a[i] - fm.stringWidth(opciones[i])) / 2.0,
                     (h + fm.getAscent() - fm.getDescent()) / 2.0);

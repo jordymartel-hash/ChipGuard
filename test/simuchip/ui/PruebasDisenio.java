@@ -36,9 +36,16 @@ public final class PruebasDisenio {
         igual(8, app.cantidadCapitulos(), "la app tiene 8 capítulos");
         igual("Objetivos", app.nombreCapitulo(1), "va justo después de La historia, como en el informe");
         igual("La matemática", app.nombreCapitulo(2), "la matemática sigue después");
-        igual(2, app.objetivos().cantidadEscenas(), "dos escenas: objetivo y marco teórico");
+        igual(4, app.objetivos().cantidadEscenas(), "cuatro escenas: objetivo, específicos y marco teórico en dos partes");
+        igual(3, PanelObjetivos.GENERAL.length, "el objetivo general se parte en sus tres verbos");
         igual(4, PanelObjetivos.ESPECIFICOS.length, "los 4 objetivos específicos del informe");
         igual(5, PanelObjetivos.CONCEPTOS.length, "cinco conceptos del marco teórico");
+
+        titulo("Letra para proyector");
+        verificar(Tema.letra(java.awt.Font.PLAIN, 14f).getSize2D() >= 17f, "el texto de 14 px se proyecta a 17 px o más");
+        verificar(Tema.letra(java.awt.Font.PLAIN, 19f).getSize2D() >= 22.5f, "la bajada de 19 px pasa a 22.5 px o más");
+        igual(58f, Tema.titulo(58f).getSize2D(), "los titulares grandes no cambian");
+        verificar(Tema.medio(30f).getSize2D() > 30f && Tema.medio(30f).getSize2D() < 34f, "lo mediano crece poco");
 
         titulo("Barra: los 8 capítulos no chocan con la marca ni con el cronómetro");
         java.awt.Container barra = (java.awt.Container) app.getComponent(0);
@@ -47,6 +54,9 @@ public final class PruebasDisenio {
             barra.doLayout();
             java.awt.Component[] hijos = barra.getComponents();
             java.awt.Component crono = hijos[hijos.length - 1];
+            if (ancho >= 1280) {
+                verificar(crono.isVisible(), ancho + " px: el cronómetro del expositor sigue visible");
+            }
             if (!crono.isVisible()) {
                 crono = hijos[hijos.length - 2]; // sin cronómetro, el límite es «Siguiente»
             }

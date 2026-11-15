@@ -126,7 +126,7 @@ public final class Boton extends JComponent {
 
         if (estilo == Estilo.PESTANA) {
             Color c = encendido ? Tema.AZUL_NOCHE : encima ? Tema.AZUL_NOCHE : Tema.TEXTO_SUAVE;
-            g.setFont(encendido ? Tema.letra(Font.BOLD, getFont().getSize2D()) : getFont());
+            g.setFont(encendido ? Tema.enNegrita(getFont()) : getFont());
             fm = g.getFontMetrics();
             g.setColor(c);
             int base = (h + fm.getAscent() - fm.getDescent()) / 2 - 2;

@@ -193,7 +193,7 @@ public final class Aplicacion extends JPanel {
                 pestanas[i] = new Boton(CAPITULOS[i], Boton.Estilo.PESTANA).alHacerClic(() -> irA(indice));
                 add(pestanas[i]);
             }
-            siguiente.setFont(Tema.medio(14f));
+            siguiente.setFont(Tema.medio(12.5f)); // la barra es para el expositor: compacta, deja sitio al cronómetro
             siguiente.alHacerClic(() -> irA(actual + 1));
             add(siguiente);
             add(cronometro);
@@ -215,13 +215,13 @@ public final class Aplicacion extends JPanel {
             // se oculta el cronómetro; la navegación nunca se monta sobre otra cosa
             int tope = xc - 8;
             int total = anchoPestanas(15f);
-            for (float tam = 14f; total > tope - FIN_MARCA && tam >= 12f; tam -= 1f) {
+            for (float tam = 14f; total > tope - FIN_MARCA && tam >= 11f; tam -= 0.5f) {
                 total = anchoPestanas(tam);
             }
             cronometro.setVisible(total <= tope - FIN_MARCA);
             if (!cronometro.isVisible()) {
                 tope = xs - 8;
-                for (float tam = 12f; total > tope - FIN_MARCA && tam >= 10.5f; tam -= 0.5f) {
+                for (float tam = 11f; total > tope - FIN_MARCA && tam >= 9f; tam -= 0.5f) {
                     total = anchoPestanas(tam);
                 }
             }
