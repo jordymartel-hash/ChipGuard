@@ -273,15 +273,21 @@ final class Personitas {
             g.fill(new RoundRectangle2D.Double(x - 10 + i * (w + 20) / franjas, yToldo, (w + 20) / franjas + 1,
                     alto * 0.24, 6, 6));
         }
-        g.setColor(Tema.AZUL_NOCHE);
-        g.setFont(Tema.titulo((float) (w * 0.06)));
-        Tema.textoCentrado(g, nombre, x + w / 2, yToldo - 12);
         // mostrador
         Tema.sombra(g, x, y, w, alto, 16, 20);
         g.setColor(new Color(0xC98B4E));
         g.fill(new RoundRectangle2D.Double(x, y, w, alto, 16, 16));
         g.setColor(new Color(0xA86F38));
         g.fill(new RoundRectangle2D.Double(x - 8, y - 6, w + 16, 14, 8, 8));
+        // letrero pintado en el frente del mostrador: sobre el toldo lo tapaban las burbujas del vendedor
+        g.setFont(Tema.titulo((float) (w * 0.06)));
+        var fm = g.getFontMetrics();
+        double lw = fm.stringWidth(nombre) + fm.getHeight() * 1.4;
+        double lh = fm.getHeight() * 1.5;
+        double ly = y + 8 + (alto - 8 - lh) * 0.4;
+        Tema.rectRedondo(g, x + (w - lw) / 2, ly, lw, lh, lh, new Color(0xFFF6E8));
+        g.setColor(Tema.AZUL_NOCHE);
+        Tema.textoCentrado(g, nombre, x + w / 2, ly + lh / 2);
     }
 
     /** Sombra y bola de huella que late. */
