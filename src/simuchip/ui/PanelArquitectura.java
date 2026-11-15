@@ -13,8 +13,9 @@ import java.util.List;
 public final class PanelArquitectura extends PanelEscenas {
 
     // nodos: posición relativa en el área, ícono, nombre, detalle y si ChipGuard lo agrega
-    private static final double[][] POS = {{0.1, 0.45}, {0.37, 0.45}, {0.37, 0.1}, {0.64, 0.45}, {0.9, 0.45},
-        {0.64, 0.84}};
+    // filas separadas para que los rótulos de los pasos quepan arriba y abajo de la fila central
+    private static final double[][] POS = {{0.1, 0.47}, {0.37, 0.47}, {0.37, 0.07}, {0.64, 0.47}, {0.9, 0.47},
+        {0.64, 0.87}};
     private static final Iconos.Tipo[] ICONO = {Iconos.Tipo.TIENDA, Iconos.Tipo.CHIP, Iconos.Tipo.HUELLA,
         Iconos.Tipo.ESCUDO, Iconos.Tipo.TELEFONO, Iconos.Tipo.DOCUMENTO};
     private static final String[] NOMBRE = {"Tienda", "Operadora", "RENIEC", "Servidor ChipGuard",
@@ -102,7 +103,7 @@ public final class PanelArquitectura extends PanelEscenas {
             }, new Iconos.Tipo[] {Iconos.Tipo.ALERTA, Iconos.Tipo.TELEFONO, Iconos.Tipo.TIENDA});
             case 4 -> tarjetas(g, a, t, new String[][] {
                 {"1. Llamada en el mostrador", "ChipGuard llama al número nuevo. Si suena en SU celular, el chip está en su mano."},
-                {"2. Solo 1 chip por 72 h", "Un DNI sin líneas activa un solo chip al inicio. El chip extra de la doble huella no pasa."},
+                {"2. Solo 1 chip por 72 h", "Un DNI sin líneas activa un solo chip al inicio. El chip extra de la doble huella no pasa."},
                 {"3. Ese chip es su llave", "Desde ahí, cada chip nuevo con su DNI se aprueba desde el que ya está validado."}
             }, new Iconos.Tipo[] {Iconos.Tipo.TELEFONO, Iconos.Tipo.ESCUDO, Iconos.Tipo.VISTO});
             case 5 -> guarda(g, a, t);
@@ -144,11 +145,22 @@ public final class PanelArquitectura extends PanelEscenas {
         g.setFont(Tema.letra(Font.PLAIN, 15f));
         g.setColor(Tema.conAlfa(Tema.TEXTO_SUAVE, al));
         Tema.texto(g, DETALLE[n], x + 64, c[1] + 18);
-        if (NUEVO[n]) {
-            Font f = Tema.letra(Font.BOLD, 12f);
-            Tema.pastilla(g, "NUEVO", (int) (x + ANCHO_NODO - 70), (int) (y - 12), Tema.conAlfa(Tema.VERDE, al),
-                    Tema.conAlfa(Tema.BLANCO, al), f);
+        Rectangle s = sello(g, a, n);
+        if (s != null) {
+            Tema.pastilla(g, "NUEVO", s.x, s.y, Tema.conAlfa(Tema.VERDE, al), Tema.conAlfa(Tema.BLANCO, al),
+                    Tema.letra(Font.BOLD, 12f));
         }
+    }
+
+    /** Dónde va el sello «NUEVO» del nodo n (null si no lo lleva). */
+    private static Rectangle sello(Graphics2D g, Rectangle a, int n) {
+        if (!NUEVO[n]) {
+            return null;
+        }
+        java.awt.FontMetrics fm = g.getFontMetrics(Tema.letra(Font.BOLD, 12f));
+        double[] c = centro(a, n);
+        return new Rectangle((int) (c[0] + ANCHO_NODO / 2.0 - 70), (int) (c[1] - ALTO_NODO / 2.0 - 12),
+                fm.stringWidth("NUEVO") + 24, fm.getHeight() + 8);
     }
 
     /** Punto del borde del nodo n en dirección al nodo m (para que la flecha no se meta dentro de la caja). */
@@ -188,17 +200,30 @@ public final class PanelArquitectura extends PanelEscenas {
                 g.setColor(col);
                 g.fill(new java.awt.geom.Ellipse2D.Double(px - 9, py - 9, 18, 18));
             }
-            double mx = (o[0] + d[0]) / 2;
-            double my = (o[1] + d[1]) / 2 + (p.desfase() < 0 ? -26 : p.desfase() > 0 ? 24 : -22);
-            if (p.a() == RENIEC || p.a() == OSIPTEL) {
-                my = (o[1] + d[1]) / 2;
-                mx += 70;
-            }
+            // el rótulo va fuera de las cajas: entre nodos no hay sitio con la letra para proyector
             Font f = Tema.letra(Font.BOLD, 14f);
             String r = (k + 1) + "  " + p.rotulo();
             int w = g.getFontMetrics(f).stringWidth(r) + 24;
-            Tema.pastilla(g, r, (int) (mx - w / 2.0), (int) (my - 14), Tema.conAlfa(col, (int) (255 * avance)),
-                    Tema.BLANCO, f);
+            int hp = g.getFontMetrics(f).getHeight() + 8;
+            double[] cd = centro(a, p.a());
+            double px;
+            double py;
+            if (POS[p.de()][1] != POS[p.a()][1]) {
+                // vertical (RENIEC, OSIPTEL): a la derecha de la caja destino
+                px = cd[0] + ANCHO_NODO / 2.0 + 14;
+                py = cd[1] - hp / 2.0;
+            } else {
+                // horizontal: ida arriba de la fila, vuelta abajo
+                px = (o[0] + d[0]) / 2 - w / 2.0;
+                py = p.desfase() > 0 ? cd[1] + ALTO_NODO / 2.0 + 8 : cd[1] - ALTO_NODO / 2.0 - 8 - hp;
+                for (int n = 0; n < NOMBRE.length; n++) {
+                    Rectangle sello = sello(g, a, n);
+                    if (sello != null && sello.intersects(px, py, w, hp)) {
+                        px = sello.getMaxX() + 8;
+                    }
+                }
+            }
+            Tema.pastilla(g, r, (int) px, (int) py, Tema.conAlfa(col, (int) (255 * avance)), Tema.BLANCO, f);
         }
         // la explicación del paso activo, abajo a la izquierda
         Paso p = pasos.get(activo);
@@ -217,7 +242,26 @@ public final class PanelArquitectura extends PanelEscenas {
         int n = datos.length;
         int sep = 28;
         int w = (a.width - sep * (n - 1)) / n;
-        int h = Math.min(320, a.height - 20);
+        Font fTit = Tema.titulo(26f);
+        Font fTxt = Tema.letra(Font.PLAIN, 18f);
+        // la tarjeta se mide con su texto; si no cabe en el área, el ícono sube y el párrafo se aprieta
+        int maximo = a.height - 10;
+        int arriba = 120;
+        float inter = 1.4f;
+        int contenido = 0;
+        for (int intento = 0; intento < 3; intento++) {
+            contenido = 0;
+            for (String[] d : datos) {
+                contenido = Math.max(contenido, arriba + alto(g, d[0], fTit, w - 60, 1.15f) + 10
+                        + alto(g, d[1], fTxt, w - 60, inter) + 18);
+            }
+            if (contenido <= maximo) {
+                break;
+            }
+            arriba = 96;
+            inter = intento == 0 ? 1.4f : 1.3f;
+        }
+        int h = Math.max(Math.min(320, a.height - 20), contenido);
         for (int k = 0; k < n; k++) {
             double p = tramo(t, 0.2 + k * 0.4, 0.5);
             int al = (int) (255 * p);
@@ -225,15 +269,21 @@ public final class PanelArquitectura extends PanelEscenas {
             int y = a.y + 10 + (int) ((1 - p) * 20);
             Tema.sombra(g, x, y, w, h, 28, (int) (24 * p));
             Tema.rectRedondo(g, x, y, w, h, 28, Tema.conAlfa(Tema.BLANCO, al));
-            Iconos.dibujar(g, iconos[k], x + 52, y + 60, 48, Tema.conAlfa(Tema.AZUL, al));
-            g.setFont(Tema.titulo(26f));
+            Iconos.dibujar(g, iconos[k], x + 52, y + arriba / 2, 48, Tema.conAlfa(Tema.AZUL, al));
+            g.setFont(fTit);
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, al));
-            int yy = y + 120;
+            int yy = y + arriba;
             yy += Tema.parrafo(g, datos[k][0], x + 30, yy, w - 60, 1.15f) + 10;
-            g.setFont(Tema.letra(Font.PLAIN, 18f));
+            g.setFont(fTxt);
             g.setColor(Tema.conAlfa(Tema.TEXTO_SUAVE, al));
-            Tema.parrafo(g, datos[k][1], x + 30, yy, w - 60, 1.4f);
+            Tema.parrafo(g, datos[k][1], x + 30, yy, w - 60, inter);
         }
+    }
+
+    /** Alto que ocupa un párrafo (igual que Tema.parrafo, sin dibujarlo). */
+    private static int alto(Graphics2D g, String texto, Font f, int ancho, float interlineado) {
+        java.awt.FontMetrics fm = g.getFontMetrics(f);
+        return Tema.partir(texto, fm, ancho).size() * Math.round(fm.getHeight() * interlineado);
     }
 
     private void guarda(Graphics2D g, Rectangle a, double t) {
@@ -271,18 +321,61 @@ public final class PanelArquitectura extends PanelEscenas {
         };
         Color[] tono = {Tema.VERDE_SUAVE, Tema.AZUL_SUAVE, Tema.VERDE_SUAVE, Tema.AZUL_SUAVE, Tema.NARANJA_SUAVE};
         int alto = Math.min(84, (a.height - 20) / capas.length);
+        Font fNombre = Tema.titulo(22f);
+        Font fDesc = Tema.letra(Font.PLAIN, 17f);
+        // columna del nombre: lo que mida el más largo, sin pasar del 34 %; lo que no entre se parte en dos líneas
+        // (salvo que sobre ancho para las descripciones en una sola línea)
+        int anchoNombre = 0;
+        int anchoDescMax = 0;
+        for (String[] c : capas) {
+            anchoNombre = Math.max(anchoNombre, g.getFontMetrics(fNombre).stringWidth(c[0]));
+            anchoDescMax = Math.max(anchoDescMax, g.getFontMetrics(fDesc).stringWidth(c[1]));
+        }
+        anchoNombre = Math.min(anchoNombre, Math.max((int) (a.width * 0.34) - 56, a.width - 84 - anchoDescMax));
+        int xDesc = 28 + anchoNombre + 32;
+        int anchoDesc = a.width - xDesc - 24;
+        // cada franja mide lo que pide su texto; si no cabe todo, se reparte el sobrante del área
+        int[] caja = new int[capas.length];
+        int sumaJusta = 0;
+        int sumaBase = 0;
         for (int k = 0; k < capas.length; k++) {
+            caja[k] = 22 + (int) Math.max(lineas(g, capas[k][0], fNombre, anchoNombre, 0.95f),
+                    lineas(g, capas[k][1], fDesc, anchoDesc, 1.05f));
+            sumaJusta += caja[k] + 12;
+            sumaBase += Math.max(caja[k], alto - 12) + 12;
+        }
+        int sobra = Math.max(0, (a.height - 10 - sumaJusta) / capas.length);
+        int y = a.y;
+        for (int k = 0; k < capas.length; k++) {
+            caja[k] = sumaBase <= a.height - 10 ? Math.max(caja[k], alto - 12) : caja[k] + sobra;
             double p = tramo(t, 0.2 + k * 0.3, 0.45);
             int al = (int) (255 * p);
-            int y = a.y + k * alto;
             int dx = (int) ((1 - p) * 40);
-            Tema.rectRedondo(g, a.x + dx, y, a.width, alto - 12, 20, Tema.conAlfa(tono[k], al));
-            g.setFont(Tema.titulo(22f));
+            Tema.rectRedondo(g, a.x + dx, y, a.width, caja[k], 20, Tema.conAlfa(tono[k], al));
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, al));
-            Tema.texto(g, capas[k][0], a.x + 28 + dx, y + (alto - 12) / 2.0 + 8);
-            g.setFont(Tema.letra(Font.PLAIN, 17f));
+            lineasCentradas(g, capas[k][0], fNombre, a.x + 28 + dx, y, caja[k], anchoNombre, 0.95f);
             g.setColor(Tema.conAlfa(Tema.TEXTO_SUAVE, al));
-            Tema.texto(g, capas[k][1], a.x + a.width * 0.32 + dx, y + (alto - 12) / 2.0 + 6);
+            lineasCentradas(g, capas[k][1], fDesc, a.x + xDesc + dx, y, caja[k], anchoDesc, 1.05f);
+            y += caja[k] + 12;
+        }
+    }
+
+    /** Alto de un texto partido al ancho, con el interlineado de lineasCentradas. */
+    private static double lineas(Graphics2D g, String texto, Font f, int ancho, float interlineado) {
+        java.awt.FontMetrics fm = g.getFontMetrics(f);
+        return Tema.partir(texto, fm, ancho).size() * fm.getHeight() * interlineado;
+    }
+
+    /** Texto partido al ancho y centrado en vertical dentro de una franja de alto dado. */
+    private static void lineasCentradas(Graphics2D g, String texto, Font f, int x, int y, int alto, int ancho,
+            float interlineado) {
+        g.setFont(f);
+        java.awt.FontMetrics fm = g.getFontMetrics();
+        List<String> lineas = Tema.partir(texto, fm, ancho);
+        double lh = fm.getHeight() * interlineado;
+        double y0 = y + (alto - lineas.size() * lh) / 2;
+        for (int i = 0; i < lineas.size(); i++) {
+            Tema.texto(g, lineas.get(i), x, y0 + lh * (i + 0.5) + (fm.getAscent() - fm.getDescent()) / 2.0);
         }
     }
 }

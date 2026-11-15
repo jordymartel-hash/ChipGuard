@@ -384,7 +384,17 @@ public final class PanelChipGuard extends JComponent implements Capitulo {
         int bx = sx + 12;
         int by = sy + 160;
         int bw = sw - 24;
-        int bh = 250;
+        String titulo = "¿Estás sacando un chip?";
+        String cuerpo = "Se está registrando un 2.º chip con tu DNI en: Chips al toque · Comas. ¿Sacaste 2?";
+        Font fTitulo = Tema.letra(Font.BOLD, 17f);
+        Font fCuerpo = Tema.letra(Font.PLAIN, 13.5f);
+        // la tarjeta crece con el texto: el título se parte si no entra con su margen
+        int altoTitulo = Math.round(Tema.partir(titulo, g.getFontMetrics(fTitulo), bw - 28).size()
+                * g.getFontMetrics(fTitulo).getHeight() * 1.05f);
+        int altoCuerpo = Math.round(Tema.partir(cuerpo, g.getFontMetrics(fCuerpo), bw - 28).size()
+                * g.getFontMetrics(fCuerpo).getHeight() * 1.2f);
+        int yBotones = by + 42 + altoTitulo + 2 + altoCuerpo + 10;
+        int bh = yBotones - by + 42 + 8 + 42 + 14;
         Tema.tarjeta(g, bx, by, bw, bh, 22, Tema.BLANCO);
         Tema.rectRedondo(g, bx + 14, by + 14, 22, 22, 6, Tema.AZUL);
         Iconos.dibujar(g, Iconos.Tipo.ESCUDO, bx + 25, by + 25, 14, Tema.BLANCO);
@@ -392,14 +402,13 @@ public final class PanelChipGuard extends JComponent implements Capitulo {
         g.setFont(Tema.letra(Font.BOLD, 11.5f));
         Tema.texto(g, "CHIPGUARD · ahora", bx + 44, by + 30);
         g.setColor(Tema.AZUL_NOCHE);
-        g.setFont(Tema.letra(Font.BOLD, 17f));
-        Tema.texto(g, "¿Estás sacando un chip?", bx + 14, by + 62);
-        g.setFont(Tema.letra(Font.PLAIN, 13.5f));
+        g.setFont(fTitulo);
+        Tema.parrafo(g, titulo, bx + 14, by + 42, bw - 28, 1.05f);
+        g.setFont(fCuerpo);
         g.setColor(Tema.TEXTO_SUAVE);
-        Tema.parrafo(g, "Se está registrando un 2.º chip con tu DNI en: Chips al toque · Comas. ¿Sacaste 2?",
-                bx + 14, by + 72, bw - 28, 1.2f);
-        zonaBloquear = new Rectangle2D.Double(bx + 14, by + bh - 104, bw - 28, 42);
-        zonaSi = new Rectangle2D.Double(bx + 14, by + bh - 54, bw - 28, 42);
+        Tema.parrafo(g, cuerpo, bx + 14, by + 42 + altoTitulo + 2, bw - 28, 1.2f);
+        zonaBloquear = new Rectangle2D.Double(bx + 14, yBotones, bw - 28, 42);
+        zonaSi = new Rectangle2D.Double(bx + 14, yBotones + 50, bw - 28, 42);
         Tema.rectRedondo(g, zonaBloquear.getX(), zonaBloquear.getY(), zonaBloquear.getWidth(), 42, 42, Tema.ROJO);
         Tema.rectRedondo(g, zonaSi.getX(), zonaSi.getY(), zonaSi.getWidth(), 42, 42, Tema.VERDE_SUAVE);
         g.setFont(Tema.letra(Font.BOLD, 15f));
@@ -512,14 +521,21 @@ public final class PanelChipGuard extends JComponent implements Capitulo {
         Tema.tarjeta(g, x, y, w, h, 24, Tema.BLANCO);
         g.setFont(Tema.titulo(21f));
         g.setColor(Tema.AZUL_NOCHE);
-        Tema.texto(g, "Lo que ve la operadora", x + 22, y + 44);
+        int yTit = y + 44 - g.getFontMetrics().getAscent();
+        int extra = Tema.parrafo(g, "Lo que ve la operadora", x + 22, yTit, w - 44, 1.05f)
+                - Math.round(g.getFontMetrics().getHeight() * 1.05f);
         g.setFont(Tema.letra(Font.PLAIN, 14f));
         g.setColor(Tema.AZUL_TEXTO);
-        Tema.texto(g, "f⁻¹(Ana): los chips con su DNI", x + 22, y + 70);
+        Tema.texto(g, "f⁻¹(Ana): los chips con su DNI", x + 22, y + 70 + extra);
 
-        double xL = x + w * 0.22;
-        double xP = x + w * 0.74;
+        // columnas: las pastillas de la derecha nunca se salen de la tarjeta (margen 22)
+        double xL = Math.max(x + w * 0.22, x + 22 + 44);
         double yAna = y + h * 0.42;
+        g.setFont(Tema.letra(Font.BOLD, 18f));
+        double medioAna = Math.max(g.getFontMetrics().stringWidth("Ana") / 2.0 + 24,
+                Math.min(76, (x + w - 22 - (xL + 44 + 60)) / 2));
+        double xP = Math.min(x + w * 0.74, x + w - 22 - medioAna);
+        double xFin = xP - medioAna - 2;
         List<EstadoLinea> lineas = e.lineas();
         for (int i = 0; i < lineas.size(); i++) {
             EstadoLinea est = lineas.get(i);
@@ -528,9 +544,9 @@ public final class PanelChipGuard extends JComponent implements Capitulo {
             boolean bloqueada = est == EstadoLinea.BLOQUEADA;
             boolean pendiente = est == EstadoLinea.PENDIENTE;
             if (!bloqueada && !pendiente) {
-                Tema.flecha(g, xL + 44, yl, xP - 78, yAna, Tema.AZUL_NOCHE, 3f, false, 1);
+                Tema.flecha(g, xL + 44, yl, xFin, yAna, Tema.AZUL_NOCHE, 3f, false, 1);
             } else if (pendiente) {
-                Tema.flecha(g, xL + 44, yl, xP - 78, yAna, Tema.GRIS, 2.5f, true, 1);
+                Tema.flecha(g, xL + 44, yl, xFin, yAna, Tema.GRIS, 2.5f, true, 1);
             }
             Color fondo = switch (est) {
                 case FRAUDE -> Tema.ROJO_SUAVE;
@@ -560,27 +576,44 @@ public final class PanelChipGuard extends JComponent implements Capitulo {
                 case OK_HUELLA -> "con huella de Ana";
                 default -> "lo usa Ana";
             };
-            Tema.textoCentrado(g, etiqueta, xL, yl + 36);
+            // la etiqueta no toca el borde de la tarjeta ni la flecha que baja hacia Ana: si no entra, se parte
+            java.awt.FontMetrics fm = g.getFontMetrics();
+            double yTope = yl + 36 - fm.getAscent();
+            double izq = x + 16;
+            double der = x + w - 16;
+            if (!bloqueada && yAna > yl) {
+                der = xL + 44 + (xFin - xL - 44) * Math.max(0, yTope - yl) / (yAna - yl) - 8;
+            }
+            List<String> partes = Tema.partir(etiqueta, fm, (int) (der - izq));
+            for (int k = 0; k < partes.size(); k++) {
+                double mitad = fm.stringWidth(partes.get(k)) / 2.0;
+                double cx = Math.max(izq + mitad, Math.min(xL, der - mitad));
+                Tema.textoCentrado(g, partes.get(k), cx, yl + 36 + k * fm.getHeight());
+            }
         }
-        Tema.rectRedondo(g, xP - 76, yAna - 26, 152, 52, 52, Tema.AZUL);
+        Tema.rectRedondo(g, xP - medioAna, yAna - 26, medioAna * 2, 52, 52, Tema.AZUL);
         g.setColor(Tema.BLANCO);
         g.setFont(Tema.letra(Font.BOLD, 18f));
         Tema.textoCentrado(g, "Ana", xP, yAna);
 
         if (e.extorsionador()) {
             double yE = y + h - 120;
-            Tema.rectRedondo(g, xP - 86, yE - 22, 172, 44, 44, Tema.ROJO);
-            g.setColor(Tema.BLANCO);
             g.setFont(Tema.letra(Font.BOLD, 16f));
-            Tema.textoCentrado(g, "Extorsionador", xP, yE);
+            double medioE = Math.max(86, g.getFontMetrics().stringWidth("Extorsionador") / 2.0 + 20);
+            double xE = Math.min(x + w * 0.74, x + w - 22 - medioE);
+            Tema.rectRedondo(g, xE - medioE, yE - 22, medioE * 2, 44, 44, Tema.ROJO);
+            g.setColor(Tema.BLANCO);
+            Tema.textoCentrado(g, "Extorsionador", xE, yE);
             int i = lineas.indexOf(EstadoLinea.FRAUDE);
             if (i >= 0) {
-                Tema.flecha(g, xL + 44, y + 150 + i * 120 + 6, xP - 88, yE, Tema.ROJO, 3f, true, 1);
+                Tema.flecha(g, xL + 44, y + 150 + i * 120 + 6, xE - medioE - 2, yE, Tema.ROJO, 3f, true, 1);
             }
         }
-        // nota inferior
+        // nota inferior, anclada al borde de abajo según cuántas líneas ocupe
         g.setFont(Tema.letra(Font.BOLD, 15f));
         g.setColor(escena <= 2 ? Tema.ROJO_OSCURO : Tema.VERDE);
-        Tema.parrafo(g, e.nota(), x + 22, y + h - 58, w - 44, 1.2f);
+        int altoNota = Math.round(Tema.partir(e.nota(), g.getFontMetrics(), w - 44).size()
+                * g.getFontMetrics().getHeight() * 1.2f);
+        Tema.parrafo(g, e.nota(), x + 22, Math.min(y + h - 58, y + h - 20 - altoNota), w - 44, 1.2f);
     }
 }
