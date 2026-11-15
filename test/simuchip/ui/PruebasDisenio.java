@@ -78,6 +78,20 @@ public final class PruebasDisenio {
             }
             verificar(todo, "fórmula «" + c[1] + "» sin cuadraditos");
         }
+        titulo("El cronómetro no se pierde en ningún capítulo a 1280 px (el botón cambia de largo)");
+        for (int i = 0; i < app.cantidadCapitulos(); i++) {
+            app.irA(i);
+            barra.setSize(1280, 60);
+            barra.doLayout();
+            java.awt.Component[] hs = barra.getComponents();
+            java.awt.Component cr = hs[hs.length - 1];
+            int der = 0;
+            for (int k = 0; k < app.cantidadCapitulos(); k++) {
+                der = Math.max(der, hs[k].getX() + hs[k].getWidth());
+            }
+            verificar(cr.isVisible() && der <= cr.getX() - 8, "en «" + app.nombreCapitulo(i) + "»: pestañas hasta " + der
+                    + ", cronómetro en " + cr.getX() + (cr.isVisible() ? "" : " (oculto)"));
+        }
         terminar();
     }
 }
