@@ -6,8 +6,10 @@ import static simuchip.ui.Personitas.VENDEDOR;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
@@ -61,6 +63,22 @@ public final class PanelQueEs extends PanelEscenas {
         int sep = 30;
         int w = (a.width - 2 * sep) / 3;
         int h = Math.min(a.height - 10, 430);
+        Font fTit = Tema.titulo(28f);
+        Font fSub = Tema.letra(Font.BOLD, 15f);
+        Font fDes = Tema.letra(Font.PLAIN, 18f);
+        FontMetrics mt = g.getFontMetrics(fTit);
+        FontMetrics ms = g.getFontMetrics(fSub);
+        FontMetrics md = g.getFontMetrics(fDes);
+        int lh = Math.round(md.getHeight() * 1.25f);
+        // el texto manda: la tarjeta más llena define cuánto alto le queda al dibujo de arriba
+        int lineas = 0;
+        for (String[] d : datos) {
+            lineas = Math.max(lineas, Tema.partir(d[2], md, w - 48).size());
+        }
+        int textoH = mt.getHeight() + ms.getHeight() + 8 + (lineas - 1) * lh + md.getHeight();
+        int dibujoH = Math.min(200, h - textoH - 38);
+        double esc = Math.max(0.3, (dibujoH - 10) / 170.0);
+        h = Math.min(h, 38 + dibujoH + textoH);
         for (int k = 0; k < 3; k++) {
             double p = tramo(t, 0.2 + k * 0.4, 0.5);
             int al = (int) (255 * p);
@@ -69,22 +87,43 @@ public final class PanelQueEs extends PanelEscenas {
             Tema.sombra(g, x, y, w, h, 30, (int) (26 * p));
             Tema.rectRedondo(g, x, y, w, h, 30, Tema.conAlfa(Tema.BLANCO, al));
             double cx = x + w / 2.0;
-            double cy = y + 120;
+            double cy = y + 12 + dibujoH / 2.0;
+            AffineTransform antes = g.getTransform();
+            g.translate(cx, cy);
+            g.scale(Math.min(1, esc), Math.min(1, esc));
+            g.translate(-cx, -cy);
             switch (k) {
                 case 0 -> miniCelular(g, cx, cy, 170, p);
                 case 1 -> miniNavegador(g, cx, cy, 230, 150, p);
                 default -> servidor(g, cx, cy, 130, 170, p);
             }
-            g.setFont(Tema.titulo(28f));
+            g.setTransform(antes);
+            int ty = y + 12 + dibujoH + 8;
+            g.setFont(fTit);
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, al));
-            Tema.textoCentrado(g, datos[k][0], cx, y + 240);
-            g.setFont(Tema.letra(Font.BOLD, 15f));
+            Tema.textoCentrado(g, datos[k][0], cx, ty + mt.getHeight() / 2.0);
+            ty += mt.getHeight();
+            g.setFont(fSub);
             g.setColor(Tema.conAlfa(Tema.AZUL_TEXTO, al));
-            Tema.textoCentrado(g, datos[k][1], cx, y + 270);
-            g.setFont(Tema.letra(Font.PLAIN, 18f));
+            Tema.textoCentrado(g, datos[k][1], cx, ty + ms.getHeight() / 2.0);
+            ty += ms.getHeight() + 8;
+            g.setFont(fDes);
             g.setColor(Tema.conAlfa(Tema.TEXTO_SUAVE, al));
-            Tema.parrafo(g, datos[k][2], x + 30, y + 296, w - 60, 1.4f);
+            Tema.parrafo(g, datos[k][2], x + 24, ty, w - 48, 1.25f);
         }
+    }
+
+    /** Párrafo con cada línea centrada en cx. Devuelve la altura usada. */
+    private static int parrafoCentrado(Graphics2D g, String texto, double cx, double y, int ancho, float interlineado) {
+        FontMetrics fm = g.getFontMetrics();
+        int alto = Math.round(fm.getHeight() * interlineado);
+        List<String> lineas = Tema.partir(texto, fm, ancho);
+        double yy = y + fm.getAscent();
+        for (String linea : lineas) {
+            Tema.texto(g, linea, cx - fm.stringWidth(linea) / 2.0, yy);
+            yy += alto;
+        }
+        return lineas.size() * alto;
     }
 
     private static void miniCelular(Graphics2D g, double cx, double cy, double alto, double p) {
@@ -149,7 +188,17 @@ public final class PanelQueEs extends PanelEscenas {
         };
         int sep = 24;
         int w = (a.width - sep) / 2;
-        int h = Math.min(170, (a.height - sep) / 2);
+        Font fTit = Tema.titulo(30f);
+        Font fDes = Tema.letra(Font.PLAIN, 18f);
+        FontMetrics mt = g.getFontMetrics(fTit);
+        FontMetrics md = g.getFontMetrics(fDes);
+        int lh = Math.round(md.getHeight() * 1.3f);
+        int lineas = 0;
+        for (Object[] d : datos) {
+            lineas = Math.max(lineas, Tema.partir((String) d[2], md, w - 170).size());
+        }
+        int bloque = mt.getHeight() + lineas * lh; // título + descripción, centrados en la tarjeta
+        int h = Math.min(Math.max(170, bloque + 36), (a.height - sep) / 2);
         for (int k = 0; k < 4; k++) {
             double p = tramo(t, 0.2 + k * 0.35, 0.5);
             int al = (int) (255 * p);
@@ -159,12 +208,13 @@ public final class PanelQueEs extends PanelEscenas {
             g.setColor(Tema.conAlfa(Tema.BLANCO, al));
             g.fill(new Ellipse2D.Double(x + 30, y + h / 2.0 - 42, 84, 84));
             Iconos.dibujar(g, (Iconos.Tipo) datos[k][0], x + 72, y + h / 2.0, 42, Tema.conAlfa(Tema.AZUL, al));
-            g.setFont(Tema.titulo(30f));
+            int ty = y + (h - mt.getHeight() - Tema.partir((String) datos[k][2], md, w - 170).size() * lh) / 2;
+            g.setFont(fTit);
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, al));
-            Tema.texto(g, (String) datos[k][1], x + 140, y + h / 2.0 - 14);
-            g.setFont(Tema.letra(Font.PLAIN, 18f));
+            Tema.texto(g, (String) datos[k][1], x + 140, ty + mt.getAscent());
+            g.setFont(fDes);
             g.setColor(Tema.conAlfa(Tema.TEXTO_SUAVE, al));
-            Tema.parrafo(g, (String) datos[k][2], x + 140, (int) (y + h / 2.0), w - 170, 1.35f);
+            Tema.parrafo(g, (String) datos[k][2], x + 140, ty + mt.getHeight(), w - 170, 1.3f);
         }
     }
 
@@ -178,20 +228,35 @@ public final class PanelQueEs extends PanelEscenas {
         };
         int sep = 30;
         int w = (a.width - 2 * sep) / 3;
-        double alto = Math.min(220, a.height * 0.5);
+        Font fTit = Tema.titulo(26f);
+        Font fDes = Tema.letra(Font.PLAIN, 18f);
+        FontMetrics mt = g.getFontMetrics(fTit);
+        FontMetrics md = g.getFontMetrics(fDes);
+        // el texto más largo de las tres tarjetas fija cuánto alto le queda a la persona
+        int titH = 0;
+        int desH = 0;
+        for (Object[] d : datos) {
+            titH = Math.max(titH, Tema.partir((String) d[1], mt, w - 40).size() * mt.getHeight());
+            desH = Math.max(desH, Tema.partir((String) d[2], md, w - 48).size() * Math.round(md.getHeight() * 1.3f));
+        }
+        int textoH = titH + 8 + desH;
+        double alto = Math.max(110, Math.min(220, a.height - 10 - 24 - textoH - 30 - 30));
+        int fondo = (int) Math.min(a.y + a.height - 10, a.y + alto + 60 + textoH + 24);
         for (int k = 0; k < 3; k++) {
             double p = tramo(t, 0.2 + k * 0.4, 0.5);
             int x = a.x + k * (w + sep);
             double cx = x + w / 2.0;
-            Tema.rectRedondo(g, x, a.y + alto * 0.35, w, Math.min(a.height - alto * 0.35 - 10, alto * 0.65 + 200), 30,
-                    Tema.conAlfa(Tema.AZUL_SUAVE, (int) (255 * p)));
+            int yc = (int) (a.y + alto * 0.35);
+            Tema.rectRedondo(g, x, yc, w, fondo - yc, 30, Tema.conAlfa(Tema.AZUL_SUAVE, (int) (255 * p)));
             Personitas.persona(g, (Personitas.Look) datos[k][0], cx, a.y + alto + 30, alto, Cara.FELIZ, p);
-            g.setFont(Tema.titulo(26f));
+            int ty = (int) (a.y + alto + 60);
+            g.setFont(fTit);
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * p)));
-            Tema.textoCentrado(g, (String) datos[k][1], cx, a.y + alto + 80);
-            g.setFont(Tema.letra(Font.PLAIN, 18f));
+            int propio = Tema.partir((String) datos[k][1], mt, w - 40).size() * mt.getHeight();
+            parrafoCentrado(g, (String) datos[k][1], cx, ty + (titH - propio) / 2.0, w - 40, 1f);
+            g.setFont(fDes);
             g.setColor(Tema.conAlfa(Tema.TEXTO_SUAVE, (int) (255 * p)));
-            Tema.parrafo(g, (String) datos[k][2], x + 30, (int) (a.y + alto + 104), w - 60, 1.4f);
+            Tema.parrafo(g, (String) datos[k][2], x + 24, ty + titH + 8, w - 48, 1.3f);
         }
     }
 
@@ -268,10 +333,21 @@ public final class PanelQueEs extends PanelEscenas {
         Tema.parrafo(g, "Protege tu DNI", s.x, s.y + 4, s.width, 1.2f);
         campo(g, s.x, s.y + 44, s.width, "Número de DNI", "4123 4560");
         campo(g, s.x, s.y + 94, s.width, "Celular", "987 111 222");
-        Personitas.huella(g, s.getCenterX(), s.y + 182, 54, Tema.AZUL, 1);
+        // huella + aviso entre el último campo y el botón; el aviso se parte en líneas y la huella cede el alto
+        String aviso = "Pon tu dedo para verificar con RENIEC";
         g.setFont(Tema.letra(Font.PLAIN, 11f));
+        FontMetrics fm = g.getFontMetrics();
+        int lh = Math.round(fm.getHeight() * 1.1f);
+        int avisoH = Tema.partir(aviso, fm, s.width - 8).size() * lh;
+        int arriba = s.y + 138;
+        int abajo = s.y + s.height - 50;
+        int huellaH = Math.max(0, Math.min(54, abajo - arriba - avisoH - 6));
+        int y0 = arriba + (abajo - arriba - huellaH - 6 - avisoH) / 2;
+        if (huellaH >= 20) {
+            Personitas.huella(g, s.getCenterX(), y0 + huellaH / 2.0, huellaH, Tema.AZUL, 1);
+        }
         g.setColor(Tema.TEXTO_SUAVE);
-        Tema.textoCentrado(g, "Pon tu dedo para verificar con RENIEC", s.getCenterX(), s.y + 228);
+        parrafoCentrado(g, aviso, s.getCenterX(), y0 + huellaH + 6, s.width - 8, 1.1f);
         boton(g, s.x, s.y + s.height - 44, s.width, "Activar protección", Tema.AZUL, Tema.BLANCO);
     }
 
@@ -309,15 +385,21 @@ public final class PanelQueEs extends PanelEscenas {
 
     private static void pantallaAlerta(Graphics2D g, Rectangle s) {
         Tema.rectRedondo(g, s.x - 4, s.y - 4, s.width + 8, s.height + 8, 18, Tema.ROJO_SUAVE);
-        Iconos.dibujar(g, Iconos.Tipo.ALERTA, s.getCenterX(), s.y + 36, 44, Tema.ROJO);
+        String detalle = "Tienda «Chips al toque», Comas · hoy 3:12 p. m. · 2.º chip con tu DNI";
+        g.setFont(Tema.letra(Font.PLAIN, 12f));
+        FontMetrics fm = g.getFontMetrics();
+        float inter = 1.25f;
+        int detalleH = Tema.partir(detalle, fm, s.width - 12).size() * Math.round(fm.getHeight() * inter);
+        // si el detalle no cabe sobre los botones, el ícono y la pregunta suben (el ícono se achica)
+        int d = Math.max(0, Math.min(34, s.y + 126 + detalleH - (s.y + s.height - 92)));
+        Iconos.dibujar(g, Iconos.Tipo.ALERTA, s.getCenterX(), s.y + 36 - d / 2.0, 44 - d * 0.6, Tema.ROJO);
         g.setFont(Tema.titulo(17f));
         g.setColor(Tema.AZUL_NOCHE);
-        Tema.textoCentrado(g, "¿Estás sacando", s.getCenterX(), s.y + 84);
-        Tema.textoCentrado(g, "un chip?", s.getCenterX(), s.y + 106);
-        g.setFont(Tema.letra(Font.PLAIN, 12f));
+        Tema.textoCentrado(g, "¿Estás sacando", s.getCenterX(), s.y + 84 - d);
+        Tema.textoCentrado(g, "un chip?", s.getCenterX(), s.y + 106 - d);
+        g.setFont(fm.getFont());
         g.setColor(Tema.TEXTO_SUAVE);
-        Tema.parrafo(g, "Tienda «Chips al toque», Comas · hoy 3:12 p. m. · 2.º chip con tu DNI", s.x + 6, s.y + 126,
-                s.width - 12, 1.35f);
+        Tema.parrafo(g, detalle, s.x + 6, s.y + 126 - d, s.width - 12, inter);
         boton(g, s.x, s.y + s.height - 86, s.width, "No fui yo · Bloquear", Tema.ROJO, Tema.BLANCO);
         boton(g, s.x, s.y + s.height - 44, s.width, "Sí, fui yo (huella)", Tema.VERDE_SUAVE, Tema.VERDE);
     }
@@ -355,7 +437,27 @@ public final class PanelQueEs extends PanelEscenas {
 
     private void web(Graphics2D g, Rectangle a, double t) {
         double p = tramo(t, 0.2, 0.6);
-        int w = (int) Math.min(a.width * 0.68, 980);
+        String[][] filas = {{"987 111 222", "Operadora A", "Tienda Miraflores", "2023", "tuyo"},
+            {"912 555 935", "Operadora B", "Chips al toque, Comas", "ayer", "?"}};
+        String[] cab = {"Número", "Operadora", "Dónde se registró", "Cuándo", ""};
+        String bloquear = "No es mío · Bloquear";
+        Font fCab = Tema.letra(Font.BOLD, 13f);
+        Font fCel = Tema.letra(Font.PLAIN, 15f);
+        FontMetrics mCab = g.getFontMetrics(fCab);
+        FontMetrics mCel = g.getFontMetrics(fCel);
+        int anchoBoton = g.getFontMetrics(Tema.letra(Font.BOLD, 13f)).stringWidth(bloquear) + 28;
+        // cada columna mide lo que su texto más largo; la tabla decide el ancho mínimo del navegador
+        int sepCol = 20;
+        int[] colX = new int[5];
+        for (int c = 0; c < 4; c++) {
+            int maxC = mCab.stringWidth(cab[c]);
+            for (String[] f : filas) {
+                maxC = Math.max(maxC, mCel.stringWidth(f[c]));
+            }
+            colX[c + 1] = colX[c] + maxC + sepCol;
+        }
+        int ancho0 = colX[4] + anchoBoton;
+        int w = (int) Math.min(Math.max(a.width * 0.68, ancho0 + 80), 980);
         int h = Math.min(a.height - 10, 470);
         int x = a.x;
         int y = a.y + (int) ((1 - p) * 24);
@@ -391,46 +493,57 @@ public final class PanelQueEs extends PanelEscenas {
         boton(g, cx + 380, cy + 45, 130, "Consultar", Tema.AZUL, Tema.BLANCO);
         // tabla de resultados
         double q = tramo(t, 0.9, 0.5);
-        String[][] filas = {{"987 111 222", "Operadora A", "Tienda Miraflores", "2023", "tuyo"},
-            {"912 555 935", "Operadora B", "Chips al toque, Comas", "ayer", "?"}};
         int ty = cy + 110;
-        String[] cab = {"Número", "Operadora", "Dónde se registró", "Cuándo", ""};
-        double[] col = {0, 0.18, 0.36, 0.64, 0.76};
         int ancho = w - 80;
-        g.setFont(Tema.letra(Font.BOLD, 13f));
+        // el espacio que sobra se reparte entre las columnas
+        int extra = Math.max(0, (ancho - ancho0) / 4);
+        int[] xs = new int[5];
+        for (int c = 0; c < 5; c++) {
+            xs[c] = cx + colX[c] + c * extra;
+        }
+        g.setFont(fCab);
         g.setColor(Tema.conAlfa(Tema.TEXTO_SUAVE, (int) (255 * q)));
         for (int c = 0; c < cab.length; c++) {
-            Tema.texto(g, cab[c], cx + ancho * col[c], ty);
+            Tema.texto(g, cab[c], xs[c], ty);
         }
         for (int f = 0; f < filas.length; f++) {
             int fy = ty + 16 + f * 56;
             boolean sospechoso = filas[f][4].equals("?");
             Tema.rectRedondo(g, cx - 10, fy, ancho + 20, 46, 12,
                     Tema.conAlfa(sospechoso ? Tema.ROJO_SUAVE : Tema.CELESTE_FONDO, (int) (255 * q)));
-            g.setFont(Tema.letra(Font.PLAIN, 15f));
+            g.setFont(fCel);
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * q)));
             for (int c = 0; c < 4; c++) {
-                Tema.texto(g, filas[f][c], cx + ancho * col[c], fy + 29);
+                Tema.texto(g, filas[f][c], xs[c], fy + 29);
             }
             if (sospechoso) {
-                boton(g, (int) (cx + ancho * col[4]), fy + 6, 150, "No es mío · Bloquear", Tema.ROJO, Tema.BLANCO);
+                boton(g, xs[4], fy + 6, anchoBoton, bloquear, Tema.ROJO, Tema.BLANCO);
             } else {
-                Tema.pastilla(g, "Es mío", (int) (cx + ancho * col[4]), fy + 9, Tema.VERDE_SUAVE, Tema.VERDE,
-                        Tema.letra(Font.BOLD, 13f));
+                Tema.pastilla(g, "Es mío", xs[4], fy + 9, Tema.VERDE_SUAVE, Tema.VERDE, Tema.letra(Font.BOLD, 13f));
             }
         }
         // a la derecha, a quién le sirve
         int xd = x + w + 40;
         int anchoD = a.x + a.width - xd;
         if (anchoD > 200) {
-            Personitas.persona(g, Personitas.VICTIMA, xd + anchoD / 2.0, a.y + 250, 200, Cara.FELIZ, tramo(t, 0.6, 0.4));
-            g.setFont(Tema.titulo(22f));
+            String titD = "Don Julio no tiene smartphone.";
+            String desD = "Su nieta entra a la web, pone el DNI y el código que llega por SMS a su celular básico.";
+            Font fTitD = Tema.titulo(22f);
+            Font fDesD = Tema.letra(Font.PLAIN, 17f);
+            FontMetrics mT = g.getFontMetrics(fTitD);
+            FontMetrics mD = g.getFontMetrics(fDesD);
+            int titH = Tema.partir(titD, mT, anchoD).size() * Math.round(mT.getHeight() * 1.15f);
+            int desH = Tema.partir(desD, mD, anchoD).size() * Math.round(mD.getHeight() * 1.3f);
+            // la persona se achica si el texto (ya partido en líneas) necesita el alto
+            double altoP = Math.max(100, Math.min(200, a.height - 10 - titH - 12 - desH - 70));
+            double pies = a.y + 30 + altoP;
+            Personitas.persona(g, Personitas.VICTIMA, xd + anchoD / 2.0, pies, altoP, Cara.FELIZ, tramo(t, 0.6, 0.4));
+            g.setFont(fTitD);
             g.setColor(Tema.AZUL_NOCHE);
-            Tema.parrafo(g, "Don Julio no tiene smartphone.", xd, a.y + 290, anchoD, 1.2f);
-            g.setFont(Tema.letra(Font.PLAIN, 17f));
+            Tema.parrafo(g, titD, xd, (int) pies + 40, anchoD, 1.15f);
+            g.setFont(fDesD);
             g.setColor(Tema.TEXTO_SUAVE);
-            Tema.parrafo(g, "Su nieta entra a la web, pone el DNI y el código que llega por SMS a su celular básico.",
-                    xd, a.y + 350, anchoD, 1.4f);
+            Tema.parrafo(g, desD, xd, (int) pies + 40 + titH + 12, anchoD, 1.3f);
         }
     }
 
@@ -445,9 +558,19 @@ public final class PanelQueEs extends PanelEscenas {
             {"¿Y la tienda?", "Reclamo aparte", "Reporte automático a OSIPTEL"}
         };
         int alto = Math.min(78, (a.height - 70) / filas.length);
+        // columnas medidas: cada una empieza después del texto más largo de la anterior
+        int[] maxCol = new int[3];
+        Font[] fCol = {Tema.titulo(21f), Tema.letra(Font.PLAIN, 19f), Tema.letra(Font.BOLD, 19f)};
+        for (String[] f : filas) {
+            for (int c = 0; c < 3; c++) {
+                maxCol[c] = Math.max(maxCol[c], g.getFontMetrics(fCol[c]).stringWidth(f[c]));
+            }
+        }
         int c1 = a.x;
-        int c2 = a.x + (int) (a.width * 0.3);
-        int c3 = a.x + (int) (a.width * 0.65);
+        int c2 = Math.max(a.x + (int) (a.width * 0.3), c1 + maxCol[0] + 24);
+        int c3 = Math.max(a.x + (int) (a.width * 0.65), c2 + maxCol[1] + 32);
+        c3 = Math.min(c3, a.x + a.width - maxCol[2] - 16);
+        int anchoC2 = c3 - 32 - c2; // lo que no quepa aquí se parte en dos líneas
         g.setFont(Tema.titulo(24f));
         g.setColor(Tema.TEXTO_SUAVE);
         Tema.texto(g, "Hoy: «Checa tus líneas»", c2, a.y + 30);
@@ -462,16 +585,41 @@ public final class PanelQueEs extends PanelEscenas {
                     Tema.conAlfa(Tema.VERDE_SUAVE, al));
             g.setColor(Tema.FILETE);
             g.fillRect(c1, y + alto, a.width, 1);
-            g.setFont(Tema.titulo(21f));
+            g.setFont(fCol[0]);
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, al));
             Tema.texto(g, filas[f][0], c1, y + alto / 2.0 + 8);
-            g.setFont(Tema.letra(Font.PLAIN, 19f));
+            g.setFont(fCol[1]);
             g.setColor(Tema.conAlfa(Tema.ROJO_OSCURO, al));
-            
-            Tema.texto(g, filas[f][1], c2, y + alto / 2.0 + 7);
-            g.setFont(Tema.letra(Font.BOLD, 19f));
+            celda(g, filas[f][1], c2, y + alto / 2.0, anchoC2);
+            g.setFont(fCol[2]);
             g.setColor(Tema.conAlfa(Tema.VERDE, al));
             Tema.texto(g, filas[f][2], c3, y + alto / 2.0 + 7);
         }
+    }
+
+    /** Texto centrado en yc; si es más ancho que la columna se parte en dos líneas parejas, con interlineado justo. */
+    private static void celda(Graphics2D g, String s, int x, double yc, int ancho) {
+        FontMetrics fm = g.getFontMetrics();
+        if (fm.stringWidth(s) <= ancho) {
+            Tema.texto(g, s, x, yc + 7);
+            return;
+        }
+        int corte = -1;
+        int mejor = Integer.MAX_VALUE;
+        for (int i = s.indexOf(' '); i > 0; i = s.indexOf(' ', i + 1)) {
+            int m = Math.max(fm.stringWidth(s.substring(0, i)), fm.stringWidth(s.substring(i + 1)));
+            if (m < mejor) {
+                mejor = m;
+                corte = i;
+            }
+        }
+        if (corte < 0) {
+            Tema.texto(g, s, x, yc + 7);
+            return;
+        }
+        int lh = fm.getAscent() + fm.getDescent();
+        double base = yc - lh + fm.getAscent();
+        Tema.texto(g, s.substring(0, corte), x, base);
+        Tema.texto(g, s.substring(corte + 1), x, base + lh);
     }
 }
