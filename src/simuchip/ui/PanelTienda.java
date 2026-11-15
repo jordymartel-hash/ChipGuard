@@ -5,6 +5,7 @@ import static simuchip.ui.Personitas.VENDEDOR;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -268,18 +269,20 @@ public final class PanelTienda extends JComponent implements Capitulo {
         int xp = xPanel();
         int anchoP = w - xp - 60;
         double dw = Math.min(400, anchoP);
-        double dh = dw * 0.63;
+        // el DNI cede alto si la tarjeta del resultado no cabe sobre el botón
+        int altoTarjeta = fase == Fase.ATENDIENDO ? 0 : altoResultado(g, c, anchoP);
+        double dh = Math.max(dw * 0.5, Math.min(dw * 0.63, h - 96 - 14 - altoTarjeta - 24 - 190));
         g.setFont(Tema.letra(Font.BOLD, 16f));
         g.setColor(Tema.TEXTO_SUAVE);
         Tema.texto(g, "El DNI que te entrega:", xp, 176);
         Personitas.dni(g, xp, 190, dw, dh, c.dniDe() + " " + apellido(c.dniDe()), 1, LOOKS.get(c.dniDe()));
-        int y = (int) (190 + dh + 34);
+        int y = (int) Math.min(190 + dh + 34, h - 96 - 14 - altoTarjeta);
         if (fase == Fase.ATENDIENDO) {
             g.setFont(Tema.titulo(26f));
             g.setColor(Tema.AZUL_NOCHE);
             y += Tema.parrafo(g, "¿Es la misma persona de la foto? ¿Le vendes?", xp, y, anchoP, 1.2f);
         } else {
-            resultado(g, c, xp, y, anchoP, piso, xt, wt);
+            resultado(g, c, xp, y, anchoP, altoTarjeta, piso, xt, wt);
         }
     }
 
@@ -294,7 +297,33 @@ public final class PanelTienda extends JComponent implements Capitulo {
         };
     }
 
-    private void resultado(Graphics2D g, Cliente c, int x, int y, int ancho, double piso, double xt, double wt) {
+    private static final int ALTO_CELULAR = 116;
+
+    /** Ancho del texto dentro de la tarjeta: deja una columna para el celular si el evento lo lleva. */
+    private static int anchoTexto(Evento e, int ancho) {
+        return ancho - 40 - (e.name().endsWith("BLOQUEADO") ? (int) (ALTO_CELULAR * 0.52) + 24 : 0);
+    }
+
+    /** Alto de la tarjeta del resultado, medido con la letra real; el mismo para todas (se apilan encima). */
+    private int altoResultado(Graphics2D g, Cliente c, int ancho) {
+        int alto = 0;
+        for (Evento e : eventos) {
+            String[] texto = mensaje(e, c);
+            int w = anchoTexto(e, ancho);
+            FontMetrics ft = g.getFontMetrics(Tema.titulo(22f));
+            FontMetrics fp = g.getFontMetrics(Tema.letra(Font.PLAIN, 16f));
+            int contenido = Tema.partir(texto[0], ft, w).size() * Math.round(ft.getHeight() * 1.1f) + 6
+                    + Tema.partir(texto[1], fp, w).size() * Math.round(fp.getHeight() * 1.25f);
+            alto = Math.max(alto, contenido + 36);
+            if (e.name().endsWith("BLOQUEADO")) {
+                alto = Math.max(alto, ALTO_CELULAR + 20);
+            }
+        }
+        return alto;
+    }
+
+    private void resultado(Graphics2D g, Cliente c, int x, int y, int ancho, int alto, double piso, double xt,
+            double wt) {
         for (int k = 0; k < eventos.size(); k++) {
             Evento e = eventos.get(k);
             double p = tramo(0.2 + k * 1.1, 0.4);
@@ -306,16 +335,16 @@ public final class PanelTienda extends JComponent implements Capitulo {
             Color fondo = e == Evento.RECHAZO_MAL ? Tema.NARANJA_SUAVE : bueno ? Tema.VERDE_SUAVE : Tema.ROJO_SUAVE;
             Color letra = e == Evento.RECHAZO_MAL ? Tema.NARANJA_TEXTO : bueno ? Tema.VERDE : Tema.ROJO_OSCURO;
             String[] texto = mensaje(e, c);
-            int alto = 104;
             Tema.rectRedondo(g, x, y, ancho, alto, 20, Tema.conAlfa(fondo, (int) (255 * p)));
             g.setFont(Tema.titulo(22f));
             g.setColor(Tema.conAlfa(letra, (int) (255 * p)));
-            Tema.texto(g, texto[0], x + 20, y + 36);
+            int w = anchoTexto(e, ancho);
+            int yy = y + 16 + Tema.parrafo(g, texto[0], x + 20, y + 16, w, 1.1f) + 6;
             g.setFont(Tema.letra(Font.PLAIN, 16f));
             g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * p)));
-            Tema.parrafo(g, texto[1], x + 20, y + 48, ancho - (e.name().endsWith("BLOQUEADO") ? 130 : 40), 1.25f);
+            Tema.parrafo(g, texto[1], x + 20, yy, w, 1.25f);
             if (e == Evento.FRAUDE_BLOQUEADO || e == Evento.EXTRA_BLOQUEADO) {
-                Personitas.celular(g, x + ancho - 56, y + alto / 2.0, 92, "No fui yo", Tema.ROJO, p);
+                celular(g, x + ancho - 20 - ALTO_CELULAR * 0.26, y + alto / 2.0, p);
             }
             // el chip viaja: al cliente, al extorsionador o queda bloqueado
             double viaje = tramo(0.3 + k * 1.1, 0.9);
@@ -323,13 +352,24 @@ public final class PanelTienda extends JComponent implements Capitulo {
             double y0 = piso - wt * 0.42 - 30;
             boolean aCriminal = e == Evento.FRAUDE_PASO || e == Evento.EXTRA_PASO;
             if (e == Evento.VENTA_OK || aCriminal || e.name().endsWith("BLOQUEADO")) {
-                double x1 = e == Evento.EXTRA_PASO ? xt + wt + 120 : xt - 60;
+                // el chip robado se va a la derecha, pero sin meterse bajo el panel del DNI ni su botón
+                double x1 = e == Evento.EXTRA_PASO ? Math.min(xt + wt + 120, xPanel() - 50) : xt - 60;
                 double y1 = e == Evento.EXTRA_PASO ? piso - 40 : y0 + 40;
                 Personitas.chip(g, x0 + (x1 - x0) * viaje, y0 + (y1 - y0) * viaje, 38, 1 - tramo(2.6, 0.6),
                         aCriminal ? 1 : 0, e.name().endsWith("BLOQUEADO") ? "Bloqueado" : aCriminal ? "a criminales"
                                 : "OK");
             }
         }
+    }
+
+    /** Celular con «No fui / yo» en dos líneas: en una sola no cabe en la pantalla con la letra del proyector. */
+    private static void celular(Graphics2D g, double cx, double cy, double p) {
+        Personitas.celular(g, cx, cy, ALTO_CELULAR, null, Tema.ROJO, p);
+        g.setFont(Tema.letra(Font.BOLD, 11.5f));
+        g.setColor(Tema.conAlfa(Tema.BLANCO, (int) (255 * Math.min(1, p))));
+        int lh = g.getFontMetrics().getHeight();
+        Tema.textoCentrado(g, "No fui", cx, cy - lh / 2.0);
+        Tema.textoCentrado(g, "yo", cx, cy + lh / 2.0);
     }
 
     private static String[] mensaje(Evento e, Cliente c) {
@@ -396,10 +436,18 @@ public final class PanelTienda extends JComponent implements Capitulo {
         double[] cx = {w * 0.3, w * 0.7};
         String[] titulo = {"Sin ChipGuard", "Con ChipGuard"};
         int[] valor = {criminalesRonda1, tienda.enManosCriminales()};
+        // la línea verde se parte para caber en la tarjeta, y las dos tarjetas crecen igual para alojarla
+        Font fVerde = Tema.letra(Font.BOLD, 19f);
+        FontMetrics fm = g.getFontMetrics(fVerde);
+        String linea = bloqueadosRonda2 + " bloqueados por sus dueños desde el celular";
+        List<String> verde = fm.stringWidth(linea) <= 400 ? List.of(linea)
+                : List.of(bloqueadosRonda2 + " bloqueados por sus dueños", "desde el celular");
+        int lh = fm.getHeight();
+        double altoT = Math.max(h * 0.44, 296 + (verde.size() - 1) * lh + lh / 2.0 + 22);
         for (int k = 0; k < 2; k++) {
             double p = tramo(0.3 + k * 0.6, 0.6);
             Color col = valor[k] > 0 ? Tema.ROJO : Tema.VERDE;
-            Tema.rectRedondo(g, cx[k] - 230, h * 0.24, 460, h * 0.44, 36, k == 0 ? Tema.ROJO_SUAVE : Tema.VERDE_SUAVE);
+            Tema.rectRedondo(g, cx[k] - 230, h * 0.24, 460, altoT, 36, k == 0 ? Tema.ROJO_SUAVE : Tema.VERDE_SUAVE);
             g.setFont(Tema.titulo(30f));
             g.setColor(Tema.AZUL_NOCHE);
             Tema.textoCentrado(g, titulo[k], cx[k], h * 0.24 + 56);
@@ -410,15 +458,16 @@ public final class PanelTienda extends JComponent implements Capitulo {
             g.setColor(Tema.AZUL_NOCHE);
             Tema.textoCentrado(g, "chips en manos de extorsionadores", cx[k], h * 0.24 + 256);
             if (k == 1) {
-                g.setFont(Tema.letra(Font.BOLD, 19f));
+                g.setFont(fVerde);
                 g.setColor(Tema.conAlfa(Tema.VERDE, (int) (255 * p)));
-                Tema.textoCentrado(g, bloqueadosRonda2 + " bloqueados por sus dueños desde el celular", cx[k],
-                        h * 0.24 + 296);
+                for (int i = 0; i < verde.size(); i++) {
+                    Tema.textoCentrado(g, verde.get(i), cx[k], h * 0.24 + 296 + i * lh);
+                }
             }
         }
         g.setFont(Tema.titulo(26f));
         g.setColor(Tema.conAlfa(Tema.AZUL_NOCHE, (int) (255 * tramo(1.6, 0.5))));
         Tema.textoCentrado(g, "No lo arregló el vendedor ni tú: lo arregló el dueño del DNI, desde su celular.",
-                w / 2.0, h * 0.76);
+                w / 2.0, Math.max(h * 0.76, (h * 0.24 + altoT + h - 120) / 2));
     }
 }

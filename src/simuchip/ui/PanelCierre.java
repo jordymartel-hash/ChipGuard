@@ -155,8 +155,10 @@ public final class PanelCierre extends PanelEscenas {
         enlaces.clear();
         Font autor = Tema.letra(Font.PLAIN, 17f);
         Font titulo = Tema.medio(17f);
-        int alto = Math.min(52, a.height / REFERENCIAS.length);
         int lh = g.getFontMetrics(autor).getHeight();
+        Font pie = Tema.letra(Font.PLAIN, 14f);
+        // la nota al pie va dentro del área (debajo están los botones): las filas se reparten lo que queda
+        int alto = Math.min(52, (a.height - lh - 10 - g.getFontMetrics(pie).getDescent()) / REFERENCIAS.length);
         for (int k = 0; k < REFERENCIAS.length; k++) {
             double p = tramo(t, 0.1 + k * 0.06, 0.35);
             int y = a.y + k * alto + lh;
@@ -181,7 +183,7 @@ public final class PanelCierre extends PanelEscenas {
                 enlaces.add(REFERENCIAS[k][2]);
             }
         }
-        g.setFont(Tema.letra(Font.PLAIN, 14f));
+        g.setFont(pie);
         g.setColor(Tema.TEXTO_SUAVE);
         Tema.texto(g, "Haz clic en un título para abrir la fuente. Las referencias completas, con su enlace, están en el informe.",
                 a.x, a.y + REFERENCIAS.length * alto + lh + 10);
