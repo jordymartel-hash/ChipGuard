@@ -558,13 +558,20 @@ function anexos(pruebasTexto) {
         margins: { left: 40, right: 80 }, children: col(a) })) })] }));
   }
   H2("Anexo C. Distribución de tareas y bitácora");
+  tabla("Distribución de tareas del trabajo", [
+    ["Integrante", "Aporte", "Evidencia"],
+    ["Martel Vasquez, Jordy Joel", "Desarrollo completo de la aplicación, el verificador de funciones, la simulación de la tienda, las pruebas automáticas, el repositorio y las versiones publicadas", `Historial del repositorio {repo} y versiones v1.0 a v1.3`],
+    ["Sanga Limache, Angeles Jemina", "Exposición del capítulo La matemática", `Reparto de la exposición (Tabla ${nTab + 2})`],
+    ["Tangoa Alva, Richard José Hernan", "Exposición de los capítulos La historia y Objetivos", `Reparto de la exposición (Tabla ${nTab + 2})`],
+    ["Vidalon Ampudia, Eduardo Josias", "Exposición de los capítulos La tienda (con el público) y Cierre", `Reparto de la exposición (Tabla ${nTab + 2})`],
+  ], [1.4, 2.4, 1.6]);
   tabla("Reparto de la exposición (16 minutos, 4 integrantes)", [
     ["Integrante", "Capítulos", "Tiempo", "Idea que debe quedar"],
     ["Tangoa Alva, Richard José Hernan", "La historia · Objetivos", "4:00", "A Ana le sacaron un chip con su segunda huella, y la policía llegó a ella; nuestra misión es modelarlo y arreglarlo."],
     ["Sanga Limache, Angeles Jemina", "La matemática", "4:00", "El registro es una función; el problema es que registro ≠ uso real."],
     ["Martel Vasquez, Jordy Joel", "Qué es ChipGuard · En acción · Por dentro", "4:30", "Ningún chip se activa sin el permiso del dueño del DNI."],
     ["Vidalon Ampudia, Eduardo Josias", "La tienda (con el público) · Cierre", "3:30", "Aun decidiendo bien, sin ChipGuard 2 chips llegan a criminales; con ChipGuard, 0."],
-  ], [1.4, 1.3, 0.5, 2]);
+  ], [1.4, 1.3, 0.7, 1.8]);
   tabla("Bitácora de versiones del repositorio", [
     ["Fecha", "Versión", "Cambio principal"],
     ["2026-11-07", "v1 a v3", "Verificador de funciones, simulador, primeras pruebas; rediseño y nombre ChipGuard"],
