@@ -104,7 +104,7 @@ function imagenRun(archivo, anchoCm) {
   const px = anchoCm / 2.54 * 96;
   return new d.ImageRun({ type: "png", data: buf, transformation: { width: Math.round(px), height: Math.round(px * h / w) } });
 }
-function figura(archivo, titulo, { ancho = 9.5, fte = "Captura de la aplicación ChipGuard (elaboración propia)." } = {}) {
+function figura(archivo, titulo, { ancho = 15, fte = "Captura de la aplicación ChipGuard (elaboración propia)." } = {}) {
   nFig++;
   entradas.push({ tipo: "fig", texto: `Figura ${nFig}. ${titulo}`, clave: `Figura ${nFig}. ${titulo.slice(0, 18)}` });
   C.push(new d.Paragraph({ alignment: d.AlignmentType.CENTER, keepNext: true, spacing: { before: 120, after: 60, line: 240 },
@@ -213,21 +213,21 @@ function cuerpo(tiempos, suites, traza, escenarios) {
   formula("f : A → B   tal que   ∀a ∈ A, ∃! b ∈ B : f(a) = b");
   teorema("Definición 2 (fibra o preimagen)", "Para *b* ∈ *B*, la fibra de *b* es *f*⁻¹(*b*) = {*a* ∈ *A* : *f*(*a*) = *b*}, el conjunto de elementos de *A* cuya flecha llega a *b*. En un diagrama sagital, |*f*⁻¹(*b*)| es el número de flechas que llegan a *b*.");
   P(`Ejemplo: si *C* = {c₁, c₂, c₃} son chips, *P* = {Ana, Luis} personas y *f*(c₁) = *f*(c₂) = Ana, *f*(c₃) = Luis, entonces *f*⁻¹(Ana) = {c₁, c₂} y *f*⁻¹(Luis) = {c₃}. Una relación en la que c₁ tuviera dos titulares, o c₃ ninguno, no sería función (Figura ${nFig + 1}).`);
-  figura("2a-matematica.png", "El registro de chips como función: de cada chip sale exactamente una flecha.", { ancho: 9 });
+  figura("2a-matematica.png", "El registro de chips como función: de cada chip sale exactamente una flecha.");
   H2("3.2 Funciones inyectivas");
   teorema("Definición 3", "*f* es inyectiva si elementos distintos tienen imágenes distintas: *x*₁ ≠ *x*₂ ⇒ *f*(*x*₁) ≠ *f*(*x*₂). Equivalentemente, por contraposición, *f*(*x*₁) = *f*(*x*₂) ⇒ *x*₁ = *x*₂.");
   P(`Caso cotidiano: la asignación pasajero → asiento de un bus es inyectiva; pueden sobrar asientos vacíos. Si la empresa vende el mismo asiento dos veces (sobreventa), a ese asiento le llegan dos flechas y la función deja de ser inyectiva (Figura ${nFig + 1}).`);
-  figura("2d-matematica.png", "Caso real de función inyectiva y su ruptura por sobreventa.", { ancho: 9 });
+  figura("2d-matematica.png", "Caso real de función inyectiva y su ruptura por sobreventa.");
   H2("3.3 Funciones sobreyectivas");
   teorema("Definición 4", "*f* es sobreyectiva si su imagen es todo el codominio: ∀*y* ∈ *B*, ∃*x* ∈ *A* : *f*(*x*) = *y*.");
   P(`Caso cotidiano: la asignación alumno → grupo de exposición es sobreyectiva porque ningún grupo queda vacío; como hay más alumnos que grupos, no puede ser inyectiva (Figura ${nFig + 1}).`);
-  figura("2f-matematica.png", "Caso real de función sobreyectiva.", { ancho: 9 });
+  figura("2f-matematica.png", "Caso real de función sobreyectiva.");
   H2("3.4 Funciones biyectivas e inversa");
   teorema("Definición 5", "*f* es biyectiva si es inyectiva y sobreyectiva. Una función *g* : *B* → *A* es inversa de *f* si *g*(*f*(*a*)) = *a* para todo *a* ∈ *A* y *f*(*g*(*b*)) = *b* para todo *b* ∈ *B*; se escribe *g* = *f*⁻¹.");
   teorema("Teorema 1", "*f* : *A* → *B* tiene inversa si y solo si es biyectiva.",
     "(⇒) Sea *g* la inversa. Si *f*(*a*₁) = *f*(*a*₂), aplicando *g* se obtiene *a*₁ = *g*(*f*(*a*₁)) = *g*(*f*(*a*₂)) = *a*₂, luego *f* es inyectiva. Para *b* ∈ *B*, el elemento *a* = *g*(*b*) cumple *f*(*a*) = *b*, luego *f* es sobreyectiva. (⇐) Si *f* es biyectiva, para cada *b* existe un *a* con *f*(*a*) = *b* (sobreyectividad) y es único (inyectividad); definir *g*(*b*) = *a* da una función que cumple ambas igualdades.");
   P(`Caso cotidiano: persona ↔ DNI. Cada persona tiene un DNI y cada DNI pertenece a una sola persona; por eso con el DNI se encuentra a la persona y viceversa (Figura ${nFig + 1}). Es la propiedad que la policía supone, equivocadamente, en el registro de líneas.`);
-  figura("2h-matematica.png", "Caso real de función biyectiva.", { ancho: 9 });
+  figura("2h-matematica.png", "Caso real de función biyectiva.");
   H2("3.5 Conteo por fibras");
   teorema("Teorema 2", "Si *A* y *B* son finitos y *f* : *A* → *B*, entonces |*A*| = Σ |*f*⁻¹(*b*)|, donde la suma recorre todos los *b* ∈ *B*.",
     "Como *f* es función, cada *a* ∈ *A* pertenece a exactamente una fibra, la de *f*(*a*). Por tanto las fibras son disjuntas dos a dos y su unión es *A*. Por la regla de la suma, el tamaño de *A* es la suma de los tamaños de las fibras.");
@@ -242,7 +242,7 @@ function cuerpo(tiempos, suites, traza, escenarios) {
   teorema("Corolario 2 (tope de líneas)", "Si el registro garantiza |*f*⁻¹(*p*)| ≤ *k* para toda persona *p*, entonces |*C*| ≤ *k*·|*P*|, y para una persona que ya tiene *k* chips, el chip *k* + 1 no puede registrarse a su nombre.",
     "La primera parte es el Teorema 2 con cada sumando acotado por *k*. Para la segunda, registrar un chip más a nombre de *p* haría |*f*⁻¹(*p*)| = *k* + 1 > *k*.");
   formula("|f⁻¹(p)| ≤ k   para toda persona p ∈ P");
-  figura("2j-matematica.png", "El palomar explicado con cajones: 5 chips y 3 cajones.", { ancho: 9 });
+  figura("2j-matematica.png", "El palomar explicado con cajones: 5 chips y 3 cajones.");
   H2("3.7 Composición");
   teorema("Teorema 5", "Si *g* : *A* → *B* y *h* : *B* → *C* son inyectivas, *h* ∘ *g* es inyectiva.",
     "Si *h*(*g*(*a*₁)) = *h*(*g*(*a*₂)), por inyectividad de *h* se tiene *g*(*a*₁) = *g*(*a*₂), y por la de *g*, *a*₁ = *a*₂.");
@@ -583,20 +583,20 @@ function anexos(pruebasTexto) {
     ["3h-arquitectura.png", "Si el dueño dice «No fui yo»."], ["3k-arquitectura.png", "Qué guarda ChipGuard."],
     ["4b-tienda-cliente.png", "Llega un cliente con su DNI."], ["4h-tienda-final.png", "Resultado de las dos rondas."],
   ];
-  const mitad = Math.floor(ANCHO_TEXTO / 4);   // galería en 4 columnas
+  const mitad = Math.floor(ANCHO_TEXTO / 2);   // galería en 2 columnas: capturas legibles
   const sinBorde = { style: d.BorderStyle.NONE, size: 0, color: "FFFFFF" };
   const filas = [];
-  for (let i = 0; i < gal.length; i += 4) {
-    filas.push(new d.TableRow({ cantSplit: true, children: gal.slice(i, i + 4).map(([f, t]) => {
+  for (let i = 0; i < gal.length; i += 2) {
+    filas.push(new d.TableRow({ cantSplit: true, children: gal.slice(i, i + 2).map(([f, t]) => {
       nFig++;
       entradas.push({ tipo: "fig", texto: `Figura ${nFig}. ${t}`, clave: `Figura ${nFig}. ${t.slice(0, 18)}` });
       return new d.TableCell({ width: { size: mitad, type: d.WidthType.DXA }, margins: { top: 60, bottom: 120, left: 60, right: 60 }, children: [
-        new d.Paragraph({ alignment: d.AlignmentType.CENTER, spacing: { line: 240, after: 40 }, children: [imagenRun(CAP(f), 3.7)] }),
+        new d.Paragraph({ alignment: d.AlignmentType.CENTER, spacing: { line: 240, after: 40 }, children: [imagenRun(CAP(f), 7.3)] }),
         new d.Paragraph({ alignment: d.AlignmentType.CENTER, spacing: { line: 240, after: 0 }, children: [new d.TextRun({ text: `Figura ${nFig}. `, bold: true, size: 18 }), new d.TextRun({ text: t, italics: true, size: 18 })] }),
       ] });
     }) }));
   }
-  C.push(new d.Table({ width: { size: mitad * 4, type: d.WidthType.DXA }, columnWidths: [mitad, mitad, mitad, mitad],
+  C.push(new d.Table({ width: { size: mitad * 2, type: d.WidthType.DXA }, columnWidths: [mitad, mitad],
     borders: { top: sinBorde, bottom: sinBorde, left: sinBorde, right: sinBorde, insideHorizontal: sinBorde, insideVertical: sinBorde }, rows: filas }));
   P("*Fuente:* capturas de la aplicación ChipGuard (elaboración propia).", { run: { size: 18 } });
   // el registro no se parte: todo va «con el siguiente» y la tabla con filas indivisibles
