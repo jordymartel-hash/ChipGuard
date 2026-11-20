@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Capítulo 2: el objetivo del trabajo y su marco teórico, como en el informe (§3 y §4). Una idea por
- * pantalla: el objetivo general en sus tres verbos, los cuatro específicos como un recorrido por la
+ * pantalla: el objetivo general en sus tres verbos, los tres específicos (OE1-OE3) como un recorrido por la
  * exposición y las cinco definiciones del curso en dos escenas, cada una con su diagrama.
  */
 public final class PanelObjetivos extends PanelEscenas {
@@ -26,12 +26,11 @@ public final class PanelObjetivos extends PanelEscenas {
     private static final Color[] TINTE_GENERAL = {Tema.NARANJA_SUAVE, Tema.ROJO_SUAVE, Tema.VERDE_SUAVE};
     private static final Color[] TINTA_GENERAL = {Tema.NARANJA_TEXTO, Tema.ROJO_OSCURO, Tema.VERDE};
 
-    /** Verbo, qué se hace y el capítulo donde se cumple. Del informe, §3.2. */
+    /** Verbo, qué se hace y el capítulo donde se cumple. Del informe, §4.2 (OE1-OE3). */
     static final String[][] ESPECIFICOS = {
-        {"Representar", "el registro y el uso real de las líneas como dos funciones, y clasificarlas.", "La matemática"},
-        {"Explicar", "inyectiva, sobreyectiva, biyectiva y el palomar con casos cotidianos.", "La matemática"},
-        {"Diseñar", "ChipGuard: qué es, qué ofrece, su interfaz y su arquitectura.", "Qué es · En acción · Por dentro"},
-        {"Desarrollar", "una app en Java que presenta el caso y simula el efecto de ChipGuard, con pruebas.", "La tienda"}
+        {"Representar", "el registro y el uso real como dos funciones, clasificarlas y demostrar qué debe cumplir la solución.", "La matemática"},
+        {"Diseñar", "ChipGuard desde esa condición: su arquitectura, su flujo de autorización y sus casos especiales.", "Qué es · En acción · Por dentro"},
+        {"Implementar", "en Java un verificador de funciones y la simulación de la tienda, validados con pruebas.", "La tienda"}
     };
 
     /** Nombre, fórmula (solo con símbolos que Geist dibuja) y la frase en palabras. Del informe, §4. */
@@ -112,7 +111,7 @@ public final class PanelObjetivos extends PanelEscenas {
         }
     }
 
-    /** Los cuatro objetivos como un recorrido: una línea que avanza y un paso por objetivo. */
+    /** Los tres objetivos específicos como un recorrido: una línea que avanza y un paso por objetivo. */
     private void especificos(Graphics2D g, Rectangle a, double t) {
         int n = ESPECIFICOS.length;
         int col = a.width / n;

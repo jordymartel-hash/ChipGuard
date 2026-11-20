@@ -38,7 +38,7 @@ public final class PruebasDisenio {
         igual("La matemática", app.nombreCapitulo(2), "la matemática sigue después");
         igual(4, app.objetivos().cantidadEscenas(), "cuatro escenas: objetivo, específicos y marco teórico en dos partes");
         igual(3, PanelObjetivos.GENERAL.length, "el objetivo general se parte en sus tres verbos");
-        igual(4, PanelObjetivos.ESPECIFICOS.length, "los 4 objetivos específicos del informe");
+        igual(3, PanelObjetivos.ESPECIFICOS.length, "los 3 objetivos específicos del informe (OE1-OE3), como pide el formato");
         igual(5, PanelObjetivos.CONCEPTOS.length, "cinco conceptos del marco teórico");
 
         titulo("Letra para proyector");
